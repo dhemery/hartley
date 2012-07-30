@@ -1,4 +1,5 @@
-workspace.xml
 /target
-/bin
-/build
+/.idea
+*.iml
+*.ipr
+*.iws
