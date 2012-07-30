@@ -5,15 +5,16 @@
     <artifactId>hartley</artifactId>
     <packaging>jar</packaging>
     <version>1.0-SNAPSHOT</version>
-    <name>hartley</name>
-    <url>http://maven.apache.org</url>
+    <name>Hartley Library</name>
 
     <developers>
         <developer>
-            <id>dale.emery</id>
+            <id>dhemery</id>
             <name>Dale Emery</name>
+            <email>dale@dhemery.com</email>
+            <url>http://dhemery.com</url>
             <roles>
-                <role>Developer</role>
+                <role>developer</role>
             </roles>
         </developer>
     </developers>
