@@ -1,4 +1,4 @@
-package com.dhemery.evaluating;
+package com.dhemery.expressions;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -16,16 +16,16 @@ public class That<T> extends TypeSafeMatcher<T> {
 	}
 
 	@Override
-	public void describeTo(Description description) {
-		description.appendText("that ").appendDescriptionOf(criteria);
-	}
-
-	@Override
 	protected boolean matchesSafely(T item) {
 		return criteria.matches(item);
 	}
 
-	/**
+	@Override
+	public void describeTo(Description description) {
+		description.appendText("that ").appendDescriptionOf(criteria);
+	}
+
+    /**
      * Create a matcher that wraps another matcher
      * and prepends "that " to its description.
 	 */

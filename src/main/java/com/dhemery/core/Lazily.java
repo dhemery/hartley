@@ -1,4 +1,4 @@
-package com.dhemery.creating;
+package com.dhemery.core;
 
 /**
  * Lazy suppliers.

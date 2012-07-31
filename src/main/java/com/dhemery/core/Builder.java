@@ -1,4 +1,4 @@
-package com.dhemery.creating;
+package com.dhemery.core;
 
 /**
  * Builds an object of type {@code T}.

@@ -1,6 +1,6 @@
 package com.dhemery.configuring;
 
-import com.dhemery.creating.Supplier;
+import com.dhemery.core.Supplier;
 
 import java.util.*;
 

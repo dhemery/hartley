@@ -1,4 +1,4 @@
-package com.dhemery.creating;
+package com.dhemery.core;
 
 /**
  * Supplies a value of type {@code T}.

@@ -1,4 +1,4 @@
-package com.dhemery.creating;
+package com.dhemery.core;
 
 /**
  * Lazily obtains a value of type {@code T} from another supplier.

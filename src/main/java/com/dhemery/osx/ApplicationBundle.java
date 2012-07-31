@@ -1,8 +1,8 @@
 package com.dhemery.osx;
 
-import com.dhemery.creating.Builder;
-import com.dhemery.creating.Lazily;
-import com.dhemery.creating.Lazy;
+import com.dhemery.core.Builder;
+import com.dhemery.core.Lazily;
+import com.dhemery.core.Lazy;
 import com.dhemery.serializing.GsonJsonInspector;
 import com.dhemery.serializing.JsonInspector;
 import com.dhemery.os.Shell;

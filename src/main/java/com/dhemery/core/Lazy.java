@@ -1,4 +1,4 @@
-package com.dhemery.creating;
+package com.dhemery.core;
 
 /**
  * A lazy supplier that caches the first value it supplies,
