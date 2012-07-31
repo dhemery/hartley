@@ -17,7 +17,7 @@
 
     <licenses>
         <license>
-            <name>MIT LICENSE</name>
+            <name>MIT License</name>
             <url>https://github.com/dhemery/hartley/LICENSE.txt</url>
             <distribution>repo</distribution>
         </license>
@@ -47,6 +47,12 @@
             <artifactId>junit-dep</artifactId>
             <version>4.10</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.hamcrest</groupId>
+                    <artifactId>hamcrest-core</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.hamcrest</groupId>

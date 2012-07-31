@@ -5,7 +5,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
 
 /**
- * A matcher that evaluates an object by evaluating a feature of the object against some criteria.
+ * A matcher that evaluates a feature of an object against some criteria.
  * @param <T> the type of object to evaluate
  * @param <F> the type of feature to evaluate
  */
@@ -23,8 +23,7 @@ public class Has<T, F> extends FeatureMatcher<T, F> {
 	}
 
     /**
-     * Create a matcher that evaluates an object
-     * by evaluating the given feature of the object
+     * Create a matcher that evaluates a feature of an object
      * against the given criteria.
      */
 	public static <T, F> Matcher<T> has(Feature<T, F> feature, Matcher<? super F> criteria) {
