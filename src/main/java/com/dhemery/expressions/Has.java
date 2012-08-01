@@ -21,7 +21,7 @@ public class Has<T, V> extends TypeSafeMatcher<T> {
 
     @Override
     protected boolean matchesSafely(T object) {
-        return criteria.matches(query.currentValueFrom(object));
+        return criteria.matches(query.query(object));
     }
 
     @Override
@@ -29,6 +29,12 @@ public class Has<T, V> extends TypeSafeMatcher<T> {
         description.appendText("has ")
                 .appendValue(query).appendText(" ")
                 .appendDescriptionOf(criteria);
+    }
+
+    @Override
+    protected void describeMismatchSafely(T item, Description mismatchDescription) {
+        mismatchDescription.appendText("had ")
+                .appendValue(query).appendText(" ");
     }
 
     /**

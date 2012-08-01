@@ -4,18 +4,18 @@ package com.dhemery.polling;
 import org.hamcrest.Matcher;
 
 /**
- * Poll until a condition is satisfied.
+ * Polls until a condition is satisfied.
  * 
  * @author Dale Emery
  */
-public interface Poll {
+public interface Poller {
 	/**
 	 * Poll until the condition is satisfied.
 	 */
-    void until(Condition condition);
+    void poll(Condition condition);
 
     /**
      * Poll until the subject satisfies the criteria.
      */
-    <S> void until(S subject, Matcher<? super S> criteria);
+    <S> void poll(S subject, Matcher<? super S> criteria);
 }

@@ -3,15 +3,15 @@ package com.dhemery.polling;
 import org.hamcrest.Matcher;
 
 /**
- * A poll that throws an exception if a timer expires before the condition is satisfied.
+ * A poller that throws an exception if a timer expires before the condition is satisfied.
  */
-public class TimedPoll implements Poll {
+public class TimedPoller implements Poller {
     private final PollTimer timer;
 
     /**
-     * Create a poll that throws an exception if the timer expires before the condition is satisfied.
+     * Create a poller that throws an exception if the timer expires before the condition is satisfied.
      */
-    public TimedPoll(PollTimer timer) {
+    public TimedPoller(PollTimer timer) {
         this.timer = timer;
     }
 
@@ -20,7 +20,7 @@ public class TimedPoll implements Poll {
      * @throws PollTimeoutException if the timer expires before the condition is satisfied
      */
     @Override
-    public void until(Condition condition) {
+    public void poll(Condition condition) {
         timer.start();
         while (!timer.isExpired()) {
             if (condition.isSatisfied()) return;
@@ -35,7 +35,7 @@ public class TimedPoll implements Poll {
      * @throws PollTimeoutException if the timer expires before the subject satisfies the criteria
      */
     @Override
-    public <S> void until(S subject, Matcher<? super S> criteria) {
-        until(new MatcherCondition(subject, criteria));
+    public <S> void poll(S subject, Matcher<? super S> criteria) {
+        poll(new MatcherCondition(subject, criteria));
     }
 }

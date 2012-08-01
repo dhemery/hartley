@@ -9,5 +9,5 @@ public interface Query<T, V> {
 	/**
      * Retrieve the current value of the feature from the object.
 	 */
-	V currentValueFrom(T object);
+	V query(T object);
 }

@@ -1,22 +1,13 @@
 package com.dhemery.core;
 
-import org.hamcrest.Description;
-import org.hamcrest.SelfDescribing;
-
-public abstract class NamedQuery<T,V> implements Query<T,V>, SelfDescribing {
-    private final String name;
-
+/**
+ * A query that describes itself by a fixed name.
+ */
+public abstract class NamedQuery<T,V> extends Named implements Query<T,V> {
+    /**
+     * Create a query with a fixed name.
+     */
     protected NamedQuery(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public void describeTo(Description description) {
-        description.appendText(name);
-    }
-
-    @Override
-    public String toString() {
-        return name;
+        super(name);
     }
 }

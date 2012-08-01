@@ -31,60 +31,48 @@ public class SystemClockPollTimer implements PollTimer {
 		this.tickSizeInMilliseconds = tickSizeInMilliseconds;
 	}
 
-	/**
-	 * @return the current time in milliseconds
-	 */
-	private long now() {
-		return System.currentTimeMillis();
-	}
-
-	/**
-	 * @param durationInMilliseconds how long to sleep.
-	 */
-	private void sleep(long durationInMilliseconds) {
-		try {
-			TimeUnit.MILLISECONDS.sleep(durationInMilliseconds);
-		} catch (InterruptedException ignored) {
-		}
-	}
-
 	@Override
 	public long elapsedTicks() {
 		return elapsedTime() / tickSizeInMilliseconds;
 	}
 
-	/**
-	 * @return the number of milliseconds that have passed since the timer started.
-	 */
-	public long elapsedTime() {
+    @Override
+    public boolean isExpired() {
+        return elapsedTime() >= durationInMilliseconds;
+    }
+
+    @Override
+    public void start() {
+        startTime = now();
+    }
+
+    @Override
+    public void tick() {
+        sleep(intervalUntilNextTick());
+    }
+
+    @Override
+    public String toString() {
+        return String.format("duration %s tick size %s", durationInMilliseconds, tickSizeInMilliseconds);
+    }
+
+    private long elapsedTime() {
 		return now() - startTime;
 	}
 
-	/**
-	 * @return the number of milliseconds between now and the next tick.
-	 */
 	private long intervalUntilNextTick() {
 		long timeElapsedSincePreviousTick = elapsedTime() % tickSizeInMilliseconds;
 		return tickSizeInMilliseconds - timeElapsedSincePreviousTick;
 	}
 
-	@Override
-	public boolean isExpired() {
-		return elapsedTime() >= durationInMilliseconds;
+	private long now() {
+		return System.currentTimeMillis();
 	}
 
-	@Override
-	public void start() {
-		startTime = now();
-	}
-
-	@Override
-	public void tick() {
-		sleep(intervalUntilNextTick());
-	}
-	
-	@Override
-	public String toString() {
-		return String.format("duration %s tick size %s", durationInMilliseconds, tickSizeInMilliseconds);
+	private void sleep(long durationInMilliseconds) {
+		try {
+			TimeUnit.MILLISECONDS.sleep(durationInMilliseconds);
+		} catch (InterruptedException ignored) {
+		}
 	}
 }
