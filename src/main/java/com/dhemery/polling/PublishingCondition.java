@@ -1,5 +1,6 @@
 package com.dhemery.polling;
 
+import com.dhemery.core.Condition;
 import com.dhemery.polling.events.Satisfied;
 import com.dhemery.polling.events.Unsatisfied;
 import com.dhemery.publishing.Publisher;
@@ -32,6 +33,11 @@ public class PublishingCondition implements Condition, SelfDescribing {
         Object event = isSatisfied ? new Satisfied(condition) : new Unsatisfied(condition);
         publisher.publish(event);
         return isSatisfied;
+    }
+
+    @Override
+    public void discribeDissatisfactionTo(Description description) {
+        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override

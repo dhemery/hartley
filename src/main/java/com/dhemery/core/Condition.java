@@ -1,5 +1,6 @@
-package com.dhemery.polling;
+package com.dhemery.core;
 
+import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
 
 /**
@@ -11,4 +12,5 @@ public interface Condition extends SelfDescribing {
      * @return whether the condition is satisfied
      */
     boolean isSatisfied();
+    void discribeDissatisfactionTo(Description description);
 }

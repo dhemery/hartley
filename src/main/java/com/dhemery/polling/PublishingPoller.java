@@ -1,5 +1,7 @@
 package com.dhemery.polling;
 
+import com.dhemery.core.Condition;
+import com.dhemery.core.Query;
 import com.dhemery.publishing.Publisher;
 import org.hamcrest.Matcher;
 
@@ -31,6 +33,16 @@ public class PublishingPoller implements Poller {
      */
     @Override
     public <S> void poll(S subject, Matcher<? super S> criteria) {
-        poll(new MatcherCondition(subject, criteria));
+        poll(new MatcherCondition<S>(subject, criteria));
+    }
+
+    @Override
+    public <S, V> void poll(S subject, Query<? super S, V> query, Matcher<? super V> criteria) {
+        poll(new SubjectQueryProbe<S,V>(subject, query), criteria);
+    }
+
+    @Override
+    public <V> void poll(Probe<? extends V> probe, Matcher<? super V> criteria) {
+        poll(new ProbingCondition<V>(probe, criteria));
     }
 }

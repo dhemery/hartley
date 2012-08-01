@@ -14,8 +14,6 @@ public class SubscriptionRegistryTest {
     private class Publication1{}
     private class Publication2{}
 
-    private Map<Object,Set<Class<?>>> subscriptions = new HashMap<Object, Set<Class<?>>>();
-
     @Test
     public void hasNoSubscriptionsForNonSubscriber() {
         Object nonSubscriber = new Object();
@@ -41,6 +39,8 @@ public class SubscriptionRegistryTest {
         assertThat(forSubscriber(subscriber1), not(hasItem(Publication2.class)));
         assertThat(forSubscriber(subscriber2), not(hasItem(Publication1.class)));
     }
+
+    private Map<Object,Set<Class<?>>> subscriptions = new HashMap<Object, Set<Class<?>>>();
 
     public void subscribe(Object subscriber, Class<?> publication) {
         ensureSubscriber(subscriber);

@@ -1,10 +1,6 @@
 package com.dhemery.expressions;
 
-import com.dhemery.core.Action;
-import com.dhemery.core.Lazily;
-import com.dhemery.core.Lazy;
-import com.dhemery.core.Supplier;
-import com.dhemery.polling.Condition;
+import com.dhemery.core.*;
 import com.dhemery.polling.PollTimeoutException;
 import com.dhemery.polling.Poller;
 import org.hamcrest.Matcher;
@@ -56,6 +52,10 @@ public abstract class Expressive {
         MatcherAssert.assertThat(subject, criteria);
     }
 
+    protected static <S,V> void assertThat(S subject, Query<? super S, V> query, Matcher<? super V> criteria) {
+        assertThat(query.query(subject), criteria);
+    }
+
     /**
 	 * Assert that the subject satisfies the criteria before polling expires.
 	 * @param subject the subject to evaluate
@@ -66,6 +66,10 @@ public abstract class Expressive {
     protected static <S> void assertThat(S subject, Poller poller, Matcher<? super S> criteria) {
 		poller.poll(subject, criteria);
 	}
+
+    protected static <S,V> void assertThat(S subject, Query<? super S, V> query, Poller poller, Matcher<? super V> criteria) {
+        poller.poll(subject, query, criteria);
+    }
 
     /**
      * Assert that the condition is satisfied.
@@ -95,16 +99,29 @@ public abstract class Expressive {
         return criteria.matches(subject);
     }
 
+    protected static <S,V> boolean the(S subject, Query<? super S,V> query, Matcher<? super V> criteria) {
+        return the(query.query(subject), criteria);
+    }
+
     /**
      * Determine whether the subject satisfies the criteria before polling expires.
      * @param subject the subject to evaluate
-     * @param poll the poll to evaluate the subject
+     * @param poller the poller to evaluate the subject
      * @param criteria the criteria to satisfy
      * @return whether the subject satisfies the criteria before polling expires
      */
-    protected static <S> boolean the(S subject, Poller poll, Matcher<? super S> criteria) {
+    protected static <S> boolean the(S subject, Poller poller, Matcher<? super S> criteria) {
         try {
-            poll.poll(subject, criteria);
+            poller.poll(subject, criteria);
+            return true;
+        } catch (PollTimeoutException ignored) {
+            return false;
+        }
+    }
+
+    protected static <S,V> boolean the(S subject, Query<? super S,V> query, Poller poller, Matcher<? super V> criteria) {
+        try {
+            poller.poll(subject, query, criteria);
             return true;
         } catch (PollTimeoutException ignored) {
             return false;
@@ -121,6 +138,10 @@ public abstract class Expressive {
         waitUntil(subject, eventually(), criteria);
     }
 
+    protected <S,V> void waitUntil(S subject, Query<? super S,V> query, Matcher<? super V> criteria) {
+        waitUntil(subject, query, eventually(), criteria);
+    }
+
     /**
 	 * Wait until the subject satisfies the criteria.
      * @param subject the subject to evaluate
@@ -130,6 +151,10 @@ public abstract class Expressive {
 	 */
     protected static <S> void waitUntil(S subject, Poller poller, Matcher<? super S> criteria) {
 		poller.poll(subject, criteria);
+	}
+
+    protected static <S,V>  void waitUntil(S subject, Query<? super S,V> query, Poller poller, Matcher<? super V> criteria) {
+		poller.poll(subject, query, criteria);
 	}
 
     /**
@@ -162,16 +187,25 @@ public abstract class Expressive {
         return when(subject, eventually(), criteria) ;
     }
 
+    protected <S,V>  S when(S subject, Query<? super S,V> query, Matcher<? super V> criteria) {
+        return when(subject, query, eventually(), criteria);
+    }
+
     /**
      * Return the subject when the subject satisfies the criteria.
      * @param subject the subject to evaluate
-     * @param poll the poll to evaluate the subject
+     * @param poller the poller to evaluate the subject
      * @param criteria the criteria to satisfy
      * @return the subject
      * @throws PollTimeoutException if polling expires before the subject satisfies the criteria
      */
-    protected static <S> S when(S subject, Poller poll, Matcher<? super S> criteria) {
-        poll.poll(subject, criteria);
+    protected static <S> S when(S subject, Poller poller, Matcher<? super S> criteria) {
+        poller.poll(subject, criteria);
+        return subject;
+    }
+
+    protected <S,V>  S when(S subject, Query<? super S,V> query, Poller poller, Matcher<? super V> criteria) {
+        poller.poll(subject, query, criteria);
         return subject;
     }
 
@@ -199,6 +233,11 @@ public abstract class Expressive {
         action.executeOn(subject);
     }
 
+    protected <S,V>  void when(S subject, Query<? super S,V> query, Poller poller, Matcher<? super V> criteria, Action<? super S> action) {
+        poller.poll(subject, query, criteria);
+        action.executeOn(subject);
+    }
+
     /**
      * Run the runnable when the subject satisfies the criteria.
      * @param subject the subject to evaluate
@@ -208,6 +247,10 @@ public abstract class Expressive {
      */
     protected <S> void when(S subject, Matcher<? super S> criteria, Runnable runnable) {
         when(subject, eventually(), criteria, runnable);
+    }
+
+    protected <S,V>  void when(S subject, Query<? super S,V> query, Matcher<? super V> criteria, Runnable runnable) {
+        when(subject, query, eventually(), criteria, runnable);
     }
 
     /**
@@ -220,6 +263,11 @@ public abstract class Expressive {
      */
     protected static <S> void when(S subject, Poller poller, Matcher<? super S> criteria, Runnable runnable) {
         poller.poll(subject, criteria);
+        runnable.run();
+    }
+
+    protected <S,V>  void when(S subject, Query<? super S,V> query, Poller poller, Matcher<? super V> criteria, Runnable runnable) {
+        poller.poll(subject, query, criteria);
         runnable.run();
     }
 

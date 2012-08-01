@@ -32,7 +32,7 @@ public class Has<T, V> extends TypeSafeMatcher<T> {
     }
 
     @Override
-    protected void describeMismatchSafely(T item, Description mismatchDescription) {
+    protected void describeMismatchSafely(T subject, Description mismatchDescription) {
         mismatchDescription.appendText("had ")
                 .appendValue(query).appendText(" ");
     }

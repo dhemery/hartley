@@ -1,5 +1,7 @@
 package com.dhemery.polling;
 
+import com.dhemery.core.Condition;
+
 /**
  * Indicates that the poll timer expired before the subject satisfied the criteria.
  * @author Dale Emery

@@ -1,15 +1,15 @@
 package com.dhemery.polling;
 
+import com.dhemery.core.Condition;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.SelfDescribing;
 import org.hamcrest.StringDescription;
 
 /**
- * A condition that is satisfied when a subject satisfies the given criteria.
+ * A condition that is satisfied when a subject satisfies some criteria.
  * @param <S> the type of subject evaluated
  */
-public class MatcherCondition<S> implements Condition, SelfDescribing {
+public class MatcherCondition<S> implements Condition {
     private final S subject;
     private final Matcher<? super S> criteria;
 
@@ -34,6 +34,11 @@ public class MatcherCondition<S> implements Condition, SelfDescribing {
         description.appendValue(subject)
                 .appendText(" ")
                 .appendDescriptionOf(criteria);
+    }
+
+    @Override
+    public void discribeDissatisfactionTo(Description description) {
+        criteria.describeMismatch(subject, description);
     }
 
     @Override
