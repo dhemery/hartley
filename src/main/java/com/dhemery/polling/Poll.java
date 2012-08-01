@@ -15,10 +15,7 @@ public interface Poll {
     void until(Condition condition);
 
     /**
-     * Poll until either the subject satisfies the criteria.
-     * @param subject the subject to evaluate
-     * @param criteria the criteria to satisfy
-     * @param <S> the type of subject
+     * Poll until the subject satisfies the criteria.
      */
     <S> void until(S subject, Matcher<? super S> criteria);
 }

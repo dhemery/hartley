@@ -1,21 +1,40 @@
 package com.dhemery.expressions;
 
 import com.dhemery.core.Action;
+import com.dhemery.core.Lazily;
+import com.dhemery.core.Lazy;
+import com.dhemery.core.Supplier;
 import com.dhemery.polling.Poll;
 import com.dhemery.polling.PollTimeoutException;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 
 /**
- * Helper methods for making assertions, waiting for conditions,
- * and establishing preconditions before acting on an item.
+ * Helper methods to make assertions, wait for conditions,
+ * and establish preconditions before acting on an item.
  *
  */
 public abstract class Expressive {
+    private final Lazy<Poll> defaultPoll = Lazily.get(defaultPollSupplier());
+
     /**
-     * Supplies the default poll used for pollable expressions that do not supply a poll.
+     * Implement {@link #defaultPollSupplier()}
+     * to deliver a {@link Supplier}
+     * that can supply the default {@link Poll}
+     * for use in expressions.
+     * This {@code Expressive} object
+     * will call the supplier's {@link Supplier#get() get()} method
+     * at most one time.
+     * @return a supplier that will supply the default poll.
+     */
+    protected abstract Supplier<? extends Poll> defaultPollSupplier();
+
+    /**
+     * Return the default poll.
 	 */
-    public abstract Poll eventually();
+    public Poll eventually() {
+        return defaultPoll.get();
+    }
 
     /**
      * Assert that the subject satisfies the given criteria.
@@ -110,7 +129,6 @@ public abstract class Expressive {
 
     /**
      * Execute an action when the subject satisfies the given criteria.
-     * This method uses the default poller supplied by the default poller supplier.
      * @param subject the subject to evaluate
      * @param criteria the criteria to satisfy
      * @param action the action to execute when the subject satisfies the criteria

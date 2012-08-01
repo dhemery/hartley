@@ -9,12 +9,16 @@ public class TimedPoll implements Poll {
     private final PollTimer timer;
 
     /**
-     * Create a poll that throws an exception if a timer expires before the condition is satisfied.
+     * Create a poll that throws an exception if the timer expires before the condition is satisfied.
      */
     public TimedPoll(PollTimer timer) {
         this.timer = timer;
     }
 
+    /**
+     * Poll until the condition is satisfied or the poll timer expires.
+     * @throws PollTimeoutException if the timer expires before the condition is satisfied
+     */
     @Override
     public void until(Condition condition) {
         timer.start();
@@ -26,6 +30,10 @@ public class TimedPoll implements Poll {
 
     }
 
+    /**
+     * Poll until the subject satisfies the criteria or the poll timer expires.
+     * @throws PollTimeoutException if the timer expires before the subject satisfies the criteria
+     */
     @Override
     public <S> void until(S subject, Matcher<? super S> criteria) {
         until(new MatcherCondition(subject, criteria));

@@ -3,8 +3,10 @@ package com.dhemery.polling;
 /**
  * A timer used for polling.
  * 
- * A timer has a poll duration and expires when the poll duration has passed
- * since the timer was started.
+ * A timer has a poll duration.
+ * The timer expires when
+ * the time that has passed since the timer was started
+ * exceeds the duration.
  * 
  * A timer divides time into fixed-size polling intervals called ticks. Ticks
  * are reckoned from the instant the timer is started.
