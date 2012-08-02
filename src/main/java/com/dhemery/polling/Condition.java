@@ -4,7 +4,7 @@ import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
 
 /**
- * A condition whose satisfaction may vary over time.
+ * Evaluates whether a condition is currently satisfied.
  */
 public interface Condition extends SelfDescribing {
     /**
