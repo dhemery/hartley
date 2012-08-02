@@ -1,43 +1,30 @@
 package com.dhemery.polling;
 
-import com.dhemery.core.Condition;
-import com.dhemery.polling.events.Satisfied;
-import com.dhemery.polling.events.Unsatisfied;
+import com.dhemery.polling.events.ConditionSatisfied;
+import com.dhemery.polling.events.ConditionUnsatisfied;
 import com.dhemery.publishing.Publisher;
 import org.hamcrest.Description;
-import org.hamcrest.SelfDescribing;
 
-/**
- * Wraps a condition and publishes the result of each evaluation.
- */
-public class PublishingCondition implements Condition, SelfDescribing {
+public class PublishingCondition implements Condition {
     private final Publisher publisher;
     private final Condition condition;
 
-    /**
-     * Wrap the condition
-     * and publish the result of each evaluation.
-     */
     public PublishingCondition(Publisher publisher, Condition condition) {
         this.publisher = publisher;
         this.condition = condition;
     }
 
-    /**
-     * Evaluate the condition and publish the result.
-     * @return whether the condition is satisfied
-     */
     @Override
     public boolean isSatisfied() {
         boolean isSatisfied = condition.isSatisfied();
-        Object event = isSatisfied ? new Satisfied(condition) : new Unsatisfied(condition);
-        publisher.publish(event);
+        Object notification = isSatisfied ? new ConditionSatisfied(condition) : new ConditionUnsatisfied(condition);
+        publisher.publish(notification);
         return isSatisfied;
     }
 
     @Override
-    public void discribeDissatisfactionTo(Description description) {
-        //To change body of implemented methods use File | Settings | File Templates.
+    public void describeDissatisfactionTo(Description description) {
+        condition.describeDissatisfactionTo(description);
     }
 
     @Override
