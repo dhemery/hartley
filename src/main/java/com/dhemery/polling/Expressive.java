@@ -6,8 +6,6 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 
-import static com.dhemery.polling.BooleanSugar.*;
-
 /**
  * Expressive methods to make assertions, wait for conditions,
  * and establish preconditions before taking an action.
@@ -226,15 +224,7 @@ public abstract class Expressive {
     }
 
     public static <S> Feature<S, Boolean> is(Feature<? super S, Boolean> feature) {
-        return featureIs(feature);
-    }
-
-    public static Sampled<Boolean> is(Sampled<Boolean> sampled) {
-        return sampledIs(sampled);
-    }
-
-    public static Condition is(Condition condition) {
-        return conditionIs(condition);
+        return Features.is(feature);
     }
 
     public static <S> Matcher<S> not(S value) {
@@ -246,15 +236,7 @@ public abstract class Expressive {
     }
     
     public static <S> Feature<S,Boolean> not(Feature<? super S, Boolean> feature) {
-        return featureNot(feature);
-    }
-
-    public static Sampled<Boolean> not(Sampled<Boolean> sampled) {
-        return sampledNot(sampled);
-    }
-
-    public static Condition not(Condition condition) {
-        return conditionNot(condition);
+        return Features.not(feature);
     }
 
     private static <S, V> Sampled<V> sampled(S subject, Feature<? super S, V> feature) {

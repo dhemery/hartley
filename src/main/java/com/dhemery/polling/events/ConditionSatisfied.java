@@ -7,9 +7,12 @@ import com.dhemery.polling.Condition;
  */
 public class ConditionSatisfied {
     private final Condition condition;
+    private final long failureCount;
 
-    public ConditionSatisfied(Condition condition) {
+    public ConditionSatisfied(Condition condition, long failureCount) {
         this.condition = condition;
+        this.failureCount = failureCount;
     }
     public Condition condition() { return condition; }
+    public long failureCount() { return failureCount; }
 }
