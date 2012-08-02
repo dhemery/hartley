@@ -3,6 +3,7 @@ package com.dhemery.polling;
 import com.dhemery.core.*;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 
 /**
@@ -221,4 +222,29 @@ public abstract class Expressive {
     private static <S, V> Sampler<V> sampler(S subject, Query<? super S, V> query) {
         return new SubjectQuerySampler<S,V>(subject, query);
     }
+
+    public static <S> Matcher<S> is(S value) {
+        return Matchers.is(value);
+    }
+
+    public static <S> Matcher<S> is(Matcher<S> matcher) {
+        return Matchers.is(matcher);
+    }
+
+    public static <S> Query<S, Boolean> is(Query<? super S, Boolean> query) {
+        return QueryIs.is(query);
+    }
+
+    public static <S> Matcher<S> not(S value) {
+        return Matchers.not(value);
+    }
+
+    public static <S> Matcher<S> not(Matcher<S> matcher) {
+        return Matchers.not(matcher);
+    }
+    
+    public static <S> Query<S,Boolean> not(Query<? super S, Boolean> query) {
+        return QueryNot.not(query);
+    }
+
 }
