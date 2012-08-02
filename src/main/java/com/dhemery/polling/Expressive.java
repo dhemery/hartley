@@ -6,6 +6,8 @@ import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 
+import static com.dhemery.polling.BooleanSugar.*;
+
 /**
  * Expressive methods to make assertions, wait for conditions,
  * and establish preconditions before taking an action.
@@ -44,7 +46,7 @@ public abstract class Expressive {
      * </p>
      * <pre>
      * {@code
-     * assertThat(theCheshireCat, eventually(), isGrinning());
+     * assertThat(theCheshireCat, eventually(), is(grinning()));
      * }
      * </pre>
      */
@@ -60,36 +62,36 @@ public abstract class Expressive {
         poller.poll(condition);
     }
 
-    public static <V> void assertThat(Sampler<V> sampler, Matcher<? super V> criteria) {
-        assertThat(condition(sampler, criteria));
+    public static <V> void assertThat(Sampled<V> sampled, Matcher<? super V> criteria) {
+        assertThat(sampleOf(sampled, criteria));
     }
 
-    public static void assertThat(Sampler<Boolean> sampler) {
-        assertThat(sampler, IS_QUIETLY_TRUE);
+    public static void assertThat(Sampled<Boolean> sampled) {
+        assertThat(sampled, IS_QUIETLY_TRUE);
     }
 
-    public static <V> void assertThat(Sampler<V> sampler, Poller poller, Matcher<? super V> criteria) {
-        assertThat(poller, condition(sampler, criteria));
+    public static <V> void assertThat(Sampled<V> sampled, Poller poller, Matcher<? super V> criteria) {
+        assertThat(poller, sampleOf(sampled, criteria));
     }
 
-    public static void assertThat(Poller poller, Sampler<Boolean> sampler) {
-        assertThat(sampler, poller, IS_QUIETLY_TRUE);
+    public static void assertThat(Poller poller, Sampled<Boolean> sampled) {
+        assertThat(sampled, poller, IS_QUIETLY_TRUE);
     }
 
-    public static <S,V> void assertThat(S subject, Query<? super S,V> query, Matcher<? super V> criteria) {
-        assertThat(sampler(subject, query), criteria);
+    public static <S,V> void assertThat(S subject, Feature<? super S,V> feature, Matcher<? super V> criteria) {
+        assertThat(sampled(subject, feature), criteria);
     }
 
-    public static <S> void assertThat(S subject, Query<? super S,Boolean> query) {
-        assertThat(subject, query, IS_QUIETLY_TRUE);
+    public static <S> void assertThat(S subject, Feature<? super S,Boolean> feature) {
+        assertThat(subject, feature, IS_QUIETLY_TRUE);
     }
 
-    public static <S,V> void assertThat(S subject, Query<? super S,V> query, Poller poller, Matcher<? super V> criteria) {
-        assertThat(sampler(subject, query), poller, criteria);
+    public static <S,V> void assertThat(S subject, Feature<? super S,V> feature, Poller poller, Matcher<? super V> criteria) {
+        assertThat(sampled(subject, feature), poller, criteria);
     }
 
-    public static <S> void assertThat(S subject, Poller poller, Query<? super S,Boolean> query) {
-        assertThat(subject, query, poller, IS_QUIETLY_TRUE);
+    public static <S> void assertThat(S subject, Poller poller, Feature<? super S,Boolean> feature) {
+        assertThat(subject, feature, poller, IS_QUIETLY_TRUE);
     }
 
     public static boolean the(Condition condition) {
@@ -105,40 +107,40 @@ public abstract class Expressive {
         }
     }
 
-    public static <V> boolean the(Sampler<V> sampler, Matcher<? super V> criteria) {
-        return the(condition(sampler, criteria));
+    public static <V> boolean the(Sampled<V> sampled, Matcher<? super V> criteria) {
+        return the(sampleOf(sampled, criteria));
     }
 
-    public static boolean the(Sampler<Boolean> sampler) {
-        return the(sampler, IS_QUIETLY_TRUE);
+    public static boolean the(Sampled<Boolean> sampled) {
+        return the(sampled, IS_QUIETLY_TRUE);
     }
 
-    public static <V> boolean the(Sampler<V> sampler, Poller poller, Matcher<? super V> criteria) {
-        return the(condition(sampler, criteria), poller);
+    public static <V> boolean the(Sampled<V> sampled, Poller poller, Matcher<? super V> criteria) {
+        return the(sampleOf(sampled, criteria), poller);
     }
 
-    public static boolean the(Sampler<Boolean> sampler, Poller poller) {
-        return the(sampler, poller, IS_QUIETLY_TRUE);
+    public static boolean the(Sampled<Boolean> sampled, Poller poller) {
+        return the(sampled, poller, IS_QUIETLY_TRUE);
     }
 
     public static <S> boolean the(S subject, Matcher<? super S> criteria) {
         return criteria.matches(subject);
     }
 
-    public static <S,V> boolean the(S subject, Query<? super S,V> query, Matcher<? super V> criteria) {
-        return the(sampler(subject, query), criteria);
+    public static <S,V> boolean the(S subject, Feature<? super S,V> feature, Matcher<? super V> criteria) {
+        return the(sampled(subject, feature), criteria);
     }
 
-    public static <S> boolean the(S subject, Query<? super S,Boolean> query) {
-        return the(subject, query, IS_QUIETLY_TRUE);
+    public static <S> boolean the(S subject, Feature<? super S,Boolean> feature) {
+        return the(subject, feature, IS_QUIETLY_TRUE);
     }
 
-    public static <S,V> boolean the(S subject, Query<? super S,V> query, Poller poller, Matcher<? super V> criteria) {
-        return the(sampler(subject, query), poller, criteria);
+    public static <S,V> boolean the(S subject, Feature<? super S,V> feature, Poller poller, Matcher<? super V> criteria) {
+        return the(sampled(subject, feature), poller, criteria);
     }
 
-    public static <S> boolean the(S subject, Poller poller, Query<? super S,Boolean> query) {
-        return the(subject, query, poller, IS_QUIETLY_TRUE);
+    public static <S> boolean the(S subject, Poller poller, Feature<? super S,Boolean> feature) {
+        return the(subject, feature, poller, IS_QUIETLY_TRUE);
     }
 
     public void waitUntil(Condition condition) {
@@ -149,78 +151,70 @@ public abstract class Expressive {
         poller.poll(condition);
     }
 
-    public <V> void waitUntil(Sampler<V> sampler, Matcher<? super V> criteria) {
-        waitUntil(sampler, eventually(), criteria);
+    public <V> void waitUntil(Sampled<V> sampled, Matcher<? super V> criteria) {
+        waitUntil(sampled, eventually(), criteria);
     }
 
-    public void waitUntil(Sampler<Boolean> sampler) {
-        waitUntil(sampler, IS_QUIETLY_TRUE);
+    public void waitUntil(Sampled<Boolean> sampled) {
+        waitUntil(sampled, IS_QUIETLY_TRUE);
     }
 
-    public static <V> void waitUntil(Sampler<V> sampler, Poller poller, Matcher<? super V> criteria) {
-        waitUntil(poller, condition(sampler, criteria));
+    public static <V> void waitUntil(Sampled<V> sampled, Poller poller, Matcher<? super V> criteria) {
+        waitUntil(poller, sampleOf(sampled, criteria));
     }
 
-    public static void waitUntil(Sampler<Boolean> sampler, Poller poller) {
-        waitUntil(sampler, poller, IS_QUIETLY_TRUE);
+    public static void waitUntil(Sampled<Boolean> sampled, Poller poller) {
+        waitUntil(sampled, poller, IS_QUIETLY_TRUE);
     }
 
-    public <S,V> void waitUntil(S subject, Query<? super S,V> query, Matcher<? super V> criteria) {
-        waitUntil(subject, query, eventually(), criteria);
+    public <S,V> void waitUntil(S subject, Feature<? super S,V> feature, Matcher<? super V> criteria) {
+        waitUntil(subject, feature, eventually(), criteria);
     }
 
-    public <S> void waitUntil(S subject, Query<? super S,Boolean> query) {
-        waitUntil(subject, query, IS_QUIETLY_TRUE);
+    public <S> void waitUntil(S subject, Feature<? super S,Boolean> feature) {
+        waitUntil(subject, feature, IS_QUIETLY_TRUE);
     }
 
-    public static <S,V> void waitUntil(S subject, Query<? super S,V> query, Poller poller, Matcher<? super V> criteria) {
-        waitUntil(sampler(subject, query), poller, criteria);
+    public static <S,V> void waitUntil(S subject, Feature<? super S,V> feature, Poller poller, Matcher<? super V> criteria) {
+        waitUntil(sampled(subject, feature), poller, criteria);
     }
 
-    public static <S> void waitUntil(S subject, Poller poller, Query<? super S,Boolean> query) {
-        waitUntil(subject, query, poller, IS_QUIETLY_TRUE);
+    public static <S> void waitUntil(S subject, Poller poller, Feature<? super S,Boolean> feature) {
+        waitUntil(subject, feature, poller, IS_QUIETLY_TRUE);
     }
 
-    public <S,V> S when(S subject, Query<? super S,V> query, Matcher<? super V> criteria) {
-        return when(subject, query, eventually(), criteria);
+    public <S,V> S when(S subject, Feature<? super S,V> feature, Matcher<? super V> criteria) {
+        return when(subject, feature, eventually(), criteria);
     }
 
-    public <S> S when(S subject, Query<? super S,Boolean> query) {
-        return when(subject, query, IS_QUIETLY_TRUE);
+    public <S> S when(S subject, Feature<? super S,Boolean> feature) {
+        return when(subject, feature, IS_QUIETLY_TRUE);
     }
 
-    public static <S,V> S when(S subject, Query<? super S, V> query, Poller poller, Matcher<? super V> criteria) {
-        waitUntil(subject, query, poller, criteria);
+    public static <S,V> S when(S subject, Feature<? super S, V> feature, Poller poller, Matcher<? super V> criteria) {
+        waitUntil(subject, feature, poller, criteria);
         return subject;
     }
 
-    public static <S> S when(S subject, Poller poller, Query<? super S,Boolean> query) {
-        return when(subject, query, poller, IS_QUIETLY_TRUE);
+    public static <S> S when(S subject, Poller poller, Feature<? super S,Boolean> feature) {
+        return when(subject, feature, poller, IS_QUIETLY_TRUE);
     }
 
-    public <S,V> void when(S subject, Query<? super S,V> query, Matcher<? super V> criteria, Action<? super S> action) {
-        when(subject, query, eventually(), criteria, action);
+    public <S,V> void when(S subject, Feature<? super S,V> feature, Matcher<? super V> criteria, Action<? super S> action) {
+        when(subject, feature, eventually(), criteria, action);
     }
 
-    public <S> void when(S subject, Query<? super S,Boolean> query, Action<? super S> action) {
-        when(subject, query, IS_QUIETLY_TRUE, action);
+    public <S> void when(S subject, Feature<? super S,Boolean> feature, Action<? super S> action) {
+        when(subject, feature, IS_QUIETLY_TRUE, action);
     }
 
-    public static <S,V> void when(S subject, Query<? super S,V> query, Poller poller, Matcher<? super V> criteria, Action<? super S> action) {
-        waitUntil(subject, query, poller, criteria);
+    public static <S,V> void when(S subject, Feature<? super S,V> feature, Poller poller, Matcher<? super V> criteria, Action<? super S> action) {
+        waitUntil(subject, feature, poller, criteria);
         action.executeOn(subject);
     }
 
-    public static <S> void when(S subject, Poller poller, Query<? super S,Boolean> query, Action<? super S> action) {
-        when(subject, query, poller, IS_QUIETLY_TRUE, action);
-    }
-
-    private static <V> Condition condition(Sampler<V> sampler, Matcher<? super V> criteria) {
-        return new SamplerMatcherCondition(sampler, criteria);
-    }
-
-    private static <S, V> Sampler<V> sampler(S subject, Query<? super S, V> query) {
-        return new SubjectQuerySampler<S,V>(subject, query);
+    public static <S> void when(S subject, Poller poller, Feature<? super S,Boolean> feature, Action<? super S> action) {
+        when(subject, feature, poller, IS_QUIETLY_TRUE, action);
     }
 
     public static <S> Matcher<S> is(S value) {
@@ -231,8 +225,16 @@ public abstract class Expressive {
         return Matchers.is(matcher);
     }
 
-    public static <S> Query<S, Boolean> is(Query<? super S, Boolean> query) {
-        return QueryIs.is(query);
+    public static <S> Feature<S, Boolean> is(Feature<? super S, Boolean> feature) {
+        return featureIs(feature);
+    }
+
+    public static Sampled<Boolean> is(Sampled<Boolean> sampled) {
+        return sampledIs(sampled);
+    }
+
+    public static Condition is(Condition condition) {
+        return conditionIs(condition);
     }
 
     public static <S> Matcher<S> not(S value) {
@@ -243,8 +245,23 @@ public abstract class Expressive {
         return Matchers.not(matcher);
     }
     
-    public static <S> Query<S,Boolean> not(Query<? super S, Boolean> query) {
-        return QueryNot.not(query);
+    public static <S> Feature<S,Boolean> not(Feature<? super S, Boolean> feature) {
+        return featureNot(feature);
     }
 
+    public static Sampled<Boolean> not(Sampled<Boolean> sampled) {
+        return sampledNot(sampled);
+    }
+
+    public static Condition not(Condition condition) {
+        return conditionNot(condition);
+    }
+
+    private static <S, V> Sampled<V> sampled(S subject, Feature<? super S, V> feature) {
+        return new FeatureSampler<S,V>(subject, feature);
+    }
+
+    private static <V> Condition sampleOf(Sampled<V> sampled, Matcher<? super V> criteria) {
+        return new SamplingCondition<V>(sampled, criteria);
+    }
 }

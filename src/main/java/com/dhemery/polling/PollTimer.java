@@ -10,8 +10,6 @@ package com.dhemery.polling;
  * 
  * A timer divides time into fixed-size polling intervals called ticks. Ticks
  * are reckoned from the instant the timer is started.
- * 
- * @author Dale Emery
  */
 public interface PollTimer {
 	/**

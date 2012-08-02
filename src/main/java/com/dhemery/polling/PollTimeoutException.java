@@ -1,8 +1,7 @@
 package com.dhemery.polling;
 
 /**
- * Indicates that the poll timer expired before the subject satisfied the criteria.
- * @author Dale Emery
+ * Indicates that the poll timer expired before the condition was satisfied.
  */
 public class PollTimeoutException extends RuntimeException {
     public PollTimeoutException(Condition condition) {

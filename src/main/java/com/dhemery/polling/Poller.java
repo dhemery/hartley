@@ -7,5 +7,8 @@ package com.dhemery.polling;
  * @author Dale Emery
  */
 public interface Poller {
+    /**
+     * Poll until the condition is satisfied.
+     */
     void poll(Condition condition);
 }

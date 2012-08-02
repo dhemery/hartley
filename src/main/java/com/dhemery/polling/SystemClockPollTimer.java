@@ -14,17 +14,14 @@ public class SystemClockPollTimer implements PollTimer {
     private long startTime;
 
 	/**
-	 * Create a timer with a tick size of one second.
-	 * 
-	 * @param durationInMilliseconds the poll duration.
+	 * Create a timer with the given duration and a tick size of one second.
 	 */
 	public SystemClockPollTimer(long durationInMilliseconds) {
 		this(durationInMilliseconds, ONE_SECOND);
 	}
 
 	/**
-	 * @param durationInMilliseconds the poll duration.
-	 * @param tickSizeInMilliseconds the tick size.
+     * Create a timer with the given duration and tick size.
 	 */
 	public SystemClockPollTimer(long durationInMilliseconds, long tickSizeInMilliseconds) {
 		this.durationInMilliseconds = durationInMilliseconds;
