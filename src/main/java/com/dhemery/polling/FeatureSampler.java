@@ -6,7 +6,7 @@ import org.hamcrest.SelfDescribing;
 import org.hamcrest.internal.SelfDescribingValue;
 
 /**
- * A sampler that samples a feature of a object.
+ * Samples a feature of a object.
  * @param <T> the type of object that has the feature
  * @param <V> the type of feature
  */

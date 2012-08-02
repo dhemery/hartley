@@ -3,6 +3,7 @@ package com.dhemery.polling;
 import org.hamcrest.SelfDescribing;
 import org.hamcrest.StringDescription;
 
+//todo: Do I need this? Could I simply use Supplier<V> instead?
 /**
  * Samples a variable and stores the sampled value.
  * @param <V> the type of value to sample
