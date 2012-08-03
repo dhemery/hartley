@@ -36,7 +36,7 @@ public class Features {
     }
 
     /**
-     * Decorate a boolean feature to negate its values.
+     * Decorate a boolean feature to yield its logical negation.
      * @param feature the feature whose values to negate
      * @param <S> the type of object that has the feature
      */

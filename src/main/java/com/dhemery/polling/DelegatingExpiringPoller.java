@@ -17,6 +17,7 @@ public class DelegatingExpiringPoller implements Poller {
 
     /**
      * Poll until the condition is satisfied or the ticker expires.
+     * @throws PollTimeoutException if the ticker expires before the condition is satisfied
      */
     @Override
     public void poll(Condition condition) {
