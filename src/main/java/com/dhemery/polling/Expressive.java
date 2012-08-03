@@ -208,7 +208,7 @@ public abstract class Expressive {
 
     public static <S,V> void when(S subject, Feature<? super S,V> feature, Poller poller, Matcher<? super V> criteria, Action<? super S> action) {
         waitUntil(subject, feature, poller, criteria);
-        action.executeOn(subject);
+        action.actOn(subject);
     }
 
     public static <S> void when(S subject, Poller poller, Feature<? super S,Boolean> feature, Action<? super S> action) {
