@@ -26,6 +26,7 @@ public class FeatureSampler<S, V> implements Sampler<V> {
 
     /**
      * Sample the feature of the object.
+     * @return the sample
      */
     @Override
     public void takeSample() {

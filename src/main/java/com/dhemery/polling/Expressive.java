@@ -1,26 +1,15 @@
 package com.dhemery.polling;
 
 import com.dhemery.core.*;
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
-import org.hamcrest.TypeSafeMatcher;
 
 /**
  * Expressive methods to make assertions, wait for conditions,
  * and establish preconditions before taking an action.
  */
 public abstract class Expressive {
-    private static final Matcher<Boolean> IS_QUIETLY_TRUE = new TypeSafeMatcher<Boolean>() {
-        @Override
-        protected boolean matchesSafely(Boolean value) {
-            return value;
-        }
-
-        @Override
-        public void describeTo(Description description) {}
-    };
-
+    private static final Matcher<Boolean> IS_QUIETLY_TRUE = new QuietlyTrue();
     private final Lazy<Poller> defaultPoller = Lazily.get(new Supplier<Poller>() {
         @Override
         public Poller get() {
@@ -153,11 +142,11 @@ public abstract class Expressive {
      * <pre>
      * {@code
      *
-     * Switch syncWithServer = ...;
-     * Feature<Switch,Position> position() { ... }
-     * Matcher<Position> off() { ... }
+     * TextField userNameField = ...;
+     * Feature<TextField,Color> textColor() { ... }
+     * Matcher<Color> blue() { ... }
      * ...
-     * assertThat(syncWithServer, position(), is(off()));
+     * assertThat(userNameField, textColor(), is(blue()));
      * }
      */
     public static <S,V> void assertThat(S subject, Feature<? super S,V> feature, Matcher<? super V> criteria) {
@@ -481,4 +470,5 @@ public abstract class Expressive {
     private static <V> Condition sampleOf(Sampler<V> variable, Matcher<? super V> criteria) {
         return new SamplingCondition<V>(variable, criteria);
     }
+
 }

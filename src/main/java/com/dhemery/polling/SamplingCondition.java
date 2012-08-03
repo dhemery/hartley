@@ -10,16 +10,16 @@ import org.hamcrest.StringDescription;
  * @param <V> the type of sampled variable
  */
 public class SamplingCondition<V> implements Condition {
-    private final Sampler<V> sampled;
+    private final Sampler<V> sampler;
     private final Matcher<? super V> criteria;
 
     /**
      * Create a condition that is satisfied when its sample of a variable satisfies some criteria.
-     * @param sampled the sampled that samples the value
+     * @param sampler the sampler that samples the value
      * @param criteria the criteria to satisfy
      */
-    public SamplingCondition(Sampler<V> sampled, Matcher<? super V> criteria) {
-        this.sampled = sampled;
+    public SamplingCondition(Sampler<V> sampler, Matcher<? super V> criteria) {
+        this.sampler = sampler;
         this.criteria = criteria;
     }
 
@@ -29,18 +29,18 @@ public class SamplingCondition<V> implements Condition {
      */
     @Override
     public boolean isSatisfied() {
-        sampled.takeSample();
-        return criteria.matches(sampled.sampledValue());
+        sampler.takeSample();
+        return criteria.matches(sampler.sampledValue());
     }
 
     @Override
     public void describeTo(Description description) {
-        description.appendDescriptionOf(sampled).appendText(" ").appendDescriptionOf(criteria);
+        description.appendDescriptionOf(sampler).appendText(" ").appendDescriptionOf(criteria);
     }
 
     @Override
     public void describeDissatisfactionTo(Description description) {
-        criteria.describeMismatch(sampled.sampledValue(), description);
+        criteria.describeMismatch(sampler.sampledValue(), description);
     }
 
     @Override
