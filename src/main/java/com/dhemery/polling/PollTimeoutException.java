@@ -1,7 +1,7 @@
 package com.dhemery.polling;
 
 /**
- * Indicates that the poll ticker expired before the condition was satisfied.
+ * Indicates that a poll's ticker expired before the polled condition was satisfied.
  */
 public class PollTimeoutException extends RuntimeException {
     public PollTimeoutException(Condition condition) {

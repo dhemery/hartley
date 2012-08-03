@@ -7,6 +7,8 @@ import org.hamcrest.StringDescription;
  * Asserts that a condition is satisfied.
  */
 public class ConditionAssert {
+    private ConditionAssert(){}
+
     /**
      * Assert that the condition is satisfied.
      * @throws AssertionError if the condition is not satisfied
