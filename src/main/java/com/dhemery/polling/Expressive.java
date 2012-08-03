@@ -39,12 +39,15 @@ public abstract class Expressive {
     protected abstract Poller defaultPoller();
 
     /**
-     * <p>Return the default poller.
-     * This method is named to read nicely in expressions:
-     * </p>
+     * Return the default poller.
+     * This method is named to read nicely in expressions.
+     * <p>Example:</p>
      * <pre>
      * {@code
-     * assertThat(theCheshireCat, eventually(), is(grinning()));
+     *
+     * View settingsView = ...;
+     * Feature<View,Boolean> visible() { ... }
+     * assertThat(settingsView, eventually(), is(visible()));
      * }
      * </pre>
      */
@@ -54,6 +57,15 @@ public abstract class Expressive {
 
     /**
      * Assert that the condition is true.
+     * <p>Example:</p>
+     * <pre>
+     * {@code
+     *
+     * Condition lifeIsButADream = ...;
+     * ...
+     * assertThat(lifeIsButADream);
+     * }
+     * </pre>
      */
     public static void assertThat(Condition condition) {
         ConditionAssert.assertThat(condition);
@@ -61,6 +73,15 @@ public abstract class Expressive {
 
     /**
      * Assert that the condition is satisfied during a poll.
+     * <p>Example:</p>
+     * <pre>
+     * {@code
+     *
+     * Poller withinTenSeconds = ...;
+     * Condition launchIsInProgress = ...;
+     * ...
+     * assertThat(withinTenSeconds, launchIsInProgress);
+     * }
      */
     public static void assertThat(Poller poller, Condition condition) {
         poller.poll(condition);
@@ -68,34 +89,76 @@ public abstract class Expressive {
 
     /**
      * Assert that a sample of the variable satisfies the criteria.
+     * <p>Example:</p>
+     * <pre>
+     * {@code
+     *
+     * Sampler<Integer> threadCount = ...;
+     * ...
+     * assertThat(threadCount, is(9));
+     * }
      */
-    public static <V> void assertThat(Sampled<V> variable, Matcher<? super V> criteria) {
+    public static <V> void assertThat(Sampler<V> variable, Matcher<? super V> criteria) {
         assertThat(sampleOf(variable, criteria));
     }
 
     /**
      * Assert that a sample of the variable is true.
+     * <p>Example:</p>
+     * <pre>
+     * {@code
+     *
+     * Sampler<Boolean> theresAFlyInMySoup = ...;
+     * ...
+     * assertThat(theresAFlyInMySoup);
+     * }
      */
-    public static void assertThat(Sampled<Boolean> variable) {
+    public static void assertThat(Sampler<Boolean> variable) {
         assertThat(variable, IS_QUIETLY_TRUE);
     }
 
     /**
      * Assert that a polled sample of the variable satisfies the criteria.
+     * <p>Example:</p>
+     * <pre>
+     * {@code
+     *
+     * Sampler<Integer> threadCount = ...;
+     * ...
+     * assertThat(threadCount, eventually(), is(9));
+     * }
      */
-    public static <V> void assertThat(Sampled<V> variable, Poller poller, Matcher<? super V> criteria) {
+    public static <V> void assertThat(Sampler<V> variable, Poller poller, Matcher<? super V> criteria) {
         assertThat(poller, sampleOf(variable, criteria));
     }
 
     /**
      * Assert that a polled sample of the variable is {@code true}.
+     * <p>Example:</p>
+     * <pre>
+     * {@code
+     *
+     * Sampler<Boolean> theresAFlyInMySoup = ...;
+     * ...
+     * assertThat(eventually(), theresAFlyInMySoup);
+     * }
      */
-    public static void assertThat(Poller poller, Sampled<Boolean> variable) {
+    public static void assertThat(Poller poller, Sampler<Boolean> variable) {
         assertThat(variable, poller, IS_QUIETLY_TRUE);
     }
 
     /**
      * Assert that a sample of the feature satisfies the criteria.
+     * <p>Example:</p>
+     * <pre>
+     * {@code
+     *
+     * Switch syncWithServer = ...;
+     * Feature<Switch,Position> position() { ... }
+     * Matcher<Position> off() { ... }
+     * ...
+     * assertThat(syncWithServer, position(), is(off()));
+     * }
      */
     public static <S,V> void assertThat(S subject, Feature<? super S,V> feature, Matcher<? super V> criteria) {
         assertThat(sampled(subject, feature), criteria);
@@ -103,6 +166,15 @@ public abstract class Expressive {
 
     /**
      * Assert that a sample of the feature is {@code true}.
+     * <p>Example:</p>
+     * <pre>
+     * {@code
+     *
+     * Page settingsPage = ...;
+     * Feature<Page,Boolean> displayed() { ... }
+     * ...
+     * assertThat(settingsPage, is(displayed()));
+     * }
      */
     public static <S> void assertThat(S subject, Feature<? super S,Boolean> feature) {
         assertThat(subject, feature, IS_QUIETLY_TRUE);
@@ -110,6 +182,16 @@ public abstract class Expressive {
 
     /**
      * Assert that a polled sample of the feature satisfies the criteria.
+     * <p>Example:</p>
+     * <pre>
+     * {@code
+     *
+     * Page searchResultsPage = ...;
+     * Feature<Page,Boolean> resultCount() { ... }
+     * Poller withinTenSeconds = ...;
+     * ...
+     * assertThat(searchResultsPage, resultCount(), withinTenSeconds, is(greaterThan(9)));
+     * }
      */
     public static <S,V> void assertThat(S subject, Feature<? super S,V> feature, Poller poller, Matcher<? super V> criteria) {
         assertThat(sampled(subject, feature), poller, criteria);
@@ -117,6 +199,15 @@ public abstract class Expressive {
 
     /**
      * Assert that a polled sample of the feature is {@code true}.
+     * <p>Example:</p>
+     * <pre>
+     * {@code
+     *
+     * Page settingsPage = ...;
+     * Feature<Page,Boolean> displayed() { ... }
+     * ...
+     * assertThat(settingsPage, eventually(), is(displayed()));
+     * }
      */
     public static <S> void assertThat(S subject, Poller poller, Feature<? super S,Boolean> feature) {
         assertThat(subject, feature, poller, IS_QUIETLY_TRUE);
@@ -144,28 +235,28 @@ public abstract class Expressive {
     /**
      * Report whether a sample of the variable satisfies the criteria.
      */
-    public static <V> boolean the(Sampled<V> variable, Matcher<? super V> criteria) {
+    public static <V> boolean the(Sampler<V> variable, Matcher<? super V> criteria) {
         return the(sampleOf(variable, criteria));
     }
 
     /**
      * Report whether a sample of the variable is {@code true}.
      */
-    public static boolean the(Sampled<Boolean> variable) {
+    public static boolean the(Sampler<Boolean> variable) {
         return the(variable, IS_QUIETLY_TRUE);
     }
 
     /**
      * Report whether a polled sample of the variable satisfies the criteria.
      */
-    public static <V> boolean the(Sampled<V> variable, Poller poller, Matcher<? super V> criteria) {
+    public static <V> boolean the(Sampler<V> variable, Poller poller, Matcher<? super V> criteria) {
         return the(sampleOf(variable, criteria), poller);
     }
 
     /**
      * Report whether a polled sample of the variable is {@code true}.
      */
-    public static boolean the(Sampled<Boolean> variable, Poller poller) {
+    public static boolean the(Sampler<Boolean> variable, Poller poller) {
         return the(variable, poller, IS_QUIETLY_TRUE);
     }
 
@@ -223,7 +314,7 @@ public abstract class Expressive {
      * Wait until a polled sample of the variable satisfies the criteria.
      * Uses the default poller.
      */
-    public <V> void waitUntil(Sampled<V> variable, Matcher<? super V> criteria) {
+    public <V> void waitUntil(Sampler<V> variable, Matcher<? super V> criteria) {
         waitUntil(variable, eventually(), criteria);
     }
 
@@ -231,21 +322,21 @@ public abstract class Expressive {
      * Wait until a polled sample of the variable is {@code true}.
      * Uses the default poller.
      */
-    public void waitUntil(Sampled<Boolean> variable) {
+    public void waitUntil(Sampler<Boolean> variable) {
         waitUntil(variable, IS_QUIETLY_TRUE);
     }
 
     /**
      * Wait until a polled sample of the variable satisfies the criteria.
      */
-    public static <V> void waitUntil(Sampled<V> variable, Poller poller, Matcher<? super V> criteria) {
+    public static <V> void waitUntil(Sampler<V> variable, Poller poller, Matcher<? super V> criteria) {
         waitUntil(poller, sampleOf(variable, criteria));
     }
 
     /**
      * Wait until a polled sample of the variable is [@code true).
      */
-    public static void waitUntil(Sampled<Boolean> variable, Poller poller) {
+    public static void waitUntil(Sampler<Boolean> variable, Poller poller) {
         waitUntil(variable, poller, IS_QUIETLY_TRUE);
     }
 
@@ -383,11 +474,11 @@ public abstract class Expressive {
         return Features.not(feature);
     }
 
-    private static <S, V> Sampled<V> sampled(S subject, Feature<? super S, V> feature) {
+    private static <S, V> Sampler<V> sampled(S subject, Feature<? super S, V> feature) {
         return new FeatureSampler<S,V>(subject, feature);
     }
 
-    private static <V> Condition sampleOf(Sampled<V> variable, Matcher<? super V> criteria) {
+    private static <V> Condition sampleOf(Sampler<V> variable, Matcher<? super V> criteria) {
         return new SamplingCondition<V>(variable, criteria);
     }
 }

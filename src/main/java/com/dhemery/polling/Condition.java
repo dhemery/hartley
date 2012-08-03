@@ -14,10 +14,7 @@ public interface Condition extends SelfDescribing {
     boolean isSatisfied();
 
     /**
-     * Describe the most recent dissatisfaction.
-     * This method should be called only when the most recent call to {@link #isSatisfied()} returned {@code false}.
-     * If the method is called when the condition is satisfied, the result is undefined.
-     * @param description the description to which to describe this condition
+     * Describe the condition when dissatisfied.
      */
     void describeDissatisfactionTo(Description description);
 }

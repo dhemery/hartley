@@ -1,41 +1,51 @@
 package com.dhemery.polling;
 
 import com.dhemery.core.Feature;
+import com.dhemery.core.Sampler;
 import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
 import org.hamcrest.internal.SelfDescribingValue;
 
 /**
- * Samples a feature of a object.
- * @param <T> the type of object that has the feature
+ * Samples a feature of an object and retains the sampled value;
+ * @param <S> the type of object that has the feature
  * @param <V> the type of feature
  */
-public class FeatureSampler<T, V> extends Sampled<V> {
-    private final T object;
-    private final Feature<? super T, V> feature;
+public class FeatureSampler<S, V> implements Sampler<V> {
+    private final S object;
+    private final Feature<? super S, V> feature;
+    private V sampledValue;
 
     /**
      * Create a sampler that samples the feature of the object.
-     * @param object a object that has the feature
-     * @param feature the feature to sample
      */
-    public FeatureSampler(T object, Feature<? super T, V> feature) {
+    public FeatureSampler(S object, Feature<? super S, V> feature) {
         this.object = object;
         this.feature = feature;
     }
 
+    /**
+     * Sample the feature of the object.
+     */
     @Override
-    protected V takeSample() {
-        return feature.of(object);
+    public void takeSample() {
+        sampledValue = feature.of(object);
+    }
+
+    @Override
+    public V sampledValue() {
+        return sampledValue;
     }
 
     @Override
     public void describeTo(Description description) {
-        description.appendDescriptionOf(selfDescribing(object)).appendText(" ").appendDescriptionOf(feature);
+        description.appendDescriptionOf(selfDescribing(object))
+                .appendText(" ")
+                .appendDescriptionOf(feature);
     }
 
-    private SelfDescribing selfDescribing(T subject) {
-        if(subject instanceof SelfDescribing) return (SelfDescribing) subject;
-        return new SelfDescribingValue<T>(subject);
+    private SelfDescribing selfDescribing(S object) {
+        if(object instanceof SelfDescribing) return (SelfDescribing) object;
+        return new SelfDescribingValue<S>(object);
     }
 }

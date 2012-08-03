@@ -1,5 +1,6 @@
 package com.dhemery.polling;
 
+import com.dhemery.core.Sampler;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
@@ -9,7 +10,7 @@ import org.hamcrest.StringDescription;
  * @param <V> the type of sampled variable
  */
 public class SamplingCondition<V> implements Condition {
-    private final Sampled<V> sampled;
+    private final Sampler<V> sampled;
     private final Matcher<? super V> criteria;
 
     /**
@@ -17,7 +18,7 @@ public class SamplingCondition<V> implements Condition {
      * @param sampled the sampled that samples the value
      * @param criteria the criteria to satisfy
      */
-    public SamplingCondition(Sampled<V> sampled, Matcher<? super V> criteria) {
+    public SamplingCondition(Sampler<V> sampled, Matcher<? super V> criteria) {
         this.sampled = sampled;
         this.criteria = criteria;
     }
@@ -28,8 +29,8 @@ public class SamplingCondition<V> implements Condition {
      */
     @Override
     public boolean isSatisfied() {
-        sampled.sample();
-        return criteria.matches(sampled.value());
+        sampled.takeSample();
+        return criteria.matches(sampled.sampledValue());
     }
 
     @Override
@@ -39,7 +40,7 @@ public class SamplingCondition<V> implements Condition {
 
     @Override
     public void describeDissatisfactionTo(Description description) {
-        criteria.describeMismatch(sampled.value(), description);
+        criteria.describeMismatch(sampled.sampledValue(), description);
     }
 
     @Override
