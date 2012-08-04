@@ -2,9 +2,10 @@ package com.dhemery.publishing.tests;
 
 import com.dhemery.publishing.Channel;
 import com.dhemery.publishing.MethodSubscriptionChannel;
-import com.dhemery.publishing.Subscribe;
-import com.dhemery.publishing.fixtures.Counter;
 import com.dhemery.publishing.fixtures.Publication1;
+import com.dhemery.publishing.fixtures.Subscriber;
+import com.dhemery.publishing.fixtures.SubscribesTo1;
+import com.dhemery.publishing.fixtures.SubscribesTo1Twice;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -21,79 +22,42 @@ public class AMethodSubscriptionChannel {
 
     @Test
     public void publishesToASubscriber() {
-        final Counter delivery = new Counter();
-        Publication1 publication1 = new Publication1();
-
-        Object subscribesTo1 = new Object(){
-            @Subscribe
-            public void subscribe(Publication1 publication) {
-                delivery.record();
-            }
-        };
+        Publication1 publication = new Publication1();
+        Subscriber subscribesTo1 = new SubscribesTo1("method1");
 
         channel.subscribe(subscribesTo1);
-        channel.publish(publication1);
+        channel.publish(publication);
 
-        assertThat(delivery.count, is(1));
+        assertThat(subscribesTo1.deliveriesOfType(publication.getClass()), is(1));
+        assertThat(subscribesTo1.deliveriesByMethod("method1"), is(1));
     }
 
     @Test
     public void publishesToAMultiplySubscribedSubscriber() {
         Publication1 publication1 = new Publication1();
-        final Counter deliveryByMethod1 = new Counter();
-        final Counter deliveryByMethod2 = new Counter();
-        final Counter deliveryOfPublication1 = new Counter();
-
-        Object subscribesTo1Twice = new Object() {
-            @Subscribe
-            public void method1(Publication1 publication) {
-                deliveryByMethod1.record();
-                deliveryOfPublication1.record();
-            }
-            @Subscribe
-            public void method2(Publication1 publication) {
-                deliveryByMethod2.record();
-                deliveryOfPublication1.record();
-            }
-        };
+        Subscriber subscribesTo1Twice = new SubscribesTo1Twice("method1", "method2");
 
         channel.subscribe(subscribesTo1Twice);
         channel.publish(publication1);
 
-        assertThat(deliveryByMethod1.count, is(1));
-        assertThat(deliveryByMethod2.count, is(1));
-        assertThat(deliveryOfPublication1.count, is(2));
+        assertThat(subscribesTo1Twice.deliveriesByMethod("method1"), is(1));
+        assertThat(subscribesTo1Twice.deliveriesByMethod("method2"), is(1));
+        assertThat(subscribesTo1Twice.deliveriesOfType(publication1.getClass()), is(2));
     }
 
     @Test
     public void publishesToMultipleSubscribersOfASinglePublication() {
         Publication1 publication1 = new Publication1();
-        final Counter deliveryToSubscriber1 = new Counter();
-        final Counter deliveryToSubscriber2 = new Counter();
-        final Counter deliveryOfPublication1 = new Counter();
-
-        final Object subscriber1 = new Object(){
-            @Subscribe
-            public void receive(Publication1 publication) {
-                deliveryToSubscriber1.record();
-                deliveryOfPublication1.record();
-            }
-        };
-
-        final Object subscriber2 = new Object(){
-            @Subscribe
-            public void receive(Publication1 publication) {
-                deliveryToSubscriber2.record();
-                deliveryOfPublication1.record();
-            }
-        };
+        Subscriber subscriber1 = new SubscribesTo1("method of subscriber 1");
+        Subscriber subscriber2 = new SubscribesTo1("method of subscriber 2");
 
         channel.subscribe(subscriber1);
         channel.subscribe(subscriber2);
         channel.publish(publication1);
 
-        assertThat(deliveryToSubscriber1.count, is(1));
-        assertThat(deliveryToSubscriber2.count, is(1));
-        assertThat(deliveryOfPublication1.count, is(2));
+        assertThat(subscriber1.deliveriesOfType(publication1.getClass()), is(1));
+        assertThat(subscriber1.deliveriesByMethod("method of subscriber 1"), is(1));
+        assertThat(subscriber2.deliveriesOfType(publication1.getClass()), is(1));
+        assertThat(subscriber2.deliveriesByMethod("method of subscriber 2"), is(1));
     }
 }

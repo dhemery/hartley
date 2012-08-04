@@ -10,7 +10,7 @@ import java.util.Set;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class SubscriberInspectorTest {
+public class ASubscriberInspector {
     private final Object subscriberWithNoSubscriptions = new Object(){};
     private final Object subscriberWithOneSubscription = new Object(){
         @Subscribe

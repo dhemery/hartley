@@ -11,7 +11,7 @@ import java.lang.reflect.Method;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 
-public class SubscriptionMethodFilterTest {
+public class ASubscriptionMethodFilter {
     private final Object subscriber = new Object(){
         @Subscribe
         public void validSubscription(Object o) {}
