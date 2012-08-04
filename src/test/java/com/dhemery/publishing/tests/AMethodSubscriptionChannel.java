@@ -1,14 +1,17 @@
-package com.dhemery.publishing;
+package com.dhemery.publishing.tests;
 
-import com.dhemery.publishing.helpers.Counter;
-import com.dhemery.publishing.helpers.Publication1;
+import com.dhemery.publishing.Channel;
+import com.dhemery.publishing.MethodSubscriptionChannel;
+import com.dhemery.publishing.Subscribe;
+import com.dhemery.publishing.fixtures.Counter;
+import com.dhemery.publishing.fixtures.Publication1;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.is;
 
-public class MethodSubscriptionChannelTest {
+public class AMethodSubscriptionChannel {
     private Channel channel;
 
     @Before
@@ -31,7 +34,7 @@ public class MethodSubscriptionChannelTest {
         channel.subscribe(subscribesTo1);
         channel.publish(publication1);
 
-        assertThat(delivery.count, equalTo(1));
+        assertThat(delivery.count, is(1));
     }
 
     @Test
@@ -57,9 +60,9 @@ public class MethodSubscriptionChannelTest {
         channel.subscribe(subscribesTo1Twice);
         channel.publish(publication1);
 
-        assertThat(deliveryByMethod1.count, equalTo(1));
-        assertThat(deliveryByMethod2.count, equalTo(1));
-        assertThat(deliveryOfPublication1.count, equalTo(2));
+        assertThat(deliveryByMethod1.count, is(1));
+        assertThat(deliveryByMethod2.count, is(1));
+        assertThat(deliveryOfPublication1.count, is(2));
     }
 
     @Test
@@ -89,8 +92,8 @@ public class MethodSubscriptionChannelTest {
         channel.subscribe(subscriber2);
         channel.publish(publication1);
 
-        assertThat(deliveryToSubscriber1.count, equalTo(1));
-        assertThat(deliveryToSubscriber2.count, equalTo(1));
-        assertThat(deliveryOfPublication1.count, equalTo(2));
+        assertThat(deliveryToSubscriber1.count, is(1));
+        assertThat(deliveryToSubscriber2.count, is(1));
+        assertThat(deliveryOfPublication1.count, is(2));
     }
 }

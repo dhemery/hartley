@@ -1,4 +1,4 @@
-package com.dhemery.publishing;
+package com.dhemery.publishing.tests;
 
 import org.junit.Test;
 

@@ -26,4 +26,12 @@ public class MethodSubscription implements Subscription {
         } catch (InvocationTargetException ignore) {
         }
     }
+
+    @Override
+    public String toString() {
+        return "MethodSubscription{" +
+                "subscriber=" + subscriber +
+                ", method=" + method +
+                '}';
+    }
 }

@@ -1,4 +1,4 @@
-package com.dhemery.publishing.helpers;
+package com.dhemery.publishing.fixtures;
 
 public class Counter {
     public int count;
