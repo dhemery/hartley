@@ -15,7 +15,8 @@ public class ASubscriptionMethodFilter {
     private final Object subscriber = new Object(){
         @Subscribe
         public void validSubscription(Object o) {}
-        public void methodNotAnnotatedAsSubscription(Object o) {}
+        @SuppressWarnings("unused")
+		public void methodNotAnnotatedAsSubscription(Object o) {}
         @Subscribe
         private void privateMethod(Object o) {}
         @Subscribe

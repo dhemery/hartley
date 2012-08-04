@@ -33,7 +33,8 @@ public class ASubscriberInspector {
     private final Object subscriberWithSubscriptionAndAnotherMethod = new Object(){
         @Subscribe
         public void subscription(Object o) {}
-        public void notASubscription(Object o) {}
+        @SuppressWarnings("unused")
+		public void notASubscription(Object o) {}
     };
     private final SubscriberInspector subscriberInspector = new SubscriberInspector();
 

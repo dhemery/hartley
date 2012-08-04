@@ -16,7 +16,6 @@ public class ScriptableApplication implements OsxApplication {
     private static final String END_TELL = "end tell";
     private static final String TELL_MENU_ITEM_OF_MENU = "tell " + MENU_ITEM_OF_MENU;
     private static final String TELL_MENU_BAR_OF_PROCESS = "tell menu bar of process \"%s\"";
-    private static final String STROKE_KEY_WITH_METAKEYS = TELL_SYSTEM_EVENTS + " to keystroke \"%s\" using {%s}";
 
     private final String activateApplication;
     private final String tellMenuBar;
