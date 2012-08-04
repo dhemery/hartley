@@ -10,7 +10,7 @@ import java.util.Set;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
-public class SubscriptionRegistryTest {
+public class ASubscriptionRegistry {
     private class Publication1{}
     private class Publication2{}
 
