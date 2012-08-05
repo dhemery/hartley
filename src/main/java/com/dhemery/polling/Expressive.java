@@ -4,12 +4,13 @@ import com.dhemery.core.*;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
 
+import static com.dhemery.polling.QuietlyTrue.isQuietlyTrue;
+
 /**
  * Expressive methods to make assertions, wait for conditions,
  * and establish preconditions before taking an action.
  */
 public abstract class Expressive {
-    private static final Matcher<Boolean> IS_QUIETLY_TRUE = new QuietlyTrue();
     private final Lazy<Poller> defaultPoller = Lazily.get(new Supplier<Poller>() {
         @Override
         public Poller get() {
@@ -103,7 +104,7 @@ public abstract class Expressive {
      * }
      */
     public static void assertThat(Sampler<Boolean> variable) {
-        assertThat(variable, IS_QUIETLY_TRUE);
+        assertThat(variable, isQuietlyTrue());
     }
 
     /**
@@ -133,7 +134,7 @@ public abstract class Expressive {
      * }
      */
     public static void assertThat(Poller poller, Sampler<Boolean> variable) {
-        assertThat(variable, poller, IS_QUIETLY_TRUE);
+        assertThat(variable, poller, isQuietlyTrue());
     }
 
     /**
@@ -166,7 +167,7 @@ public abstract class Expressive {
      * }
      */
     public static <S> void assertThat(S subject, Feature<? super S,Boolean> feature) {
-        assertThat(subject, feature, IS_QUIETLY_TRUE);
+        assertThat(subject, feature, isQuietlyTrue());
     }
 
     /**
@@ -199,7 +200,7 @@ public abstract class Expressive {
      * }
      */
     public static <S> void assertThat(S subject, Poller poller, Feature<? super S,Boolean> feature) {
-        assertThat(subject, feature, poller, IS_QUIETLY_TRUE);
+        assertThat(subject, feature, poller, isQuietlyTrue());
     }
 
     /**
@@ -232,7 +233,7 @@ public abstract class Expressive {
      * Report whether a sample of the variable is {@code true}.
      */
     public static boolean the(Sampler<Boolean> variable) {
-        return the(variable, IS_QUIETLY_TRUE);
+        return the(variable, isQuietlyTrue());
     }
 
     /**
@@ -246,7 +247,7 @@ public abstract class Expressive {
      * Report whether a polled sample of the variable is {@code true}.
      */
     public static boolean the(Sampler<Boolean> variable, Poller poller) {
-        return the(variable, poller, IS_QUIETLY_TRUE);
+        return the(variable, poller, isQuietlyTrue());
     }
 
     /**
@@ -267,7 +268,7 @@ public abstract class Expressive {
      * Report whether a sample of the feature is {@code true}.
      */
     public static <S> boolean the(S subject, Feature<? super S,Boolean> feature) {
-        return the(subject, feature, IS_QUIETLY_TRUE);
+        return the(subject, feature, isQuietlyTrue());
     }
 
     /**
@@ -281,7 +282,7 @@ public abstract class Expressive {
      * Report whether a polled sample of the feature is {@code true}.
      */
     public static <S> boolean the(S subject, Poller poller, Feature<? super S,Boolean> feature) {
-        return the(subject, feature, poller, IS_QUIETLY_TRUE);
+        return the(subject, feature, poller, isQuietlyTrue());
     }
 
     /**
@@ -312,7 +313,7 @@ public abstract class Expressive {
      * Uses the default poller.
      */
     public void waitUntil(Sampler<Boolean> variable) {
-        waitUntil(variable, IS_QUIETLY_TRUE);
+        waitUntil(variable, isQuietlyTrue());
     }
 
     /**
@@ -326,7 +327,7 @@ public abstract class Expressive {
      * Wait until a polled sample of the variable is [@code true).
      */
     public static void waitUntil(Sampler<Boolean> variable, Poller poller) {
-        waitUntil(variable, poller, IS_QUIETLY_TRUE);
+        waitUntil(variable, poller, isQuietlyTrue());
     }
 
     /**
@@ -342,7 +343,7 @@ public abstract class Expressive {
      * Uses the default poller.
      */
     public <S> void waitUntil(S subject, Feature<? super S,Boolean> feature) {
-        waitUntil(subject, feature, IS_QUIETLY_TRUE);
+        waitUntil(subject, feature, isQuietlyTrue());
     }
 
     /**
@@ -356,7 +357,7 @@ public abstract class Expressive {
      * Wait until a polled sample of the feature is {@code true}.
      */
     public static <S> void waitUntil(S subject, Poller poller, Feature<? super S,Boolean> feature) {
-        waitUntil(subject, feature, poller, IS_QUIETLY_TRUE);
+        waitUntil(subject, feature, poller, isQuietlyTrue());
     }
 
     /**
@@ -372,7 +373,7 @@ public abstract class Expressive {
      * Uses the default poller.
      */
     public <S> S when(S subject, Feature<? super S,Boolean> feature) {
-        return when(subject, feature, IS_QUIETLY_TRUE);
+        return when(subject, feature, isQuietlyTrue());
     }
 
     /**
@@ -387,7 +388,7 @@ public abstract class Expressive {
      * Return the subject when a polled sample of the feature is {@code true}.
      */
     public static <S> S when(S subject, Poller poller, Feature<? super S,Boolean> feature) {
-        return when(subject, feature, poller, IS_QUIETLY_TRUE);
+        return when(subject, feature, poller, isQuietlyTrue());
     }
 
     /**
@@ -403,7 +404,7 @@ public abstract class Expressive {
      * Uses the default poller.
      */
     public <S> void when(S subject, Feature<? super S,Boolean> feature, Action<? super S> action) {
-        when(subject, feature, IS_QUIETLY_TRUE, action);
+        when(subject, feature, isQuietlyTrue(), action);
     }
 
     /**
@@ -418,7 +419,7 @@ public abstract class Expressive {
      * Act on the subject when a polled sample of the feature is {@code true}.
      */
     public static <S> void when(S subject, Poller poller, Feature<? super S,Boolean> feature, Action<? super S> action) {
-        when(subject, feature, poller, IS_QUIETLY_TRUE, action);
+        when(subject, feature, poller, isQuietlyTrue(), action);
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.dhemery.polling;
 
 import org.hamcrest.Description;
+import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
 
 /**
@@ -10,6 +11,8 @@ import org.hamcrest.TypeSafeMatcher;
  * for {@link Expressive} boolean features and samplers.
  */
 class QuietlyTrue extends TypeSafeMatcher<Boolean> {
+    private static final Matcher<Boolean> quietlyTrue = new QuietlyTrue();
+
     /**
      * Report whether the value is true.
      */
@@ -23,4 +26,8 @@ class QuietlyTrue extends TypeSafeMatcher<Boolean> {
      */
     @Override
     public void describeTo(Description description) {}
+
+    public static Matcher<Boolean> isQuietlyTrue() {
+        return quietlyTrue;
+    }
 }
