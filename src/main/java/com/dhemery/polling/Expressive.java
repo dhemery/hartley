@@ -176,7 +176,7 @@ public class Expressive {
      *
      * Page searchResultsPage = ...;
      * Feature<Page,Boolean> resultCount() { ... }
-     * Poller withinTenSeconds = ...;
+     * Ticker withinTenSeconds = ...;
      * ...
      * assertThat(searchResultsPage, resultCount(), withinTenSeconds, is(greaterThan(9)));
      * }

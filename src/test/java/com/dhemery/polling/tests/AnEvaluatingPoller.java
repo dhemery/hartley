@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 @RunWith(JMock.class)
-public class ADelegatingExpiringPoller {
+public class AnEvaluatingPoller {
     Mockery context  = new Mockery();
     @Mock Ticker ticker;
     @Mock PollEvaluator evaluator;
@@ -22,7 +22,7 @@ public class ADelegatingExpiringPoller {
 
     @Before
     public void setup() {
-        poller = new DelegatingExpiringPoller(evaluator);
+        poller = new EvaluatingPoller(evaluator);
     }
 
     @Test
@@ -33,7 +33,6 @@ public class ADelegatingExpiringPoller {
 
             oneOf(evaluator).evaluate(with(condition), with(any(Long.class)));
                 will(returnValue(true));
-
         }});
 
         poller.poll(ticker, condition);

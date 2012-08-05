@@ -3,13 +3,13 @@ package com.dhemery.polling;
 /**
  * An expiring poller that delegates evaluation to an evaluator.
  */
-public class DelegatingExpiringPoller implements Poller {
+public class EvaluatingPoller implements Poller {
     private final PollEvaluator evaluator;
 
     /**
      * Create an expiring poller that delegates evaluation to the evaluator.
      */
-    public DelegatingExpiringPoller(PollEvaluator evaluator) {
+    public EvaluatingPoller(PollEvaluator evaluator) {
         this.evaluator = evaluator;
     }
 
