@@ -4,14 +4,12 @@ package com.dhemery.polling;
  * An expiring poller that delegates evaluation to an evaluator.
  */
 public class DelegatingExpiringPoller implements Poller {
-    private final ExpiringTicker ticker;
     private final PollEvaluator evaluator;
 
     /**
      * Create an expiring poller that delegates evaluation to the evaluator.
      */
-    public DelegatingExpiringPoller(ExpiringTicker ticker, PollEvaluator evaluator) {
-        this.ticker = ticker;
+    public DelegatingExpiringPoller(PollEvaluator evaluator) {
         this.evaluator = evaluator;
     }
 
@@ -20,7 +18,7 @@ public class DelegatingExpiringPoller implements Poller {
      * @throws PollTimeoutException if the ticker expires before the condition is satisfied
      */
     @Override
-    public void poll(Condition condition) {
+    public void poll(Ticker ticker, Condition condition) {
         ticker.start();
         int failureCount = 0;
         while (!ticker.isExpired()) {

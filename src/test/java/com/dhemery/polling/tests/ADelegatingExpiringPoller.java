@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 @RunWith(JMock.class)
 public class ADelegatingExpiringPoller {
     Mockery context  = new Mockery();
-    @Mock ExpiringTicker ticker;
+    @Mock Ticker ticker;
     @Mock PollEvaluator evaluator;
     @Mock Condition condition;
     @Auto Sequence polling;
@@ -22,7 +22,7 @@ public class ADelegatingExpiringPoller {
 
     @Before
     public void setup() {
-        poller = new DelegatingExpiringPoller(ticker, evaluator);
+        poller = new DelegatingExpiringPoller(evaluator);
     }
 
     @Test
@@ -36,7 +36,7 @@ public class ADelegatingExpiringPoller {
 
         }});
 
-        poller.poll(condition);
+        poller.poll(ticker, condition);
     }
 
     @Test
@@ -53,7 +53,7 @@ public class ADelegatingExpiringPoller {
                 inSequence(polling);
         }});
 
-        poller.poll(condition);
+        poller.poll(ticker, condition);
     }
 
     @Test(expected=PollTimeoutException.class)
@@ -63,7 +63,7 @@ public class ADelegatingExpiringPoller {
             oneOf(ticker).isExpired(); will(returnValue(true));
         }});
 
-        poller.poll(condition);
+        poller.poll(ticker, condition);
     }
 
     @Test(expected=PollTimeoutException.class)
@@ -81,7 +81,7 @@ public class ADelegatingExpiringPoller {
                 will(returnValue(true));
         }});
 
-        poller.poll(condition);
+        poller.poll(ticker, condition);
     }
 
     @Test
@@ -98,6 +98,6 @@ public class ADelegatingExpiringPoller {
             oneOf(evaluator).evaluate(condition, 5); inSequence(polling); will(returnValue(true));
         }});
 
-        poller.poll(condition);
+        poller.poll(ticker, condition);
     }
 }

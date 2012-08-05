@@ -8,5 +8,5 @@ public interface Poller {
     /**
      * Poll until the condition is satisfied.
      */
-    void poll(Condition condition);
+    void poll(Ticker ticker, Condition condition);
 }

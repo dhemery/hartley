@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
  * it will continue to tick when requested.
  * </p>
  */
-public class ExpiringSystemClockTicker implements ExpiringTicker {
+public class SystemClockTicker implements Ticker {
 	private static final long ONE_SECOND = 1000;
 	private final long durationInMilliseconds;
 	private final long tickSizeInMilliseconds;
@@ -24,14 +24,14 @@ public class ExpiringSystemClockTicker implements ExpiringTicker {
 	/**
 	 * Create an expiring ticker with the given duration and a tick size of one second.
 	 */
-	public ExpiringSystemClockTicker(long durationInMilliseconds) {
+	public SystemClockTicker(long durationInMilliseconds) {
 		this(durationInMilliseconds, ONE_SECOND);
 	}
 
 	/**
      * Create an expiring ticker with the given duration and tick size.
 	 */
-	public ExpiringSystemClockTicker(long durationInMilliseconds, long tickSizeInMilliseconds) {
+	public SystemClockTicker(long durationInMilliseconds, long tickSizeInMilliseconds) {
 		this.durationInMilliseconds = durationInMilliseconds;
 		this.tickSizeInMilliseconds = tickSizeInMilliseconds;
 	}

@@ -10,26 +10,24 @@ import static com.dhemery.polling.QuietlyTrue.isQuietlyTrue;
  * Expressive methods to make assertions, wait for conditions,
  * and establish preconditions before taking an action.
  */
-public abstract class Expressive {
-    private final Lazy<Poller> defaultPoller = Lazily.get(new Supplier<Poller>() {
-        @Override
-        public Poller get() {
-            return defaultPoller();
-        }
-    });
+public class Expressive {
+    private final Poller poller;
+    private final Ticker defaultTicker;
+
+    protected Expressive(Poller poller, Ticker defaultTicker) {
+        this.poller = poller;
+        this.defaultTicker = defaultTicker;
+    }
 
     /**
-     * Implement this method
-     * to deliver the default {@link Poller}
-     * for use in expressions.
-     * {@code Expressive} will call {@code defaultPoller()}
-     * at most one time.
-     * @return the default poller.
+     * Return the poller.
      */
-    protected abstract Poller defaultPoller();
+    protected Poller poller() {
+        return poller;
+    }
 
     /**
-     * Return the default poller.
+     * Return the default ticker.
      * This method is named to read nicely in expressions.
      * <p>Example:</p>
      * <pre>
@@ -41,8 +39,8 @@ public abstract class Expressive {
      * }
      * </pre>
      */
-    protected Poller eventually() {
-        return defaultPoller.get();
+    protected Ticker eventually() {
+        return defaultTicker;
     }
 
     /**
@@ -67,14 +65,14 @@ public abstract class Expressive {
      * <pre>
      * {@code
      *
-     * Poller withinTenSeconds = ...;
+     * Ticker withinTenSeconds = ...;
      * Condition launchIsInProgress = ...;
      * ...
      * assertThat(withinTenSeconds, launchIsInProgress);
      * }
      */
-    public static void assertThat(Poller poller, Condition condition) {
-        poller.poll(condition);
+    public void assertThat(Ticker ticker, Condition condition) {
+        poller.poll(ticker, condition);
     }
 
     /**
@@ -118,8 +116,8 @@ public abstract class Expressive {
      * assertThat(threadCount, eventually(), is(9));
      * }
      */
-    public static <V> void assertThat(Sampler<V> variable, Poller poller, Matcher<? super V> criteria) {
-        assertThat(poller, sampleOf(variable, criteria));
+    public <V> void assertThat(Sampler<V> variable, Ticker ticker, Matcher<? super V> criteria) {
+        assertThat(ticker, sampleOf(variable, criteria));
     }
 
     /**
@@ -133,8 +131,8 @@ public abstract class Expressive {
      * assertThat(eventually(), theresAFlyInMySoup);
      * }
      */
-    public static void assertThat(Poller poller, Sampler<Boolean> variable) {
-        assertThat(variable, poller, isQuietlyTrue());
+    public void assertThat(Ticker ticker, Sampler<Boolean> variable) {
+        assertThat(variable, ticker, isQuietlyTrue());
     }
 
     /**
@@ -183,8 +181,8 @@ public abstract class Expressive {
      * assertThat(searchResultsPage, resultCount(), withinTenSeconds, is(greaterThan(9)));
      * }
      */
-    public static <S,V> void assertThat(S subject, Feature<? super S,V> feature, Poller poller, Matcher<? super V> criteria) {
-        assertThat(sampled(subject, feature), poller, criteria);
+    public <S,V> void assertThat(S subject, Feature<? super S,V> feature, Ticker ticker, Matcher<? super V> criteria) {
+        assertThat(sampled(subject, feature), ticker, criteria);
     }
 
     /**
@@ -199,8 +197,8 @@ public abstract class Expressive {
      * assertThat(settingsPage, eventually(), is(displayed()));
      * }
      */
-    public static <S> void assertThat(S subject, Poller poller, Feature<? super S,Boolean> feature) {
-        assertThat(subject, feature, poller, isQuietlyTrue());
+    public <S> void assertThat(S subject, Ticker ticker, Feature<? super S,Boolean> feature) {
+        assertThat(subject, feature, ticker, isQuietlyTrue());
     }
 
     /**
@@ -213,9 +211,9 @@ public abstract class Expressive {
     /**
      * Report whether the condition is satisfied during a poll.
      */
-    public static boolean the(Condition condition, Poller poller) {
+    public boolean the(Condition condition, Ticker ticker) {
         try {
-            poller.poll(condition);
+            poller.poll(ticker, condition);
             return true;
         } catch (PollTimeoutException ignored) {
             return false;
@@ -239,15 +237,15 @@ public abstract class Expressive {
     /**
      * Report whether a polled sample of the variable satisfies the criteria.
      */
-    public static <V> boolean the(Sampler<V> variable, Poller poller, Matcher<? super V> criteria) {
-        return the(sampleOf(variable, criteria), poller);
+    public <V> boolean the(Sampler<V> variable, Ticker ticker, Matcher<? super V> criteria) {
+        return the(sampleOf(variable, criteria), ticker);
     }
 
     /**
      * Report whether a polled sample of the variable is {@code true}.
      */
-    public static boolean the(Sampler<Boolean> variable, Poller poller) {
-        return the(variable, poller, isQuietlyTrue());
+    public boolean the(Sampler<Boolean> variable, Ticker ticker) {
+        return the(variable, ticker, isQuietlyTrue());
     }
 
     /**
@@ -274,15 +272,15 @@ public abstract class Expressive {
     /**
      * Report whether a polled sample of the feature satisfies the criteria.
      */
-    public static <S,V> boolean the(S subject, Feature<? super S,V> feature, Poller poller, Matcher<? super V> criteria) {
-        return the(sampled(subject, feature), poller, criteria);
+    public <S,V> boolean the(S subject, Feature<? super S,V> feature, Ticker ticker, Matcher<? super V> criteria) {
+        return the(sampled(subject, feature), ticker, criteria);
     }
 
     /**
      * Report whether a polled sample of the feature is {@code true}.
      */
-    public static <S> boolean the(S subject, Poller poller, Feature<? super S,Boolean> feature) {
-        return the(subject, feature, poller, isQuietlyTrue());
+    public <S> boolean the(S subject, Ticker ticker, Feature<? super S,Boolean> feature) {
+        return the(subject, feature, ticker, isQuietlyTrue());
     }
 
     /**
@@ -296,8 +294,8 @@ public abstract class Expressive {
     /**
      * Wait until the polled condition is satisfied.
      */
-    public static void waitUntil(Poller poller, Condition condition) {
-        poller.poll(condition);
+    public void waitUntil(Ticker ticker, Condition condition) {
+        poller.poll(ticker, condition);
     }
 
     /**
@@ -319,15 +317,15 @@ public abstract class Expressive {
     /**
      * Wait until a polled sample of the variable satisfies the criteria.
      */
-    public static <V> void waitUntil(Sampler<V> variable, Poller poller, Matcher<? super V> criteria) {
-        waitUntil(poller, sampleOf(variable, criteria));
+    public <V> void waitUntil(Sampler<V> variable, Ticker ticker, Matcher<? super V> criteria) {
+        waitUntil(ticker, sampleOf(variable, criteria));
     }
 
     /**
      * Wait until a polled sample of the variable is [@code true).
      */
-    public static void waitUntil(Sampler<Boolean> variable, Poller poller) {
-        waitUntil(variable, poller, isQuietlyTrue());
+    public void waitUntil(Sampler<Boolean> variable, Ticker ticker) {
+        waitUntil(variable, ticker, isQuietlyTrue());
     }
 
     /**
@@ -349,15 +347,15 @@ public abstract class Expressive {
     /**
      * Wait until a polled sample of the feature satisfies the criteria.
      */
-    public static <S,V> void waitUntil(S subject, Feature<? super S,V> feature, Poller poller, Matcher<? super V> criteria) {
-        waitUntil(sampled(subject, feature), poller, criteria);
+    public <S,V> void waitUntil(S subject, Feature<? super S,V> feature, Ticker ticker, Matcher<? super V> criteria) {
+        waitUntil(sampled(subject, feature), ticker, criteria);
     }
 
     /**
      * Wait until a polled sample of the feature is {@code true}.
      */
-    public static <S> void waitUntil(S subject, Poller poller, Feature<? super S,Boolean> feature) {
-        waitUntil(subject, feature, poller, isQuietlyTrue());
+    public <S> void waitUntil(S subject, Ticker ticker, Feature<? super S,Boolean> feature) {
+        waitUntil(subject, feature, ticker, isQuietlyTrue());
     }
 
     /**
@@ -379,16 +377,16 @@ public abstract class Expressive {
     /**
      * Return the subject when a polled sample of the feature satisfies the criteria.
      */
-    public static <S,V> S when(S subject, Feature<? super S, V> feature, Poller poller, Matcher<? super V> criteria) {
-        waitUntil(subject, feature, poller, criteria);
+    public <S,V> S when(S subject, Feature<? super S, V> feature, Ticker ticker, Matcher<? super V> criteria) {
+        waitUntil(subject, feature, ticker, criteria);
         return subject;
     }
 
     /**
      * Return the subject when a polled sample of the feature is {@code true}.
      */
-    public static <S> S when(S subject, Poller poller, Feature<? super S,Boolean> feature) {
-        return when(subject, feature, poller, isQuietlyTrue());
+    public <S> S when(S subject, Ticker ticker, Feature<? super S,Boolean> feature) {
+        return when(subject, feature, ticker, isQuietlyTrue());
     }
 
     /**
@@ -410,16 +408,16 @@ public abstract class Expressive {
     /**
      * Act on the subject when a polled sample of the feature satisfies the criteria.
      */
-    public static <S,V> void when(S subject, Feature<? super S,V> feature, Poller poller, Matcher<? super V> criteria, Action<? super S> action) {
-        waitUntil(subject, feature, poller, criteria);
+    public <S,V> void when(S subject, Feature<? super S,V> feature, Ticker ticker, Matcher<? super V> criteria, Action<? super S> action) {
+        waitUntil(subject, feature, ticker, criteria);
         action.actOn(subject);
     }
 
     /**
      * Act on the subject when a polled sample of the feature is {@code true}.
      */
-    public static <S> void when(S subject, Poller poller, Feature<? super S,Boolean> feature, Action<? super S> action) {
-        when(subject, feature, poller, isQuietlyTrue(), action);
+    public <S> void when(S subject, Ticker ticker, Feature<? super S,Boolean> feature, Action<? super S> action) {
+        when(subject, feature, ticker, isQuietlyTrue(), action);
     }
 
     /**
