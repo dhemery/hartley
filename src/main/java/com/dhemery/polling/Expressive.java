@@ -1,7 +1,10 @@
 package com.dhemery.polling;
 
-import com.dhemery.core.*;
+import com.dhemery.core.Action;
+import com.dhemery.core.Feature;
+import com.dhemery.core.Sampler;
 import org.hamcrest.Matcher;
+import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 
 import static com.dhemery.polling.QuietlyTrue.isQuietlyTrue;
@@ -418,6 +421,27 @@ public class Expressive {
      */
     public <S> void when(S subject, Ticker ticker, Feature<? super S,Boolean> feature, Action<? super S> action) {
         when(subject, feature, ticker, isQuietlyTrue(), action);
+    }
+
+    /**
+     * @see MatcherAssert#assertThat
+     */
+    public static void assertThat(String reason, boolean assertion) {
+        MatcherAssert.assertThat(reason, assertion);
+    }
+
+    /**
+     * @see MatcherAssert#assertThat
+     */
+    public static <T> void assertThat(T value, Matcher<? super T> criteria) {
+        MatcherAssert.assertThat(value, criteria);
+    }
+
+    /**
+     * @see MatcherAssert#assertThat
+     */
+    public static <T> void assertThat(String reason, T value, Matcher<? super T> criteria) {
+        MatcherAssert.assertThat(reason, value, criteria);
     }
 
     /**

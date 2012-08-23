@@ -1,11 +1,11 @@
 package com.dhemery.core;
 
 /**
- * An action that describes itself by a fixed name.
+ * An action that describes itself with a fixed name.
  */
 public abstract class NamedAction<T> extends Named implements Action<T> {
     /**
-     * Create an action with a fixed name.
+     * Create a named action.
      */
     protected NamedAction(String name) {
         super(name);
