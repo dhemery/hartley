@@ -1,8 +1,7 @@
 package com.dhemery.polling;
 
-import com.dhemery.core.Action;
-import com.dhemery.core.Feature;
-import com.dhemery.core.Sampler;
+import com.dhemery.configuring.ConfigurationException;
+import com.dhemery.core.*;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -14,19 +13,67 @@ import static com.dhemery.polling.QuietlyTrue.isQuietlyTrue;
  * and establish preconditions before taking an action.
  */
 public class Expressive {
-    private final Poller poller;
-    private final Ticker defaultTicker;
+    private final Supplier<Poller> pollerSupplier;
+    private final Supplier<Ticker> tickerSupplier;
 
+    /**
+     * Initialize {@code Expressive} to use the given poller and default ticker.
+     */
     protected Expressive(Poller poller, Ticker defaultTicker) {
-        this.poller = poller;
-        this.defaultTicker = defaultTicker;
+        this(new FixedValueSupplier<Poller>(poller), new FixedValueSupplier<Ticker>(defaultTicker));
+    }
+
+    /**
+     * Initialize {@code Expressive} to get its poller and default ticker from the given suppliers.
+     * {@code Expressive} will call the poller supplier once, before it conducts its first poll.
+     * {@code Expressive} will call the ticker supplier once, before it conducts its first poll
+     * that uses the default ticker.
+     * @param pollerSupplier supplies the poller for this {@code Expressive} to use
+     * @param tickerSupplier supplies the default ticker for this {@code Expressive} to use
+     */
+    protected Expressive(Supplier<Poller> pollerSupplier, Supplier<Ticker> tickerSupplier) {
+        this.pollerSupplier = Lazily.get(pollerSupplier);
+        this.tickerSupplier = Lazily.get(tickerSupplier);
+    }
+
+    /**
+     * Initialize {@code Expressive} to get its poller and default ticker by calling methods
+     * in the derived class.  {@code Expressive} will call {@link #getPoller()} once, before
+     * it conducts its first poll.  {@code Expressive} will call {@link #getTicker()} once,
+     * before it conducts its first poll that uses the default ticker.
+     * <p>
+     * <strong>IMPORTANT:</strong> If you use this constructor,
+     * you must override {@link #getPoller()} and {@link #getTicker()}.
+     * </p>
+     */
+    protected Expressive() {
+        pollerSupplier = defaultPollerSupplier();
+        tickerSupplier = defaultTickerSupplier();
+    }
+
+    /**
+     * If you inizialized this {@code Expressive} using the no-args {@link #Expressive()} constructor,
+     * you must override {@code getTicker()} to provide the default ticker for {@code Expressive} to use.
+     * @return the default ticker for {@code Expressive} to use
+     */
+    protected Ticker getTicker() {
+        throw new ConfigurationException("Please override getTicker() to provide a default ticker for Expressive to use.");
+    }
+
+    /**
+     * If you inizialized this {@code Expressive} using the no-args {@link #Expressive()} constructor,
+     * you must override {@code getPoller()} to provide the poller for {@code Expressive} to use.
+     * @return the poller for {@code Expressive} to use
+     */
+    protected Poller getPoller() {
+        throw new ConfigurationException("Please override getPoller() to provide a poller for Expressive to use.");
     }
 
     /**
      * Return the poller.
      */
     protected Poller poller() {
-        return poller;
+        return pollerSupplier.get();
     }
 
     /**
@@ -43,7 +90,7 @@ public class Expressive {
      * </pre>
      */
     protected Ticker eventually() {
-        return defaultTicker;
+        return tickerSupplier.get();
     }
 
     /**
@@ -75,7 +122,7 @@ public class Expressive {
      * }
      */
     public void assertThat(Ticker ticker, Condition condition) {
-        poller.poll(ticker, condition);
+        poller().poll(ticker, condition);
     }
 
     /**
@@ -216,7 +263,7 @@ public class Expressive {
      */
     public boolean the(Condition condition, Ticker ticker) {
         try {
-            poller.poll(ticker, condition);
+            poller().poll(ticker, condition);
             return true;
         } catch (PollTimeoutException ignored) {
             return false;
@@ -298,7 +345,7 @@ public class Expressive {
      * Wait until the polled condition is satisfied.
      */
     public void waitUntil(Ticker ticker, Condition condition) {
-        poller.poll(ticker, condition);
+        poller().poll(ticker, condition);
     }
 
     /**
@@ -494,4 +541,22 @@ public class Expressive {
         return new SamplingCondition<V>(variable, criteria);
     }
 
+
+    private Supplier<Poller> defaultPollerSupplier() {
+        return new Supplier<Poller>() {
+            @Override
+            public Poller get() {
+                return getPoller();
+            }
+        };
+    }
+
+    private Supplier<Ticker> defaultTickerSupplier() {
+        return new Supplier<Ticker>() {
+            @Override
+            public Ticker get() {
+                return getTicker();
+            }
+        };
+    }
 }
