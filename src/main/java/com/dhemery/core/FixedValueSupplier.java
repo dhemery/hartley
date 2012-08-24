@@ -1,7 +1,5 @@
 package com.dhemery.core;
 
-import com.dhemery.core.Supplier;
-
 public class FixedValueSupplier<T> implements Supplier<T> {
     private final T value;
 
