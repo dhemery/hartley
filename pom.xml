@@ -8,7 +8,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.dhemery</groupId>
 	<artifactId>hartley</artifactId>
-	<version>1.0-RC2-SNAPSHOT</version>
+	<version>1.0-RC2</version>
 	<packaging>jar</packaging>
 	<name>Hartley Library</name>
 	<description>A library of commonly useful Java classes</description>
