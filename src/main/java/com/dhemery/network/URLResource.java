@@ -117,4 +117,9 @@ public class URLResource implements Resource {
             throw new NetworkException(this, "Cannot close reader", cause);
         }
     }
+
+    @Override
+    public String toString() {
+        return connection.getURL().toString();
+    }
 }
