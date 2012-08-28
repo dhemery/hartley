@@ -1,10 +1,8 @@
-package com.dhemery.publishing.tests;
+package com.dhemery.publishing;
 
-import com.dhemery.publishing.MethodSubscription;
-import com.dhemery.publishing.Subscription;
-import com.dhemery.publishing.fixtures.Publication1;
-import com.dhemery.publishing.fixtures.Subscriber;
-import com.dhemery.publishing.fixtures.SubscribesTo1;
+import com.dhemery.fixtures.Publication1;
+import com.dhemery.fixtures.Subscriber;
+import com.dhemery.fixtures.SubscribesTo1;
 import org.junit.Test;
 
 import java.lang.reflect.Method;

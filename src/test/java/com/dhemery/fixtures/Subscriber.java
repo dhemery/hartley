@@ -1,4 +1,4 @@
-package com.dhemery.publishing.fixtures;
+package com.dhemery.fixtures;
 
 import java.util.HashMap;
 import java.util.Map;

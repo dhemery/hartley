@@ -1,7 +1,5 @@
-package com.dhemery.publishing.tests;
+package com.dhemery.publishing;
 
-import com.dhemery.publishing.Subscribe;
-import com.dhemery.publishing.SubscriberInspector;
 import org.junit.Test;
 
 import java.lang.reflect.Method;

@@ -1,6 +1,5 @@
-package com.dhemery.polling.tests;
+package com.dhemery.polling;
 
-import com.dhemery.polling.*;
 import org.jmock.Expectations;
 import org.jmock.Mockery;
 import org.jmock.Sequence;

@@ -82,7 +82,7 @@
 				<version>2.12.1</version>
 				<configuration>
 					<includes>
-						<include>**/tests/*.java</include>
+						<include>**/*.java</include>
 					</includes>
 				</configuration>
 			</plugin>
