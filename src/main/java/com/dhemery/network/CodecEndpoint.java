@@ -2,10 +2,19 @@ package com.dhemery.network;
 
 import com.dhemery.serializing.Codec;
 
+/**
+ * An endpoint that uses a Codec to serialize and deserialize objects.
+ */
 public class CodecEndpoint implements SerializingEndpoint {
     private final Endpoint endpoint;
     private final Codec codec;
 
+    /**
+     * Create an endpoint that uses the Codec to serialize and deserialize
+     * objects transmitted through another endpoint.
+     * @param endpoint the endpoint through which to send and receive messages
+     * @param codec the codec with which to serialize and deserialize objects
+     */
     public CodecEndpoint(Endpoint endpoint, Codec codec) {
         this.endpoint = endpoint;
         this.codec = codec;
