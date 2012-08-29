@@ -30,7 +30,7 @@ public class AnEvaluatingPoller {
             allowing(ticker).start();
             allowing(ticker).isExpired(); will(returnValue(false));
 
-            oneOf(evaluator).evaluate(with(condition), with(any(Long.class)));
+            allowing(evaluator).evaluate(with(condition), with(any(Long.class)));
                 will(returnValue(true));
         }});
 
@@ -43,12 +43,8 @@ public class AnEvaluatingPoller {
             allowing(ticker).start();
             allowing(ticker).tick();
             allowing(ticker).isExpired(); will(returnValue(false));
-            oneOf(evaluator).evaluate(with(condition), with(any(Long.class)));
-                will(returnValue(false));
-                inSequence(polling);
-            oneOf(evaluator).evaluate(with(condition), with(any(Long.class)));
-                will(returnValue(true));
-                inSequence(polling);
+            allowing(evaluator).evaluate(with(condition), with(any(Long.class)));
+                will(onConsecutiveCalls(returnValue(false), returnValue(true)));
         }});
 
         poller.poll(ticker, condition);
@@ -58,7 +54,7 @@ public class AnEvaluatingPoller {
     public void throwsIfTheTimerImmediatelyExpires() {
         context.checking(new Expectations() {{
             allowing(ticker).start();
-            oneOf(ticker).isExpired(); will(returnValue(true));
+            allowing(ticker).isExpired(); will(returnValue(true));
         }});
 
         poller.poll(ticker, condition);
@@ -69,14 +65,8 @@ public class AnEvaluatingPoller {
         context.checking(new Expectations() {{
             allowing(ticker).start();
             allowing(ticker).tick();
-            allowing(evaluator).evaluate(with(condition), with(any(Long.class)));
-                will(returnValue(false));
-            oneOf(ticker).isExpired();
-                inSequence(polling);
-                will(returnValue(false));
-            oneOf(ticker).isExpired();
-                inSequence(polling);
-                will(returnValue(true));
+            allowing(evaluator).evaluate(with(condition), with(any(Long.class))); will(returnValue(false));
+            allowing(ticker).isExpired(); will(onConsecutiveCalls(returnValue(false), returnValue(true)));
         }});
 
         poller.poll(ticker, condition);
