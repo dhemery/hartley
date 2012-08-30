@@ -8,7 +8,7 @@ import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 
-import static com.dhemery.polling.QuietlyTrue.isQuietlyTrue;
+import static com.dhemery.matchers.QuietlyTrue.isQuietlyTrue;
 
 /**
  * Expressive methods to make assertions, wait for conditions,
@@ -17,6 +17,7 @@ import static com.dhemery.polling.QuietlyTrue.isQuietlyTrue;
 public class Expressive {
     private final Supplier<Publisher> publisherSupplier;
     private final Supplier<Ticker> tickerSupplier;
+    private final Supplier<Poller> pollerSupplier = Lazily.get(thePollerSupplier());
 
     /**
      * Initialize {@code Expressive} to use the given poller and default ticker.
@@ -71,6 +72,19 @@ public class Expressive {
         return new MethodSubscriptionChannel();
     }
 
+    private Supplier<? extends Poller> thePollerSupplier() {
+        return new Supplier<Poller>() {
+            @Override
+            public Poller get() {
+                return new PublishingPoller(publisher());
+            }
+        };
+    }
+
+    private Poller poller() {
+        return pollerSupplier.get();
+    }
+
     private Publisher publisher() {
         return publisherSupplier.get();
     }
@@ -105,7 +119,7 @@ public class Expressive {
      * </pre>
      */
     public static void assertThat(Condition condition) {
-        ExpressionAssert.assertThat(condition);
+        ConditionAssert.assertThat(condition);
     }
 
     /**
@@ -121,7 +135,7 @@ public class Expressive {
      * }
      */
     public void assertThat(Ticker ticker, Condition condition) {
-        pollable(condition).poll(ticker);
+        poll(ticker, condition);
     }
 
     /**
@@ -136,7 +150,7 @@ public class Expressive {
      * }
      */
     public static <V> void assertThat(Sampler<V> variable, Matcher<? super V> criteria) {
-        ExpressionAssert.assertThat(variable, criteria);
+        ConditionAssert.assertThat(sampleOf(variable, criteria));
     }
 
     /**
@@ -166,7 +180,7 @@ public class Expressive {
      * }
      */
     public <V> void assertThat(Sampler<V> variable, Ticker ticker, Matcher<? super V> criteria) {
-        pollable(variable, criteria).poll(ticker);
+        assertThat(ticker, sampleOf(variable, criteria));
     }
 
     /**
@@ -198,7 +212,7 @@ public class Expressive {
      * }
      */
     public static <S,V> void assertThat(S subject, Feature<? super S,V> feature, Matcher<? super V> criteria) {
-        ExpressionAssert.assertThat(subject, feature, criteria);
+        assertThat(sampled(subject, feature), criteria);
     }
 
     /**
@@ -231,7 +245,7 @@ public class Expressive {
      * }
      */
     public <S,V> void assertThat(S subject, Feature<? super S,V> feature, Ticker ticker, Matcher<? super V> criteria) {
-        pollable(subject, feature, criteria).poll(ticker);
+        assertThat(sampled(subject, feature), ticker, criteria);
     }
 
     /**
@@ -262,7 +276,7 @@ public class Expressive {
      */
     public boolean the(Condition condition, Ticker ticker) {
         try {
-            pollable(condition).poll(ticker);
+            poll(ticker, condition);
             return true;
         } catch (PollTimeoutException ignored) {
             return false;
@@ -288,12 +302,7 @@ public class Expressive {
      * Report whether a polled sample of the variable satisfies the criteria.
      */
     public <V> boolean the(Sampler<V> variable, Ticker ticker, Matcher<? super V> criteria) {
-        try {
-            pollable(variable, criteria).poll(ticker);
-            return true;
-        } catch (PollTimeoutException ignored) {
-            return false;
-        }
+        return the(sampleOf(variable, criteria), ticker);
     }
 
     /**
@@ -328,12 +337,7 @@ public class Expressive {
      * Report whether a polled sample of the feature satisfies the criteria.
      */
     public <S,V> boolean the(S subject, Feature<? super S,V> feature, Ticker ticker, Matcher<? super V> criteria) {
-        try {
-            pollable(subject, feature, criteria).poll(ticker);
-            return true;
-        } catch (PollTimeoutException ignored) {
-            return false;
-        }
+        return the(sampled(subject, feature), ticker, criteria);
     }
 
     /**
@@ -355,7 +359,7 @@ public class Expressive {
      * Wait until the polled condition is satisfied.
      */
     public void waitUntil(Ticker ticker, Condition condition) {
-        pollable(condition).poll(ticker);
+        poll(ticker, condition);
     }
 
     /**
@@ -378,7 +382,7 @@ public class Expressive {
      * Wait until a polled sample of the variable satisfies the criteria.
      */
     public <V> void waitUntil(Sampler<V> variable, Ticker ticker, Matcher<? super V> criteria) {
-        pollable(variable, criteria).poll(ticker);
+        waitUntil(ticker, sampleOf(variable, criteria));
     }
 
     /**
@@ -408,7 +412,7 @@ public class Expressive {
      * Wait until a polled sample of the feature satisfies the criteria.
      */
     public <S,V> void waitUntil(S subject, Feature<? super S,V> feature, Ticker ticker, Matcher<? super V> criteria) {
-        pollable(subject, feature, criteria).poll(ticker);
+        waitUntil(sampled(subject, feature), ticker, criteria);
     }
 
     /**
@@ -561,15 +565,15 @@ public class Expressive {
         };
     }
 
-    private Pollable pollable(Condition condition) {
-        return new PollableCondition(publisher(), condition);
+    private void poll(Ticker ticker, Condition condition) {
+        poller().poll(ticker, condition);
     }
 
-    private <V> Pollable pollable(Sampler<V> variable, Matcher<? super V> criteria) {
-        return new PollableSampler<V>(publisher(), variable, criteria);
+    private static <V> Condition sampleOf(Sampler<V> variable, Matcher<? super V> criteria) {
+        return new SamplerCondition<V>(variable, criteria);
     }
 
-    private <S, V> Pollable pollable(S subject, Feature<? super S, V> feature, Matcher<? super V> criteria) {
-        return new PollableFeature<S,V>(publisher(), subject, feature, criteria);
+    private static <S, V> Sampler<V> sampled(S subject, Feature<? super S, V> feature) {
+        return new FeatureSampler<S,V>(subject, feature);
     }
 }

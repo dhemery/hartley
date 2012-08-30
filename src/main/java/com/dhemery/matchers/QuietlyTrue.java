@@ -1,4 +1,4 @@
-package com.dhemery.polling;
+package com.dhemery.matchers;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
@@ -8,7 +8,7 @@ import org.hamcrest.TypeSafeMatcher;
  * Quietly evaluates whether a boolean value is true.
  * "Quietly" means that it does not describe itself.
  * This is primarily useful to provide a tacit matcher
- * for {@link Expressive} boolean features and samplers.
+ * for {@link com.dhemery.polling.Expressive} boolean features and samplers.
  */
 public class QuietlyTrue extends TypeSafeMatcher<Boolean> {
     private static final Matcher<Boolean> quietlyTrue = new QuietlyTrue();
@@ -17,7 +17,7 @@ public class QuietlyTrue extends TypeSafeMatcher<Boolean> {
      * Report whether the value is true.
      */
     @Override
-    protected boolean matchesSafely(Boolean value) {
+    public boolean matchesSafely(Boolean value) {
         return value;
     }
 

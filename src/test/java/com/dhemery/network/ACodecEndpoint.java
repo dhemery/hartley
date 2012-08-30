@@ -13,8 +13,8 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.sameInstance;
 
 public class ACodecEndpoint {
-    interface Ignored{}
-    interface TheUserReturnType{}
+    private interface Ignored{}
+    private interface TheUserReturnType{}
     public static final String IGNORED_PATH = "ignored";
 
     @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
