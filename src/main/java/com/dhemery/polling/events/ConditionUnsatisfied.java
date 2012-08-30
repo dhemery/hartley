@@ -1,6 +1,6 @@
 package com.dhemery.polling.events;
 
-import com.dhemery.polling.Condition;
+import com.dhemery.core.Condition;
 
 /**
  * Reports that a sample mismatched its criteria during a poll.

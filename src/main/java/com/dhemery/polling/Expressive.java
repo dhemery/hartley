@@ -2,6 +2,8 @@ package com.dhemery.polling;
 
 import com.dhemery.configuring.ConfigurationException;
 import com.dhemery.core.*;
+import com.dhemery.publishing.MethodSubscriptionChannel;
+import com.dhemery.publishing.Publisher;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -13,42 +15,42 @@ import static com.dhemery.polling.QuietlyTrue.isQuietlyTrue;
  * and establish preconditions before taking an action.
  */
 public class Expressive {
-    private final Supplier<Poller> pollerSupplier;
+    private final Supplier<Publisher> publisherSupplier;
     private final Supplier<Ticker> tickerSupplier;
 
     /**
      * Initialize {@code Expressive} to use the given poller and default ticker.
      */
-    protected Expressive(Poller poller, Ticker defaultTicker) {
-        this(new FixedValueSupplier<Poller>(poller), new FixedValueSupplier<Ticker>(defaultTicker));
+    protected Expressive(Publisher publisher, Ticker defaultTicker) {
+        this(new FixedValueSupplier<Publisher>(publisher), new FixedValueSupplier<Ticker>(defaultTicker));
     }
 
     /**
-     * Initialize {@code Expressive} to get its poller and default ticker from the given suppliers.
-     * {@code Expressive} will call the poller supplier once, before it conducts its first poll.
+     * Initialize {@code Expressive} to get its publisher and default ticker from the given suppliers.
+     * {@code Expressive} will call the publisher supplier once, before it conducts its first poll.
      * {@code Expressive} will call the ticker supplier once, before it conducts its first poll
      * that uses the default ticker.
-     * @param pollerSupplier supplies the poller for this {@code Expressive} to use
+     * @param publisherSupplier supplies the publisher for this {@code Expressive} to use
      * @param tickerSupplier supplies the default ticker for this {@code Expressive} to use
      */
-    protected Expressive(Supplier<Poller> pollerSupplier, Supplier<Ticker> tickerSupplier) {
-        this.pollerSupplier = Lazily.get(pollerSupplier);
+    protected Expressive(Supplier<Publisher> publisherSupplier, Supplier<Ticker> tickerSupplier) {
+        this.publisherSupplier = Lazily.get(publisherSupplier);
         this.tickerSupplier = Lazily.get(tickerSupplier);
     }
 
     /**
      * Initialize {@code Expressive} to get its poller and default ticker by calling methods
-     * in the derived class.  {@code Expressive} will call {@link #getPoller()} once, before
+     * in the derived class.  {@code Expressive} will call {@link #getPublisher()} once, before
      * it conducts its first poll.  {@code Expressive} will call {@link #getTicker()} once,
      * before it conducts its first poll that uses the default ticker.
      * <p>
      * <strong>IMPORTANT:</strong> If you use this constructor,
-     * you must override {@link #getPoller()} and {@link #getTicker()}.
+     * you must override {@link #getPublisher()} and {@link #getTicker()}.
      * </p>
      */
     protected Expressive() {
-        pollerSupplier = defaultPollerSupplier();
-        tickerSupplier = defaultTickerSupplier();
+        publisherSupplier = Lazily.get(defaultPublisherSupplier());
+        tickerSupplier = Lazily.get(defaultTickerSupplier());
     }
 
     /**
@@ -65,15 +67,12 @@ public class Expressive {
      * you must override {@code getPoller()} to provide the poller for {@code Expressive} to use.
      * @return the poller for {@code Expressive} to use
      */
-    protected Poller getPoller() {
-        throw new ConfigurationException("Please override getPoller() to provide a poller for Expressive to use.");
+    protected Publisher getPublisher() {
+        return new MethodSubscriptionChannel();
     }
 
-    /**
-     * Return the poller.
-     */
-    protected Poller poller() {
-        return pollerSupplier.get();
+    private Publisher publisher() {
+        return publisherSupplier.get();
     }
 
     /**
@@ -106,7 +105,7 @@ public class Expressive {
      * </pre>
      */
     public static void assertThat(Condition condition) {
-        ConditionAssert.assertThat(condition);
+        ExpressionAssert.assertThat(condition);
     }
 
     /**
@@ -122,7 +121,7 @@ public class Expressive {
      * }
      */
     public void assertThat(Ticker ticker, Condition condition) {
-        poller().poll(ticker, condition);
+        pollable(condition).poll(ticker);
     }
 
     /**
@@ -137,7 +136,7 @@ public class Expressive {
      * }
      */
     public static <V> void assertThat(Sampler<V> variable, Matcher<? super V> criteria) {
-        assertThat(sampleOf(variable, criteria));
+        ExpressionAssert.assertThat(variable, criteria);
     }
 
     /**
@@ -167,7 +166,7 @@ public class Expressive {
      * }
      */
     public <V> void assertThat(Sampler<V> variable, Ticker ticker, Matcher<? super V> criteria) {
-        assertThat(ticker, sampleOf(variable, criteria));
+        pollable(variable, criteria).poll(ticker);
     }
 
     /**
@@ -199,7 +198,7 @@ public class Expressive {
      * }
      */
     public static <S,V> void assertThat(S subject, Feature<? super S,V> feature, Matcher<? super V> criteria) {
-        assertThat(sampled(subject, feature), criteria);
+        ExpressionAssert.assertThat(subject, feature, criteria);
     }
 
     /**
@@ -232,7 +231,7 @@ public class Expressive {
      * }
      */
     public <S,V> void assertThat(S subject, Feature<? super S,V> feature, Ticker ticker, Matcher<? super V> criteria) {
-        assertThat(sampled(subject, feature), ticker, criteria);
+        pollable(subject, feature, criteria).poll(ticker);
     }
 
     /**
@@ -263,7 +262,7 @@ public class Expressive {
      */
     public boolean the(Condition condition, Ticker ticker) {
         try {
-            poller().poll(ticker, condition);
+            pollable(condition).poll(ticker);
             return true;
         } catch (PollTimeoutException ignored) {
             return false;
@@ -274,7 +273,8 @@ public class Expressive {
      * Report whether a sample of the variable satisfies the criteria.
      */
     public static <V> boolean the(Sampler<V> variable, Matcher<? super V> criteria) {
-        return the(sampleOf(variable, criteria));
+        variable.takeSample();
+        return criteria.matches(variable.sampledValue());
     }
 
     /**
@@ -288,7 +288,12 @@ public class Expressive {
      * Report whether a polled sample of the variable satisfies the criteria.
      */
     public <V> boolean the(Sampler<V> variable, Ticker ticker, Matcher<? super V> criteria) {
-        return the(sampleOf(variable, criteria), ticker);
+        try {
+            pollable(variable, criteria).poll(ticker);
+            return true;
+        } catch (PollTimeoutException ignored) {
+            return false;
+        }
     }
 
     /**
@@ -309,7 +314,7 @@ public class Expressive {
      * Report whether a sample of the feature satisfies the criteria.
      */
     public static <S,V> boolean the(S subject, Feature<? super S,V> feature, Matcher<? super V> criteria) {
-        return the(sampled(subject, feature), criteria);
+        return criteria.matches(feature.of(subject));
     }
 
     /**
@@ -323,7 +328,12 @@ public class Expressive {
      * Report whether a polled sample of the feature satisfies the criteria.
      */
     public <S,V> boolean the(S subject, Feature<? super S,V> feature, Ticker ticker, Matcher<? super V> criteria) {
-        return the(sampled(subject, feature), ticker, criteria);
+        try {
+            pollable(subject, feature, criteria).poll(ticker);
+            return true;
+        } catch (PollTimeoutException ignored) {
+            return false;
+        }
     }
 
     /**
@@ -345,7 +355,7 @@ public class Expressive {
      * Wait until the polled condition is satisfied.
      */
     public void waitUntil(Ticker ticker, Condition condition) {
-        poller().poll(ticker, condition);
+        pollable(condition).poll(ticker);
     }
 
     /**
@@ -361,14 +371,14 @@ public class Expressive {
      * Uses the default poller.
      */
     public void waitUntil(Sampler<Boolean> variable) {
-        waitUntil(variable, isQuietlyTrue());
+        waitUntil(variable, eventually(), isQuietlyTrue());
     }
 
     /**
      * Wait until a polled sample of the variable satisfies the criteria.
      */
     public <V> void waitUntil(Sampler<V> variable, Ticker ticker, Matcher<? super V> criteria) {
-        waitUntil(ticker, sampleOf(variable, criteria));
+        pollable(variable, criteria).poll(ticker);
     }
 
     /**
@@ -391,14 +401,14 @@ public class Expressive {
      * Uses the default poller.
      */
     public <S> void waitUntil(S subject, Feature<? super S,Boolean> feature) {
-        waitUntil(subject, feature, isQuietlyTrue());
+        waitUntil(subject, feature, eventually(), isQuietlyTrue());
     }
 
     /**
      * Wait until a polled sample of the feature satisfies the criteria.
      */
     public <S,V> void waitUntil(S subject, Feature<? super S,V> feature, Ticker ticker, Matcher<? super V> criteria) {
-        waitUntil(sampled(subject, feature), ticker, criteria);
+        pollable(subject, feature, criteria).poll(ticker);
     }
 
     /**
@@ -421,7 +431,7 @@ public class Expressive {
      * Uses the default poller.
      */
     public <S> S when(S subject, Feature<? super S,Boolean> feature) {
-        return when(subject, feature, isQuietlyTrue());
+        return when(subject, feature, eventually(), isQuietlyTrue());
     }
 
     /**
@@ -533,20 +543,11 @@ public class Expressive {
         return Features.not(feature);
     }
 
-    private static <S, V> Sampler<V> sampled(S subject, Feature<? super S, V> feature) {
-        return new FeatureSampler<S,V>(subject, feature);
-    }
-
-    private static <V> Condition sampleOf(Sampler<V> variable, Matcher<? super V> criteria) {
-        return new SamplingCondition<V>(variable, criteria);
-    }
-
-
-    private Supplier<Poller> defaultPollerSupplier() {
-        return new Supplier<Poller>() {
+    private Supplier<Publisher> defaultPublisherSupplier() {
+        return new Supplier<Publisher>() {
             @Override
-            public Poller get() {
-                return getPoller();
+            public Publisher get() {
+                return getPublisher();
             }
         };
     }
@@ -558,5 +559,17 @@ public class Expressive {
                 return getTicker();
             }
         };
+    }
+
+    private Pollable pollable(Condition condition) {
+        return new PollableCondition(publisher(), condition);
+    }
+
+    private <V> Pollable pollable(Sampler<V> variable, Matcher<? super V> criteria) {
+        return new PollableSampler<V>(publisher(), variable, criteria);
+    }
+
+    private <S, V> Pollable pollable(S subject, Feature<? super S, V> feature, Matcher<? super V> criteria) {
+        return new PollableFeature<S,V>(publisher(), subject, feature, criteria);
     }
 }
