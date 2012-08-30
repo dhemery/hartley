@@ -1,25 +1,46 @@
 package com.dhemery.core;
 
 import org.hamcrest.Description;
+import org.hamcrest.SelfDescribing;
+import org.hamcrest.internal.SelfDescribingValue;
 
-public class FeatureSampler<S, V> implements Sampler<V> {
-    public FeatureSampler(S subject, Feature<? super S, V> feature) {
+/**
+ * A sampler that samples a feature of an object.
+ * @param <T> the type of object that has the feature
+ * @param <V> the type of feature
+ */
+public class FeatureSampler<T, V> implements Sampler<V> {
+    private final T subject;
+    private final Feature<? super T, V> feature;
+    private V sampledValue;
 
-
+    /**
+     * Create a sampler that samples the feature of the subject.
+     */
+    public FeatureSampler(T subject, Feature<? super T, V> feature) {
+        this.subject = subject;
+        this.feature = feature;
     }
 
     @Override
     public void takeSample() {
-        //To change body of implemented methods use File | Settings | File Templates.
+        sampledValue = feature.of(subject);
     }
 
     @Override
     public V sampledValue() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return sampledValue;
     }
 
     @Override
     public void describeTo(Description description) {
-        //To change body of implemented methods use File | Settings | File Templates.
+        description.appendDescriptionOf(selfDescribing(subject))
+                .appendText(" ")
+                .appendDescriptionOf(feature);
+    }
+
+    private SelfDescribing selfDescribing(T subject) {
+        if(subject instanceof SelfDescribing) return (SelfDescribing) subject;
+        return new SelfDescribingValue<String>(subject.toString());
     }
 }

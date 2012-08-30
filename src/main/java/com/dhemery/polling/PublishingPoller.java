@@ -5,9 +5,15 @@ import com.dhemery.polling.events.ConditionSatisfied;
 import com.dhemery.polling.events.ConditionUnsatisfied;
 import com.dhemery.publishing.Publisher;
 
+/**
+ * A poller that publishes the result of each evaluation.
+ */
 public class PublishingPoller implements Poller {
     private final Publisher publisher;
 
+    /**
+     * Create a poller that publishes the result of each evaluation through the publisher.
+     */
     public PublishingPoller(Publisher publisher) {
         this.publisher = publisher;
     }

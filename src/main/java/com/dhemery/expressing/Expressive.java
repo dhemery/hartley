@@ -1,14 +1,16 @@
-package com.dhemery.polling;
+package com.dhemery.expressing;
 
 import com.dhemery.configuring.ConfigurationException;
 import com.dhemery.core.*;
+import com.dhemery.polling.PollTimeoutException;
+import com.dhemery.polling.Poller;
+import com.dhemery.polling.PublishingPoller;
+import com.dhemery.polling.Ticker;
 import com.dhemery.publishing.MethodSubscriptionChannel;
 import com.dhemery.publishing.Publisher;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-
-import static com.dhemery.matchers.QuietlyTrue.isQuietlyTrue;
 
 /**
  * Expressive methods to make assertions, wait for conditions,
@@ -81,14 +83,6 @@ public class Expressive {
         };
     }
 
-    private Poller poller() {
-        return pollerSupplier.get();
-    }
-
-    private Publisher publisher() {
-        return publisherSupplier.get();
-    }
-
     /**
      * Return the default ticker.
      * This method is named to read nicely in expressions.
@@ -150,7 +144,7 @@ public class Expressive {
      * }
      */
     public static <V> void assertThat(Sampler<V> variable, Matcher<? super V> criteria) {
-        ConditionAssert.assertThat(sampleOf(variable, criteria));
+        assertThat(sampleOf(variable, criteria));
     }
 
     /**
@@ -165,7 +159,7 @@ public class Expressive {
      * }
      */
     public static void assertThat(Sampler<Boolean> variable) {
-        assertThat(variable, isQuietlyTrue());
+        assertThat(variable, QuietlyTrue.isQuietlyTrue());
     }
 
     /**
@@ -195,7 +189,7 @@ public class Expressive {
      * }
      */
     public void assertThat(Ticker ticker, Sampler<Boolean> variable) {
-        assertThat(variable, ticker, isQuietlyTrue());
+        assertThat(variable, ticker, QuietlyTrue.isQuietlyTrue());
     }
 
     /**
@@ -228,7 +222,7 @@ public class Expressive {
      * }
      */
     public static <S> void assertThat(S subject, Feature<? super S,Boolean> feature) {
-        assertThat(subject, feature, isQuietlyTrue());
+        assertThat(subject, feature, QuietlyTrue.isQuietlyTrue());
     }
 
     /**
@@ -261,7 +255,7 @@ public class Expressive {
      * }
      */
     public <S> void assertThat(S subject, Ticker ticker, Feature<? super S,Boolean> feature) {
-        assertThat(subject, feature, ticker, isQuietlyTrue());
+        assertThat(subject, feature, ticker, QuietlyTrue.isQuietlyTrue());
     }
 
     /**
@@ -295,7 +289,7 @@ public class Expressive {
      * Report whether a sample of the variable is {@code true}.
      */
     public static boolean the(Sampler<Boolean> variable) {
-        return the(variable, isQuietlyTrue());
+        return the(variable, QuietlyTrue.isQuietlyTrue());
     }
 
     /**
@@ -309,7 +303,7 @@ public class Expressive {
      * Report whether a polled sample of the variable is {@code true}.
      */
     public boolean the(Sampler<Boolean> variable, Ticker ticker) {
-        return the(variable, ticker, isQuietlyTrue());
+        return the(variable, ticker, QuietlyTrue.isQuietlyTrue());
     }
 
     /**
@@ -330,7 +324,7 @@ public class Expressive {
      * Report whether a sample of the feature is {@code true}.
      */
     public static <S> boolean the(S subject, Feature<? super S,Boolean> feature) {
-        return the(subject, feature, isQuietlyTrue());
+        return the(subject, feature, QuietlyTrue.isQuietlyTrue());
     }
 
     /**
@@ -344,7 +338,7 @@ public class Expressive {
      * Report whether a polled sample of the feature is {@code true}.
      */
     public <S> boolean the(S subject, Ticker ticker, Feature<? super S,Boolean> feature) {
-        return the(subject, feature, ticker, isQuietlyTrue());
+        return the(subject, feature, ticker, QuietlyTrue.isQuietlyTrue());
     }
 
     /**
@@ -375,7 +369,7 @@ public class Expressive {
      * Uses the default poller.
      */
     public void waitUntil(Sampler<Boolean> variable) {
-        waitUntil(variable, eventually(), isQuietlyTrue());
+        waitUntil(variable, eventually(), QuietlyTrue.isQuietlyTrue());
     }
 
     /**
@@ -389,7 +383,7 @@ public class Expressive {
      * Wait until a polled sample of the variable is [@code true).
      */
     public void waitUntil(Sampler<Boolean> variable, Ticker ticker) {
-        waitUntil(variable, ticker, isQuietlyTrue());
+        waitUntil(variable, ticker, QuietlyTrue.isQuietlyTrue());
     }
 
     /**
@@ -405,7 +399,7 @@ public class Expressive {
      * Uses the default poller.
      */
     public <S> void waitUntil(S subject, Feature<? super S,Boolean> feature) {
-        waitUntil(subject, feature, eventually(), isQuietlyTrue());
+        waitUntil(subject, feature, eventually(), QuietlyTrue.isQuietlyTrue());
     }
 
     /**
@@ -419,7 +413,7 @@ public class Expressive {
      * Wait until a polled sample of the feature is {@code true}.
      */
     public <S> void waitUntil(S subject, Ticker ticker, Feature<? super S,Boolean> feature) {
-        waitUntil(subject, feature, ticker, isQuietlyTrue());
+        waitUntil(subject, feature, ticker, QuietlyTrue.isQuietlyTrue());
     }
 
     /**
@@ -435,7 +429,7 @@ public class Expressive {
      * Uses the default poller.
      */
     public <S> S when(S subject, Feature<? super S,Boolean> feature) {
-        return when(subject, feature, eventually(), isQuietlyTrue());
+        return when(subject, feature, eventually(), QuietlyTrue.isQuietlyTrue());
     }
 
     /**
@@ -450,7 +444,7 @@ public class Expressive {
      * Return the subject when a polled sample of the feature is {@code true}.
      */
     public <S> S when(S subject, Ticker ticker, Feature<? super S,Boolean> feature) {
-        return when(subject, feature, ticker, isQuietlyTrue());
+        return when(subject, feature, ticker, QuietlyTrue.isQuietlyTrue());
     }
 
     /**
@@ -466,7 +460,7 @@ public class Expressive {
      * Uses the default poller.
      */
     public <S> void when(S subject, Feature<? super S,Boolean> feature, Action<? super S> action) {
-        when(subject, feature, isQuietlyTrue(), action);
+        when(subject, feature, QuietlyTrue.isQuietlyTrue(), action);
     }
 
     /**
@@ -481,7 +475,7 @@ public class Expressive {
      * Act on the subject when a polled sample of the feature is {@code true}.
      */
     public <S> void when(S subject, Ticker ticker, Feature<? super S,Boolean> feature, Action<? super S> action) {
-        when(subject, feature, ticker, isQuietlyTrue(), action);
+        when(subject, feature, ticker, QuietlyTrue.isQuietlyTrue(), action);
     }
 
     /**
@@ -513,7 +507,7 @@ public class Expressive {
     }
 
     /**
-     * @see Matchers#is(org.hamcrest.Matcher)
+     * @see Matchers#is(Matcher)
      */
     public static <S> Matcher<S> is(Matcher<S> matcher) {
         return Matchers.is(matcher);
@@ -523,7 +517,7 @@ public class Expressive {
      * Decorate a boolean feature to make it more expressive.
      */
     public static <S> Feature<S, Boolean> is(Feature<? super S, Boolean> feature) {
-        return Features.is(feature);
+        return FeatureExpressions.is(feature);
     }
 
     /**
@@ -534,7 +528,7 @@ public class Expressive {
     }
 
     /**
-     * @see Matchers#not(org.hamcrest.Matcher)
+     * @see Matchers#not(Matcher)
      */
     public static <S> Matcher<S> not(Matcher<S> matcher) {
         return Matchers.not(matcher);
@@ -544,7 +538,7 @@ public class Expressive {
      * Decorate a boolean feature to yield its logical negation.
      */
     public static <S> Feature<S,Boolean> not(Feature<? super S, Boolean> feature) {
-        return Features.not(feature);
+        return FeatureExpressions.not(feature);
     }
 
     private Supplier<Publisher> defaultPublisherSupplier() {
@@ -569,8 +563,16 @@ public class Expressive {
         poller().poll(ticker, condition);
     }
 
-    private static <V> Condition sampleOf(Sampler<V> variable, Matcher<? super V> criteria) {
-        return new SamplerCondition<V>(variable, criteria);
+    private Poller poller() {
+        return pollerSupplier.get();
+    }
+
+    private Publisher publisher() {
+        return publisherSupplier.get();
+    }
+
+    private static <V> Condition sampleOf(Sampler<V> sampler, Matcher<? super V> criteria) {
+        return new SamplerCondition<V>(sampler, criteria);
     }
 
     private static <S, V> Sampler<V> sampled(S subject, Feature<? super S, V> feature) {

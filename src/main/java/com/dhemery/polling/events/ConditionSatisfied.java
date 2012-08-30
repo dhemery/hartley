@@ -13,6 +13,21 @@ public class ConditionSatisfied {
         this.condition = condition;
         this.failureCount = failureCount;
     }
+
+    /**
+     * The polled condition.
+     * <p>
+     * <strong>IMPORTANT:</strong>
+     * Calling any method that would change the state of the condition,
+     * such as {@link Condition#isSatisfied()},
+     * may create unpredictable results.
+     * </p>
+     * @return the polled condition
+     */
     public Condition condition() { return condition; }
+
+    /**
+     * The number of times this condition polled unsatisfied before polling satisfied.
+     */
     public long failureCount() { return failureCount; }
 }

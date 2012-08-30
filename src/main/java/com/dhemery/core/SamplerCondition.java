@@ -1,25 +1,39 @@
 package com.dhemery.core;
 
-import com.dhemery.core.Condition;
-import com.dhemery.core.Sampler;
+import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
+/**
+ * A condition that is satisfied when a sampled value matches criteria.
+ * @param <V> the type of sampled value
+ */
 public class SamplerCondition<V> implements Condition {
-    public SamplerCondition(Sampler<V> variable, Matcher<? super V> criteria) {
+    private final Sampler<V> sampler;
+    private final Matcher<? super V> criteria;
+
+    /**
+     * Create a condition that is satisfied when the sampled value matches the criteria.
+     */
+    public SamplerCondition(Sampler<V> sampler, Matcher<? super V> criteria) {
+        this.sampler = sampler;
+        this.criteria = criteria;
     }
 
     @Override
     public boolean isSatisfied() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        sampler.takeSample();
+        return criteria.matches(sampler.sampledValue());
     }
 
     @Override
-    public String description() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public void describeTo(Description description) {
+        description.appendDescriptionOf(sampler)
+                .appendText(" ")
+                .appendDescriptionOf(criteria);
     }
 
     @Override
-    public String failureDescription() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+    public void describeDissatisfactionTo(Description description) {
+        criteria.describeMismatch(sampler.sampledValue(), description);
     }
 }

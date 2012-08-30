@@ -1,12 +1,13 @@
-package com.dhemery.core;
+package com.dhemery.expressing;
 
+import com.dhemery.core.Feature;
 import org.hamcrest.Description;
 
 /**
  * Syntactic sugar for boolean features.
  * <p>
  * Example: If you have a feature (for Cheshire cats) called {@code grinning()},
- * you can write {@link com.dhemery.polling.Expressive} phrases like:
+ * you can write {@link Expressive} phrases like:
  * </p>
  * <pre>
  * {@code
@@ -16,7 +17,8 @@ import org.hamcrest.Description;
  * }
  * </pre>
  */
-public class Features {
+public class FeatureExpressions {
+    private FeatureExpressions(){}
     /**
      * Decorate a boolean feature to make it more expressive.
      */

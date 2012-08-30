@@ -17,9 +17,9 @@ public class ConditionAssert {
         if(condition.isSatisfied()) return;
         Description description = new StringDescription();
         description.appendText("\nExpected: ")
-                .appendText(condition.description())
-                .appendText("\n     but: ")
-                .appendText(condition.failureDescription());
+                .appendDescriptionOf(condition)
+                .appendText("\n     but: ");
+        condition.describeDissatisfactionTo(description);
         throw new AssertionError(description.toString());
     }
 }
