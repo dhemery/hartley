@@ -24,12 +24,5 @@ public interface Condition extends SelfDescribing {
      */
     @Override
     void describeTo(Description description);
-
-    /**
-     * Describe the condition's most recent dissatisfaction.
-     * <p>
-     * This method should not change the condition's state.
-     * </p>
-     */
-    void describeDissatisfactionTo(Description description);
+    void describeFailureTo(Description description);
 }

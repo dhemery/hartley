@@ -3,17 +3,10 @@ package com.dhemery.core;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
-/**
- * A condition that is satisfied when a sampled value matches criteria.
- * @param <V> the type of sampled value
- */
 public class SamplerCondition<V> implements Condition {
     private final Sampler<V> sampler;
     private final Matcher<? super V> criteria;
 
-    /**
-     * Create a condition that is satisfied when the sampled value matches the criteria.
-     */
     public SamplerCondition(Sampler<V> sampler, Matcher<? super V> criteria) {
         this.sampler = sampler;
         this.criteria = criteria;
@@ -33,7 +26,7 @@ public class SamplerCondition<V> implements Condition {
     }
 
     @Override
-    public void describeDissatisfactionTo(Description description) {
+    public void describeFailureTo(Description description) {
         criteria.describeMismatch(sampler.sampledValue(), description);
     }
 }

@@ -9,15 +9,15 @@ import org.hamcrest.StringDescription;
  */
 public class PollTimeoutException extends RuntimeException {
     public PollTimeoutException(Condition condition) {
-        super(timeoutMessageFor(condition));
+        super(explainTimeoutOf(condition));
     }
 
-    private static String timeoutMessageFor(Condition condition) {
+    private static String explainTimeoutOf(Condition condition) {
         Description description = new StringDescription();
-        description.appendText("Timed out waiting until")
-                .appendDescriptionOf(condition)
-                .appendText("\n   Final poll failed because");
-        condition.describeDissatisfactionTo(description);
+        description.appendText("Timed out waiting until ");
+        condition.describeTo(description);
+        description.appendText("\n   because ");
+        condition.describeFailureTo(description);
         return description.toString();
     }
 }

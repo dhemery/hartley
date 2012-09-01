@@ -17,9 +17,9 @@ import org.hamcrest.Matchers;
  * and establish preconditions before taking an action.
  */
 public class Expressive {
-    private final Supplier<Publisher> publisherSupplier;
-    private final Supplier<Ticker> tickerSupplier;
-    private final Supplier<Poller> pollerSupplier = Lazily.get(thePollerSupplier());
+    private final Supplier<Publisher> publisher;
+    private final Supplier<Ticker> ticker;
+    private final Supplier<Poller> poller= Lazily.get(pollerSupplier());
 
     /**
      * Initialize {@code Expressive} to use the given poller and default ticker.
@@ -37,8 +37,8 @@ public class Expressive {
      * @param tickerSupplier supplies the default ticker for this {@code Expressive} to use
      */
     protected Expressive(Supplier<Publisher> publisherSupplier, Supplier<Ticker> tickerSupplier) {
-        this.publisherSupplier = Lazily.get(publisherSupplier);
-        this.tickerSupplier = Lazily.get(tickerSupplier);
+        this.publisher = Lazily.get(publisherSupplier);
+        this.ticker = Lazily.get(tickerSupplier);
     }
 
     /**
@@ -52,8 +52,8 @@ public class Expressive {
      * </p>
      */
     protected Expressive() {
-        publisherSupplier = Lazily.get(defaultPublisherSupplier());
-        tickerSupplier = Lazily.get(defaultTickerSupplier());
+        publisher = Lazily.get(defaultPublisherSupplier());
+        ticker = Lazily.get(defaultTickerSupplier());
     }
 
     /**
@@ -74,11 +74,11 @@ public class Expressive {
         return new MethodSubscriptionChannel();
     }
 
-    private Supplier<? extends Poller> thePollerSupplier() {
-        return new Supplier<Poller>() {
+    private Supplier<Publisher> thePublisherSupplier() {
+        return new Supplier<Publisher>() {
             @Override
-            public Poller get() {
-                return new PublishingPoller(publisher());
+            public Publisher get() {
+                return publisher.get();
             }
         };
     }
@@ -97,7 +97,7 @@ public class Expressive {
      * </pre>
      */
     protected Ticker eventually() {
-        return tickerSupplier.get();
+        return ticker.get();
     }
 
     /**
@@ -517,7 +517,7 @@ public class Expressive {
      * Decorate a boolean feature to make it more expressive.
      */
     public static <S> Feature<S, Boolean> is(Feature<? super S, Boolean> feature) {
-        return FeatureExpressions.is(feature);
+        return Expressions.is(feature);
     }
 
     /**
@@ -538,7 +538,7 @@ public class Expressive {
      * Decorate a boolean feature to yield its logical negation.
      */
     public static <S> Feature<S,Boolean> not(Feature<? super S, Boolean> feature) {
-        return FeatureExpressions.not(feature);
+        return Expressions.not(feature);
     }
 
     private Supplier<Publisher> defaultPublisherSupplier() {
@@ -559,23 +559,25 @@ public class Expressive {
         };
     }
 
+    private static <S,V> Sampler<V> sampled(S subject, Feature<? super S, V> feature) {
+        return Expressions.sampled(subject, feature);
+    }
+
+    private static <V> Condition sampleOf(Sampler<V> variable, Matcher<? super V> criteria) {
+        return Expressions.sampleOf(variable, criteria);
+    }
+
+    private Supplier<Poller> pollerSupplier() {
+        return new Supplier<Poller>() {
+            @Override
+            public Poller get() {
+                return new PublishingPoller(publisher.get());
+            }
+        };
+    }
+
     private void poll(Ticker ticker, Condition condition) {
-        poller().poll(ticker, condition);
+        poller.get().poll(ticker, condition);
     }
 
-    private Poller poller() {
-        return pollerSupplier.get();
-    }
-
-    private Publisher publisher() {
-        return publisherSupplier.get();
-    }
-
-    private static <V> Condition sampleOf(Sampler<V> sampler, Matcher<? super V> criteria) {
-        return new SamplerCondition<V>(sampler, criteria);
-    }
-
-    private static <S, V> Sampler<V> sampled(S subject, Feature<? super S, V> feature) {
-        return new FeatureSampler<S,V>(subject, feature);
-    }
 }

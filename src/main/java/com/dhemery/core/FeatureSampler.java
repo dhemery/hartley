@@ -1,23 +1,17 @@
 package com.dhemery.core;
 
+import com.dhemery.core.Feature;
+import com.dhemery.core.Sampler;
 import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
 import org.hamcrest.internal.SelfDescribingValue;
 
-/**
- * A sampler that samples a feature of an object.
- * @param <T> the type of object that has the feature
- * @param <V> the type of feature
- */
-public class FeatureSampler<T, V> implements Sampler<V> {
-    private final T subject;
-    private final Feature<? super T, V> feature;
+public class FeatureSampler<S,V> implements Sampler<V> {
+    private final S subject;
+    private final Feature<? super S, V> feature;
     private V sampledValue;
 
-    /**
-     * Create a sampler that samples the feature of the subject.
-     */
-    public FeatureSampler(T subject, Feature<? super T, V> feature) {
+    public FeatureSampler(S subject, Feature<? super S, V> feature) {
         this.subject = subject;
         this.feature = feature;
     }
@@ -37,10 +31,11 @@ public class FeatureSampler<T, V> implements Sampler<V> {
         description.appendDescriptionOf(selfDescribing(subject))
                 .appendText(" ")
                 .appendDescriptionOf(feature);
+
     }
 
-    private SelfDescribing selfDescribing(T subject) {
+    private SelfDescribing selfDescribing(S subject) {
         if(subject instanceof SelfDescribing) return (SelfDescribing) subject;
-        return new SelfDescribingValue<String>(subject.toString());
+        return new SelfDescribingValue<S>(subject);
     }
 }

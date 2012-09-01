@@ -1,30 +1,24 @@
 package com.dhemery.polling.events;
 
 import com.dhemery.core.Condition;
+import org.hamcrest.StringDescription;
 
 /**
  * Reports that a condition was satisfied during a poll.
  */
 public class ConditionSatisfied {
-    private final Condition condition;
+    private final String description;
     private final long failureCount;
 
     public ConditionSatisfied(Condition condition, long failureCount) {
-        this.condition = condition;
+        this.description = StringDescription.asString(condition);
         this.failureCount = failureCount;
     }
 
     /**
-     * The polled condition.
-     * <p>
-     * <strong>IMPORTANT:</strong>
-     * Calling any method that would change the state of the condition,
-     * such as {@link Condition#isSatisfied()},
-     * may create unpredictable results.
-     * </p>
-     * @return the polled condition
+     * A description of the condition.
      */
-    public Condition condition() { return condition; }
+    public String description() { return description; }
 
     /**
      * The number of times this condition polled unsatisfied before polling satisfied.

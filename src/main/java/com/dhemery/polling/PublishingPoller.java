@@ -5,40 +5,26 @@ import com.dhemery.polling.events.ConditionSatisfied;
 import com.dhemery.polling.events.ConditionUnsatisfied;
 import com.dhemery.publishing.Publisher;
 
-/**
- * A poller that publishes the result of each evaluation.
- */
-public class PublishingPoller implements Poller {
+public class PublishingPoller extends AbstractPoller {
     private final Publisher publisher;
 
-    /**
-     * Create a poller that publishes the result of each evaluation through the publisher.
-     */
     public PublishingPoller(Publisher publisher) {
         this.publisher = publisher;
     }
 
     @Override
-    public void poll(Ticker ticker, Condition condition) {
-        ticker.start();
-        int failureCount = 0;
-        while (!ticker.isExpired()) {
-            if(condition.isSatisfied()) {
-                publishSuccess(condition, failureCount);
-                return;
-            }
-            failureCount++;
-            publishFailure(condition, failureCount);
-            ticker.tick();
+    protected boolean check(Condition condition, int pollCount) {
+        boolean satisfied = condition.isSatisfied();
+        if(satisfied) {
+            publisher.publish(new ConditionSatisfied(condition, pollCount - 1));
+        } else {
+            publisher.publish(new ConditionUnsatisfied(condition, pollCount));
         }
+        return satisfied;
+    }
+
+    @Override
+    protected void fail(Condition condition) {
         throw new PollTimeoutException(condition);
-    }
-
-    private void publishFailure(Condition condition, int failureCount) {
-        publisher.publish(new ConditionUnsatisfied(condition, failureCount));
-    }
-
-    private void publishSuccess(Condition condition, int failureCount) {
-        publisher.publish(new ConditionSatisfied(condition, failureCount));
     }
 }
