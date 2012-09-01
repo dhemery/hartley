@@ -1,8 +1,7 @@
 package com.dhemery.expressing;
 
-import com.dhemery.core.*;
+import com.dhemery.core.Feature;
 import org.hamcrest.Description;
-import org.hamcrest.Matcher;
 
 /**
  * Syntactic sugar for boolean features.
@@ -18,8 +17,8 @@ import org.hamcrest.Matcher;
  * }
  * </pre>
  */
-public class Expressions {
-    private Expressions(){}
+public class FeatureExpressions {
+    private FeatureExpressions(){}
     /**
      * Decorate a boolean feature to make it more expressive.
      */
@@ -40,7 +39,7 @@ public class Expressions {
     /**
      * Decorate a boolean feature to yield its logical negation.
      * @param feature the feature whose values to negate
-     * @param <S> the type of object that has the feature
+     * @param <S> the type of subject
      */
     public static <S> Feature<S,Boolean> not(final Feature<? super S, Boolean> feature) {
         return new Feature<S, Boolean>() {
@@ -54,28 +53,5 @@ public class Expressions {
                 description.appendText("not ").appendDescriptionOf(feature);
             }
         };
-    }
-
-    /**
-     * Create a sampler that samples a feature of a subject.
-     * @param subject the subject that has the feature
-     * @param feature the feature to sample
-     * @param <S> the type of subject
-     * @param <V> the type of feature
-     * @return a sampler that samples the feature of the subject.
-     */
-    public static <S,V> Sampler<V> sampled(S subject, Feature<? super S, V> feature) {
-        return new FeatureSampler<S,V>(subject, feature);
-    }
-
-    /**
-     * Create a condition that is satisfied when a sampled variable matches the criteria.
-     * @param variable the variable to sample
-     * @param criteria the criteria to satisfy
-     * @param <V> the type of sampled variable
-     * @return a condition that is satisfied when the sampled variable matches the criteria
-     */
-    public static <V> Condition sampleOf(Sampler<V> variable, Matcher<? super V> criteria) {
-        return new SamplerCondition<V>(variable, criteria);
     }
 }

@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
- * An expiring ticker that uses the system clock to reckon time.
+ * An ticker that uses the system clock to reckon time.
  * The ticker has a duration and a tick size, both in milliseconds.
  * </p>
  * <p>
@@ -22,14 +22,14 @@ public class SystemClockTicker implements Ticker {
     private long startTime;
 
 	/**
-	 * Create an expiring ticker with the given duration and a tick size of one second.
+	 * Create a ticker with the given duration and a tick size of one second.
 	 */
 	public SystemClockTicker(long durationInMilliseconds) {
 		this(durationInMilliseconds, ONE_SECOND);
 	}
 
 	/**
-     * Create an expiring ticker with the given duration and tick size.
+     * Create a ticker with the given duration and tick size.
 	 */
 	public SystemClockTicker(long durationInMilliseconds, long tickSizeInMilliseconds) {
 		this.durationInMilliseconds = durationInMilliseconds;

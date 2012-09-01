@@ -3,30 +3,39 @@ package com.dhemery.core;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 
+/**
+ * A condition that is satisfied when a sampled variable satisfies some criteria.
+ * @param <V> the type of sampled variable
+ */
 public class SamplerCondition<V> implements Condition {
-    private final Sampler<V> sampler;
+    private final Sampler<V> variable;
     private final Matcher<? super V> criteria;
 
-    public SamplerCondition(Sampler<V> sampler, Matcher<? super V> criteria) {
-        this.sampler = sampler;
+    /**
+     * Create a condition that is satisfied when the a sample of the variable satisfies the criteria.
+     * @param variable the variable to sample
+     * @param criteria the criteria to satisfy
+     */
+    public SamplerCondition(Sampler<V> variable, Matcher<? super V> criteria) {
+        this.variable = variable;
         this.criteria = criteria;
     }
 
     @Override
     public boolean isSatisfied() {
-        sampler.takeSample();
-        return criteria.matches(sampler.sampledValue());
+        variable.takeSample();
+        return criteria.matches(variable.sampledValue());
     }
 
     @Override
     public void describeTo(Description description) {
-        description.appendDescriptionOf(sampler)
+        description.appendDescriptionOf(variable)
                 .appendText(" ")
                 .appendDescriptionOf(criteria);
     }
 
     @Override
-    public void describeFailureTo(Description description) {
-        criteria.describeMismatch(sampler.sampledValue(), description);
+    public void describeDissatisfactionTo(Description description) {
+        criteria.describeMismatch(variable.sampledValue(), description);
     }
 }

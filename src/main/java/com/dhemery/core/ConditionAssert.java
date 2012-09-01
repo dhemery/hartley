@@ -22,7 +22,7 @@ public class ConditionAssert {
         description.appendText("Expected: ");
         condition.describeTo(description);
         description.appendText("\n  but: ");
-        condition.describeFailureTo(description);
+        condition.describeDissatisfactionTo(description);
         throw new AssertionError(description.toString());
     }
 }

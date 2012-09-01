@@ -508,7 +508,7 @@ public class Expressive {
      * Decorate a boolean feature to make it more expressive.
      */
     public static <S> Feature<S, Boolean> is(Feature<? super S, Boolean> feature) {
-        return Expressions.is(feature);
+        return FeatureExpressions.is(feature);
     }
 
     /**
@@ -529,7 +529,7 @@ public class Expressive {
      * Decorate a boolean feature to yield its logical negation.
      */
     public static <S> Feature<S,Boolean> not(Feature<? super S, Boolean> feature) {
-        return Expressions.not(feature);
+        return FeatureExpressions.not(feature);
     }
 
     private Supplier<Publisher> defaultPublisherSupplier() {
@@ -551,11 +551,11 @@ public class Expressive {
     }
 
     private static <S,V> Sampler<V> sampled(S subject, Feature<? super S, V> feature) {
-        return Expressions.sampled(subject, feature);
+        return new FeatureSampler<S,V>(subject, feature);
     }
 
     private static <V> Condition sampleOf(Sampler<V> variable, Matcher<? super V> criteria) {
-        return Expressions.sampleOf(variable, criteria);
+        return new SamplerCondition<V>(variable, criteria);
     }
 
     private Supplier<Poller> pollerSupplier() {

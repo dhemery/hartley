@@ -19,10 +19,20 @@ public interface Condition extends SelfDescribing {
     /**
      * Describe the condition when satisfied.
      * <p>
-     * This method should not change the condition's state.
+     * Note: This method should not change the condition's state.
      * </p>
+     * @param description the description to which to describe this condition
      */
     @Override
     void describeTo(Description description);
-    void describeFailureTo(Description description);
+
+    /**
+     * Describe this condition's most recent dissatisfaction.
+     * This method is meaningful only if the most recent {@code isSatisfied()} returned false.
+     * <p>
+     * Note: This method should not change the condition's state.
+     * </p>
+     * @param description the description to which to describe the dissatisfaction
+     */
+    void describeDissatisfactionTo(Description description);
 }

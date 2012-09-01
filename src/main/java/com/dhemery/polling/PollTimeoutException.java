@@ -17,7 +17,7 @@ public class PollTimeoutException extends RuntimeException {
         description.appendText("Timed out waiting until ");
         condition.describeTo(description);
         description.appendText("\n   because ");
-        condition.describeFailureTo(description);
+        condition.describeDissatisfactionTo(description);
         return description.toString();
     }
 }

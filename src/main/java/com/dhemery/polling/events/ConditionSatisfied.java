@@ -11,7 +11,7 @@ public class ConditionSatisfied {
     private final long failureCount;
 
     public ConditionSatisfied(Condition condition, long failureCount) {
-        this.description = StringDescription.asString(condition);
+        description = StringDescription.asString(condition);
         this.failureCount = failureCount;
     }
 
