@@ -4,7 +4,7 @@ import com.dhemery.configuring.ConfigurationException;
 import com.dhemery.core.*;
 import com.dhemery.polling.PollTimeoutException;
 import com.dhemery.polling.Poller;
-import com.dhemery.polling.PublishingPoller;
+import com.dhemery.polling.Pollers;
 import com.dhemery.polling.Ticker;
 import com.dhemery.publishing.MethodSubscriptionChannel;
 import com.dhemery.publishing.Publisher;
@@ -37,8 +37,8 @@ public class Expressive {
      * @param tickerSupplier supplies the default ticker for this {@code Expressive} to use
      */
     protected Expressive(Supplier<Publisher> publisherSupplier, Supplier<Ticker> tickerSupplier) {
-        this.publisher = Lazily.get(publisherSupplier);
-        this.ticker = Lazily.get(tickerSupplier);
+        publisher = Lazily.get(publisherSupplier);
+        ticker = Lazily.get(tickerSupplier);
     }
 
     /**
@@ -72,15 +72,6 @@ public class Expressive {
      */
     protected Publisher getPublisher() {
         return new MethodSubscriptionChannel();
-    }
-
-    private Supplier<Publisher> thePublisherSupplier() {
-        return new Supplier<Publisher>() {
-            @Override
-            public Publisher get() {
-                return publisher.get();
-            }
-        };
     }
 
     /**
@@ -571,7 +562,7 @@ public class Expressive {
         return new Supplier<Poller>() {
             @Override
             public Poller get() {
-                return new PublishingPoller(publisher.get());
+                return Pollers.publishedWith(publisher.get());
             }
         };
     }

@@ -5,15 +5,15 @@ import com.dhemery.polling.events.ConditionSatisfied;
 import com.dhemery.polling.events.ConditionUnsatisfied;
 import com.dhemery.publishing.Publisher;
 
-public class PublishingPoller extends AbstractPoller {
+public class PublishingPollEvaluator implements PollEvaluator {
     private final Publisher publisher;
 
-    public PublishingPoller(Publisher publisher) {
+    public PublishingPollEvaluator(Publisher publisher) {
         this.publisher = publisher;
     }
 
     @Override
-    protected boolean check(Condition condition, int pollCount) {
+    public boolean evaluate(Condition condition, int pollCount) {
         boolean satisfied = condition.isSatisfied();
         if(satisfied) {
             publisher.publish(new ConditionSatisfied(condition, pollCount - 1));
@@ -24,7 +24,7 @@ public class PublishingPoller extends AbstractPoller {
     }
 
     @Override
-    protected void fail(Condition condition) {
+    public void fail(Condition condition) {
         throw new PollTimeoutException(condition);
     }
 }
