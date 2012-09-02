@@ -1,4 +1,4 @@
-package com.dhemery.fixtures;
+package com.dhemery.publishing.fixtures;
 
 import com.dhemery.publishing.Subscribe;
 

@@ -2,14 +2,14 @@ package com.dhemery.polling.events;
 
 import com.dhemery.core.Condition;
 import org.hamcrest.Description;
+import org.hamcrest.SelfDescribing;
 import org.hamcrest.StringDescription;
 
 /**
  * Reports that a condition was dissatisfied during a poll.
  */
-public class ConditionDissatisfied {
-    private final String description;
-    private final String reason;
+public class ConditionDissatisfied implements SelfDescribing {
+    private final Condition condition;
     private final int failureCount;
 
     /**
@@ -19,20 +19,23 @@ public class ConditionDissatisfied {
      * including the evaluation reported by this notification
      */
     public ConditionDissatisfied(Condition condition, int failureCount) {
-        description = descriptionOf(condition);
-        reason = failureDescriptionFor(condition);
+        this.condition = condition;
         this.failureCount = failureCount;
     }
 
     /**
      * A description of the condition.
      */
-    public String description() { return description; }
+    public String description() { return StringDescription.asString(condition); }
 
     /**
      * The reason the condition was dissatisfied.
      */
-    public String reason() { return reason; }
+    public String reason() {
+        Description description = new StringDescription();
+        condition.describeDissatisfactionTo(description);
+        return description.toString();
+    }
 
     /**
      * The number of times this condition has been dissatisfied during this poll,
@@ -40,14 +43,15 @@ public class ConditionDissatisfied {
      */
     public int failureCount() { return failureCount; }
 
-    private static String descriptionOf(Condition condition) {
-        return StringDescription.asString(condition);
+    @Override
+    public void describeTo(Description description) {
+        description.appendText("poll ").appendValue(failureCount)
+                .appendText(" was dissatisfied that ").appendValue(description())
+                .appendText(" because ").appendValue(reason());
     }
 
-    private static String failureDescriptionFor(Condition condition) {
-        Description description = new StringDescription();
-        condition.describeDissatisfactionTo(description);
-        return description.toString();
+    @Override
+    public String toString() {
+        return StringDescription.asString(this);
     }
-
 }

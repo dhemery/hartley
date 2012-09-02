@@ -32,11 +32,15 @@ public class ConditionSatisfiedMatcher extends TypeSafeMatcher<ConditionSatisfie
     }
 
 
-    public static Matcher<ConditionSatisfied> satisfaction(String description) {
-        return new ConditionSatisfiedMatcher(equalTo(description), any(Integer.class));
+    public static Matcher<ConditionSatisfied> satisfaction(Matcher<String> description, Matcher<Integer> failureCount) {
+        return new ConditionSatisfiedMatcher(description, failureCount);
     }
 
-    public static Matcher<ConditionSatisfied> satisfaction(String description, int failureCount) {
-        return new ConditionSatisfiedMatcher(equalTo(description), equalTo(failureCount));
+    public static Matcher<ConditionSatisfied> satisfaction(String description) {
+        return satisfaction(equalTo(description), any(Integer.class));
+    }
+
+    public static Matcher<ConditionSatisfied> satisfactionWithFailureCount(int failureCount) {
+        return satisfaction(any(String.class), equalTo(failureCount));
     }
 }

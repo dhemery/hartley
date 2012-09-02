@@ -34,11 +34,19 @@ public class ConditionDissatisfiedMatcher extends TypeSafeMatcher<ConditionDissa
                 .appendText(" and failure count ").appendDescriptionOf(failureCount);
     }
 
+    public static Matcher<ConditionDissatisfied> dissatisfaction(Matcher<String> description, Matcher<String> reason, Matcher<Integer> failureCount) {
+        return new ConditionDissatisfiedMatcher(description, reason, failureCount);
+    }
+
     public static Matcher<ConditionDissatisfied> dissatisfaction(String description, String reason, int failureCount) {
-        return new ConditionDissatisfiedMatcher(equalTo(description), equalTo(reason), equalTo(failureCount));
+        return dissatisfaction(equalTo(description), equalTo(reason), equalTo(failureCount));
     }
 
     public static Matcher<ConditionDissatisfied> dissatisfaction(String description, String reason) {
-        return new ConditionDissatisfiedMatcher(equalTo(description), equalTo(reason), any(Integer.class));
+        return dissatisfaction(equalTo(description), equalTo(reason), any(Integer.class));
+    }
+
+    public static Matcher<ConditionDissatisfied> dissatisfactionWithFailureCount(int failureCount) {
+        return dissatisfaction(any(String.class), any(String.class), equalTo(failureCount));
     }
 }

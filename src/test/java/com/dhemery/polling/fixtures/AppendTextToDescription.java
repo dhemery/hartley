@@ -1,4 +1,4 @@
-package com.dhemery.fixtures;
+package com.dhemery.polling.fixtures;
 
 import org.hamcrest.Description;
 import org.jmock.api.Action;
@@ -20,7 +20,7 @@ public class AppendTextToDescription implements Action {
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("appends text ").appendText(textToAppend).appendText(" to the description");
+        description.appendText("that appends text ").appendValue(textToAppend).appendText(" to the description");
     }
 
 

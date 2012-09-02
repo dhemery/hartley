@@ -1,9 +1,9 @@
 package com.dhemery.publishing;
 
-import com.dhemery.fixtures.Publication1;
-import com.dhemery.fixtures.Subscriber;
-import com.dhemery.fixtures.SubscribesTo1;
-import com.dhemery.fixtures.SubscribesTo1Twice;
+import com.dhemery.publishing.fixtures.Publication1;
+import com.dhemery.publishing.fixtures.Subscriber;
+import com.dhemery.publishing.fixtures.SubscribesTo1;
+import com.dhemery.publishing.fixtures.SubscribesTo1Twice;
 import org.junit.Before;
 import org.junit.Test;
 

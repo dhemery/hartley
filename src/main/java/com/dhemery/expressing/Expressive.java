@@ -4,7 +4,7 @@ import com.dhemery.configuring.ConfigurationException;
 import com.dhemery.core.*;
 import com.dhemery.polling.PollTimeoutException;
 import com.dhemery.polling.Poller;
-import com.dhemery.polling.Pollers;
+import com.dhemery.polling.PublishingPoller;
 import com.dhemery.polling.Ticker;
 import com.dhemery.publishing.MethodSubscriptionChannel;
 import com.dhemery.publishing.Publisher;
@@ -562,7 +562,7 @@ public class Expressive {
         return new Supplier<Poller>() {
             @Override
             public Poller get() {
-                return Pollers.publishedWith(publisher.get());
+                return new PublishingPoller(publisher.get());
             }
         };
     }
