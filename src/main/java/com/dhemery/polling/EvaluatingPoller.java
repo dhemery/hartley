@@ -24,10 +24,9 @@ public class EvaluatingPoller implements Poller {
     @Override
     public void poll(Ticker ticker, Condition condition) {
         ticker.start();
-        int pollCount = 0;
 
         do {
-            if(evaluator.evaluate(condition, ++pollCount)) return;
+            if(evaluator.evaluate(condition)) return;
             ticker.tick();
         } while(!ticker.isExpired());
 

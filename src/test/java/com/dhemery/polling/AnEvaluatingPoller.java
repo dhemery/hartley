@@ -2,7 +2,6 @@ package com.dhemery.polling;
 
 import com.dhemery.core.Condition;
 import org.jmock.Expectations;
-import org.jmock.Sequence;
 import org.jmock.auto.Mock;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Before;
@@ -25,7 +24,7 @@ public class AnEvaluatingPoller {
     public void succeedsIfEvaluationImmediatelyEvaluatesTrue() {
         context.checking(new Expectations(){{
             ignoring(ticker);
-            allowing(evaluator).evaluate(with(condition), with(any(Integer.class)));
+            allowing(evaluator).evaluate(with(condition));
                 will(returnValue(true));
             never(evaluator).fail(with(any(Condition.class)));
         }});
@@ -40,7 +39,7 @@ public class AnEvaluatingPoller {
             ignoring(ticker).tick();
             allowing(ticker).isExpired();
             will(onConsecutiveCalls(returnValue(false), returnValue(false), returnValue(true)));
-            allowing(evaluator).evaluate(with(condition), with(any(Integer.class)));
+            allowing(evaluator).evaluate(with(condition));
             will(onConsecutiveCalls(returnValue(false), returnValue(true)));
             never(evaluator).fail(with(any(Condition.class)));
         }});
@@ -55,7 +54,7 @@ public class AnEvaluatingPoller {
             ignoring(ticker).tick();
             allowing(ticker).isExpired();
                 will(onConsecutiveCalls(returnValue(false), returnValue(false), returnValue(true)));
-            allowing(evaluator).evaluate(with(condition), with(any(Integer.class)));
+            allowing(evaluator).evaluate(with(condition));
                 will(returnValue(false));
             oneOf(evaluator).fail(condition);
         }});
@@ -69,34 +68,9 @@ public class AnEvaluatingPoller {
             ignoring(ticker).start();
             ignoring(ticker).tick();
             allowing(ticker).isExpired(); will(returnValue(true));
-            allowing(evaluator).evaluate(with(condition), with(any(Integer.class)));
+            allowing(evaluator).evaluate(with(condition));
                 will(returnValue(true));
             never(evaluator).fail(condition);
-        }});
-
-        poller.poll(ticker, condition);
-    }
-
-    @Test
-    public void indicatesPollCountWithEachEvaluation() {
-        final Sequence polling = context.sequence("Polling");
-        context.checking(new Expectations(){{
-            ignoring(ticker);
-            oneOf(evaluator).evaluate(condition, 1);
-                inSequence(polling);
-                will(returnValue(false));
-            oneOf(evaluator).evaluate(condition, 2);
-                inSequence(polling);
-                will(returnValue(false));
-            oneOf(evaluator).evaluate(condition, 3);
-                inSequence(polling);
-                will(returnValue(false));
-            oneOf(evaluator).evaluate(condition, 4);
-                inSequence(polling);
-                will(returnValue(false));
-            oneOf(evaluator).evaluate(condition, 5);
-                inSequence(polling);
-                will(returnValue(true));
         }});
 
         poller.poll(ticker, condition);

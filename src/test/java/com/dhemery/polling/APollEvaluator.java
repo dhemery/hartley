@@ -11,7 +11,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
 public abstract class APollEvaluator {
-    public static final int IGNORED_POLL_COUNT = 0;
     @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
     @Mock public Condition condition;
 
@@ -23,7 +22,7 @@ public abstract class APollEvaluator {
             allowing(condition).isSatisfied(); will(returnValue(true));
         }});
 
-        boolean result = evaluator().evaluate(condition, IGNORED_POLL_COUNT);
+        boolean result = evaluator().evaluate(condition);
         assertThat(result, is(true));
     }
 
@@ -33,7 +32,7 @@ public abstract class APollEvaluator {
             allowing(condition).isSatisfied(); will(returnValue(false));
         }});
 
-        boolean result = evaluator().evaluate(condition, IGNORED_POLL_COUNT);
+        boolean result = evaluator().evaluate(condition);
         assertThat(result, is(false));
     }
 

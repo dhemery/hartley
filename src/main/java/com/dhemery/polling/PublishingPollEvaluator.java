@@ -10,6 +10,7 @@ import com.dhemery.publishing.Publisher;
  */
 public class PublishingPollEvaluator implements PollEvaluator {
     private final Publisher publisher;
+    private int failureCount = 0;
 
     /**
      * Create a poll evaluator that publishes the result of each evaluation through the publisher.
@@ -22,19 +23,20 @@ public class PublishingPollEvaluator implements PollEvaluator {
      * Evaluate the condition and publish the result.
      * The result is published as either a {@link ConditionSatisfied} or {@link ConditionDissatisfied}
      * event.
+     *
      * @param condition the condition to evaluate
-     * @param pollCount the number of times this poll has evaluated the condition (including this evaluation)
      * @return whether the condition is satisfied
      * @see ConditionSatisfied
      * @see ConditionDissatisfied
      */
     @Override
-    public boolean evaluate(Condition condition, int pollCount) {
+    public boolean evaluate(Condition condition) {
         boolean satisfied = condition.isSatisfied();
         if(satisfied) {
-            publisher.publish(new ConditionSatisfied(condition, pollCount - 1));
+            publisher.publish(new ConditionSatisfied(condition, failureCount));
         } else {
-            publisher.publish(new ConditionDissatisfied(condition, pollCount));
+            failureCount++;
+            publisher.publish(new ConditionDissatisfied(condition, failureCount));
         }
         return satisfied;
     }

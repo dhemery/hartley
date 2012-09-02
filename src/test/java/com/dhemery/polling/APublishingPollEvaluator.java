@@ -40,7 +40,7 @@ public class APublishingPollEvaluator extends APollEvaluator {
             oneOf(publisher).publish(with(satisfaction(description, 0)));
         }});
 
-        evaluator.evaluate(condition, 1);
+        evaluator.evaluate(condition);
     }
 
     @Test
@@ -54,6 +54,6 @@ public class APublishingPollEvaluator extends APollEvaluator {
             oneOf(publisher).publish(with(dissatisfaction(description, reason, 1)));
         }});
 
-        evaluator.evaluate(condition, 1);
+        evaluator.evaluate(condition);
     }
 }

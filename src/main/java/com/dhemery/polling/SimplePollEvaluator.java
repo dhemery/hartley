@@ -8,12 +8,12 @@ import com.dhemery.core.Condition;
 public class SimplePollEvaluator implements PollEvaluator {
     /**
      * Report whether the condition is satisfied.
+     *
      * @param condition the condition being polled
-     * @param pollCount is ignored
      * @return whether the condition is satisfied
      */
     @Override
-    public boolean evaluate(Condition condition, int pollCount) {
+    public boolean evaluate(Condition condition) {
         return condition.isSatisfied();
     }
 

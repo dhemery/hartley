@@ -8,11 +8,11 @@ import com.dhemery.core.Condition;
 public interface PollEvaluator {
     /**
      * Evaluate whether the condition is satisfied.
+     *
      * @param condition the condition to evaluate
-     * @param pollCount the number of times this poll has evaluated the condition (including this evaluation)
      * @return whether the condition is satisfied
      */
-    boolean evaluate(Condition condition, int pollCount);
+    boolean evaluate(Condition condition);
 
     /**
      * Throw an exception indicating that the poll ended with the condition unsatisfied.
