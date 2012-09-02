@@ -8,9 +8,9 @@ import org.hamcrest.StringDescription;
  */
 public class ConditionSatisfied {
     private final String description;
-    private final long failureCount;
+    private final int failureCount;
 
-    public ConditionSatisfied(Condition condition, long failureCount) {
+    public ConditionSatisfied(Condition condition, int failureCount) {
         description = StringDescription.asString(condition);
         this.failureCount = failureCount;
     }
@@ -23,5 +23,5 @@ public class ConditionSatisfied {
     /**
      * The number of times this condition polled unsatisfied before polling satisfied.
      */
-    public long failureCount() { return failureCount; }
+    public int failureCount() { return failureCount; }
 }

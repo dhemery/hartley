@@ -10,7 +10,7 @@ import org.hamcrest.StringDescription;
 public class ConditionDissatisfied {
     private final String description;
     private final String reason;
-    private final long failureCount;
+    private final int failureCount;
 
     /**
      * Create a report that the condition was dissatisfied during a poll.
@@ -18,7 +18,7 @@ public class ConditionDissatisfied {
      * @param failureCount the number of times this condition has been dissatisfied during this poll,
      * including the evaluation reported by this notification
      */
-    public ConditionDissatisfied(Condition condition, long failureCount) {
+    public ConditionDissatisfied(Condition condition, int failureCount) {
         description = descriptionOf(condition);
         reason = failureDescriptionFor(condition);
         this.failureCount = failureCount;
@@ -38,7 +38,7 @@ public class ConditionDissatisfied {
      * The number of times this condition has been dissatisfied during this poll,
      * including the evaluation reported by this notification.
      */
-    public long failureCount() { return failureCount; }
+    public int failureCount() { return failureCount; }
 
     private static String descriptionOf(Condition condition) {
         return StringDescription.asString(condition);
