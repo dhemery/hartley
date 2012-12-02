@@ -10,7 +10,7 @@ import org.hamcrest.TypeSafeMatcher;
  * This is primarily useful to provide a tacit matcher
  * for {@link Expressive} boolean features and samplers.
  */
-class QuietlyTrue extends TypeSafeMatcher<Boolean> {
+public class QuietlyTrue extends TypeSafeMatcher<Boolean> {
     private static final Matcher<Boolean> quietlyTrue = new QuietlyTrue();
 
     /**
