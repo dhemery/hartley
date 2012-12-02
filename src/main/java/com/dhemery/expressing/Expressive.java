@@ -92,6 +92,12 @@ public class Expressive {
     }
 
     /**
+     * Return the publisher to which this {@code Expressive} publishes polling events.
+     */
+    protected Publisher publisher() {
+        return publisher.get();
+    }
+    /**
      * Assert that the condition is true.
      * <p>Example:</p>
      * <pre>
