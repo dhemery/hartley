@@ -4,6 +4,6 @@ public class ASimplePoller extends PollerContract {
 
     @Override
     protected Poller poller() {
-        return new SimplePoller();
+        return new TickingPoller();
     }
 }

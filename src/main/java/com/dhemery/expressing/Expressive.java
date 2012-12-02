@@ -1,10 +1,8 @@
 package com.dhemery.expressing;
 
-import com.dhemery.configuring.ConfigurationException;
 import com.dhemery.core.*;
+import com.dhemery.polling.ExpiringTick;
 import com.dhemery.polling.PollTimeoutException;
-import com.dhemery.polling.Poller;
-import com.dhemery.polling.PublishingPoller;
 import com.dhemery.polling.Ticker;
 import com.dhemery.publishing.MethodSubscriptionChannel;
 import com.dhemery.publishing.Publisher;
@@ -12,70 +10,54 @@ import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 
+import static com.dhemery.polling.Until.until;
+
 /**
  * Expressive methods to make assertions, wait for conditions,
  * and establish preconditions before taking an action.
  */
 public class Expressive {
-    private final Supplier<Publisher> publisher;
-    private final Supplier<Ticker> ticker;
-    private final Supplier<Poller> poller= Lazily.get(pollerSupplier());
+    private final Supplier<Publisher> publisherSupplier;
+    private final Builder<Ticker> tickerBuilder;
 
     /**
-     * Initialize {@code Expressive} to use the given poller and default ticker.
-     */
-    protected Expressive(Publisher publisher, Ticker defaultTicker) {
-        this(new FixedValueSupplier<Publisher>(publisher), new FixedValueSupplier<Ticker>(defaultTicker));
-    }
-
-    /**
-     * Initialize {@code Expressive} to get its publisher and default ticker from the given suppliers.
-     * {@code Expressive} will call the publisher supplier once, before it conducts its first poll.
-     * {@code Expressive} will call the ticker supplier once, before it conducts its first poll
-     * that uses the default ticker.
-     * @param publisherSupplier supplies the publisher for this {@code Expressive} to use
-     * @param tickerSupplier supplies the default ticker for this {@code Expressive} to use
-     */
-    protected Expressive(Supplier<Publisher> publisherSupplier, Supplier<Ticker> tickerSupplier) {
-        publisher = Lazily.get(publisherSupplier);
-        ticker = Lazily.get(tickerSupplier);
-    }
-
-    /**
-     * Initialize {@code Expressive} to get its poller and default ticker by calling methods
-     * in the derived class.  {@code Expressive} will call {@link #getPublisher()} once, before
-     * it conducts its first poll.  {@code Expressive} will call {@link #getTicker()} once,
-     * before it conducts its first poll that uses the default ticker.
-     * <p>
-     * <strong>IMPORTANT:</strong> If you use this constructor,
-     * you must override {@link #getPublisher()} and {@link #getTicker()}.
+     * Initialize {@code Expressive} to use the given publisher and ticker builder.
+     * <p><strong>IMPORTANT:</strong>
+     * The ticker builder <strong>must</strong> build a new ticker each time {@code build()} is called.
      * </p>
      */
-    protected Expressive() {
-        publisher = Lazily.get(defaultPublisherSupplier());
-        ticker = Lazily.get(defaultTickerSupplier());
+    protected Expressive(Publisher publisher, Builder<Ticker> tickerBuilder) {
+        this(new FixedValueSupplier<Publisher>(publisher), tickerBuilder);
     }
 
     /**
-     * If you inizialized this {@code Expressive} using the no-args {@link #Expressive()} constructor,
-     * you must override {@code getTicker()} to provide the default ticker for {@code Expressive} to use.
-     * @return the default ticker for {@code Expressive} to use
+     * Initialize {@code Expressive} to get its publisher and tickers from the given sources.
+     * {@code Expressive} will call the publisher supplier once, before it conducts its first poll.
+     * {@code Expressive} will call the ticker builder before it conducts each poll.
+     * <p><strong>IMPORTANT:</strong>
+     * The ticker builder <strong>must</strong> build a new ticker each time {@code build()} is called.
+     * </p>
+     * @param publisherSupplier supplies publisher for this {@code Expressive} to use
+     * @param tickerBuilder supplies tickers for this {@code Expressive} to use
      */
-    protected Ticker getTicker() {
-        throw new ConfigurationException("Please override getTicker() to provide a default ticker for Expressive to use.");
+    protected Expressive(Supplier<Publisher> publisherSupplier, Builder<Ticker> tickerBuilder) {
+        this.publisherSupplier = Lazily.get(publisherSupplier);
+        this.tickerBuilder = tickerBuilder;
     }
 
     /**
-     * If you inizialized this {@code Expressive} using the no-args {@link #Expressive()} constructor,
-     * you must override {@code getPoller()} to provide the poller for {@code Expressive} to use.
-     * @return the poller for {@code Expressive} to use
+     * Initialize {@code Expressive} to use the given ticker builder and a default publisher.
+     * <p><strong>IMPORTANT:</strong>
+     * The ticker builder <strong>must</strong> build a new ticker each time {@code build()} is called.
+     * </p>
+     * <p>The default publisher is a {@link MethodSubscriptionChannel}.</p>
      */
-    protected Publisher getPublisher() {
-        return new MethodSubscriptionChannel();
+    protected Expressive(Builder<Ticker> tickerBuilder) {
+        this(new MethodSubscriptionChannel(), tickerBuilder);
     }
 
     /**
-     * Return the default ticker.
+     * Return a newly built ticker.
      * This method is named to read nicely in expressions.
      * <p>Example:</p>
      * <pre>
@@ -88,14 +70,14 @@ public class Expressive {
      * </pre>
      */
     protected Ticker eventually() {
-        return ticker.get();
+        return tickerBuilder.build();
     }
 
     /**
      * Return the publisher to which this {@code Expressive} publishes polling events.
      */
     protected Publisher publisher() {
-        return publisher.get();
+        return publisherSupplier.get();
     }
     /**
      * Assert that the condition is true.
@@ -538,24 +520,6 @@ public class Expressive {
         return FeatureExpressions.not(feature);
     }
 
-    private Supplier<Publisher> defaultPublisherSupplier() {
-        return new Supplier<Publisher>() {
-            @Override
-            public Publisher get() {
-                return getPublisher();
-            }
-        };
-    }
-
-    private Supplier<Ticker> defaultTickerSupplier() {
-        return new Supplier<Ticker>() {
-            @Override
-            public Ticker get() {
-                return getTicker();
-            }
-        };
-    }
-
     private static <S,V> Sampler<V> sampled(S subject, Feature<? super S, V> feature) {
         return new FeatureSampler<S,V>(subject, feature);
     }
@@ -564,17 +528,13 @@ public class Expressive {
         return new SamplerCondition<V>(variable, criteria);
     }
 
-    private Supplier<Poller> pollerSupplier() {
-        return new Supplier<Poller>() {
-            @Override
-            public Poller get() {
-                return new PublishingPoller(publisher.get());
-            }
-        };
-    }
-
     private void poll(Ticker ticker, Condition condition) {
-        poller.get().poll(ticker, condition);
+        RuntimeException expirationException = new PollTimeoutException(condition);
+        Runnable tick = tick(ticker, expirationException);
+        until(condition).repeat(tick);
     }
 
+    private Runnable tick(Ticker ticker, RuntimeException throwable) {
+        return new ExpiringTick(ticker, throwable);
+    }
 }
