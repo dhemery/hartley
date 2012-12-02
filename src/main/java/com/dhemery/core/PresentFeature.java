@@ -1,15 +1,15 @@
 package com.dhemery.core;
 
 /**
- * A feature that determines whether a {@link MaybePresent} subject is present.
+ * A feature that determines whether a {@link MaybePresents} subject is present.
  */
-public class PresentFeature extends NamedFeature<MaybePresent, Boolean> {
+public class PresentFeature extends NamedFeature<MaybePresents, Boolean> {
     private PresentFeature() {
         super("present");
     }
 
     @Override
-    public Boolean of(MaybePresent subject) {
+    public Boolean of(MaybePresents subject) {
         return subject.isPresent();
     }
 
