@@ -1,22 +1,20 @@
 package com.dhemery.expressing;
 
 import com.dhemery.core.*;
-import com.dhemery.polling.ExpiringTick;
-import com.dhemery.polling.PollTimeoutException;
-import com.dhemery.polling.Ticker;
+import com.dhemery.polling.*;
 import com.dhemery.publishing.MethodSubscriptionChannel;
+import com.dhemery.publishing.NullPublisher;
 import com.dhemery.publishing.Publisher;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-
-import static com.dhemery.polling.Until.until;
 
 /**
  * Expressive methods to make assertions, wait for conditions,
  * and establish preconditions before taking an action.
  */
 public class Expressive {
+    private static final Publisher DEFAULT_PUBLISHER = new NullPublisher();
     private final Supplier<Publisher> publisherSupplier;
     private final Builder<Ticker> tickerBuilder;
 
@@ -53,7 +51,7 @@ public class Expressive {
      * <p>The default publisher is a {@link MethodSubscriptionChannel}.</p>
      */
     protected Expressive(Builder<Ticker> tickerBuilder) {
-        this(new MethodSubscriptionChannel(), tickerBuilder);
+        this(DEFAULT_PUBLISHER, tickerBuilder);
     }
 
     /**
@@ -79,6 +77,7 @@ public class Expressive {
     protected Publisher publisher() {
         return publisherSupplier.get();
     }
+
     /**
      * Assert that the condition is true.
      * <p>Example:</p>
@@ -529,12 +528,12 @@ public class Expressive {
     }
 
     private void poll(Ticker ticker, Condition condition) {
-        RuntimeException expirationException = new PollTimeoutException(condition);
-        Runnable tick = tick(ticker, expirationException);
-        until(condition).repeat(tick);
+        poll(ticker, condition, publisher());
     }
 
-    private Runnable tick(Ticker ticker, RuntimeException throwable) {
-        return new ExpiringTick(ticker, throwable);
+    private static void poll(Ticker ticker, Condition condition, Publisher publisher) {
+        Runnable onExpiration = new ThrowPollTimeoutException(condition);
+        Poller poller = new PublishingExpiringPoller(ticker, onExpiration, publisher);
+        poller.poll(condition);
     }
 }
