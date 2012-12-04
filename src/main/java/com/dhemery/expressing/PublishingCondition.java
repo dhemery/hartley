@@ -1,4 +1,4 @@
-package com.dhemery.polling;
+package com.dhemery.expressing;
 
 import com.dhemery.core.Condition;
 import com.dhemery.polling.events.ConditionDissatisfied;

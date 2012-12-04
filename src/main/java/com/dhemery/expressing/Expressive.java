@@ -528,12 +528,10 @@ public class Expressive {
     }
 
     private void poll(Ticker ticker, Condition condition) {
-        poll(ticker, condition, publisher());
+        new TickingPoller(ticker).poll(publishing(condition));
     }
 
-    private static void poll(Ticker ticker, Condition condition, Publisher publisher) {
-        Runnable onExpiration = new ThrowPollTimeoutException(condition);
-        Poller poller = new PublishingExpiringPoller(ticker, onExpiration, publisher);
-        poller.poll(condition);
+    private Condition publishing(Condition condition) {
+        return new PublishingCondition(condition, publisher());
     }
 }

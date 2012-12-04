@@ -15,21 +15,21 @@ public abstract class PollerContract {
     protected abstract Poller pollerForContract();
 
     @Test
-    public void evaluatesUntilTheConditionIsSatisfied() {
+    public void pollsUntilTheConditionIsSatisfied() {
         final Sequence polling = context.sequence("polling");
         context.checking(new Expectations(){{
-            exactly(3).of(condition).isSatisfied(); will(returnValue(false)); inSequence(polling);
-            oneOf(condition).isSatisfied(); will(returnValue(true)); inSequence(polling);
+            exactly(3).of(condition).isSatisfied(); inSequence(polling); will(returnValue(false));
+            oneOf(condition).isSatisfied();         inSequence(polling); will(returnValue(true));
         }});
 
         pollerForContract().poll(condition);
     }
 
     @Test
-    public void stopsEvaluatingWhenTheConditionIsSatisfied() {
+    public void stopsPollingWhenTheConditionIsSatisfied() {
         final Sequence polling = context.sequence("polling");
         context.checking(new Expectations(){{
-            oneOf(condition).isSatisfied(); will(returnValue(true)); inSequence(polling);
+            oneOf(condition).isSatisfied(); inSequence(polling); will(returnValue(true));
             never(condition).isSatisfied(); inSequence(polling);
         }});
 
