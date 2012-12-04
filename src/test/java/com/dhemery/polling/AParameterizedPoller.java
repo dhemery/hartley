@@ -16,7 +16,6 @@ public class AParameterizedPoller extends PollerContract {
     @Mock public Action<Condition> betweenPolls;
     @Mock public Action<Condition> onPollFailure;
 
-
     @Override
     protected Poller pollerForContract() {
         context.checking(new Expectations(){{
