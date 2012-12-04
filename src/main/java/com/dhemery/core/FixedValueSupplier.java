@@ -1,8 +1,8 @@
 package com.dhemery.core;
 
 /**
- * A supplier that supplies a given fixed value.
- * @param <T> the type of value supplied
+ * A supplier that supplies a given fixed object.
+ * @param <T> the type of object to supply
  */
 public class FixedValueSupplier<T> implements Supplier<T> {
     private final T value;

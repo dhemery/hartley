@@ -1,8 +1,8 @@
 package com.dhemery.core;
 
 /**
- * Lazily obtains a value of type {@code T} from another supplier.
- * @param <T> the type of object to build
+ * Lazily supplies an object obtained from another supplier.
+ * @param <T> the type of object to supply
  * @see Lazy
  */
 public class SuppliedLazy<T> implements Lazy<T> {

@@ -2,8 +2,9 @@ package com.dhemery.core;
 
 /**
  * An action that describes itself with a fixed name.
+ * @param <S> the type of subject on which to act
  */
-public abstract class NamedAction<T> extends Named implements Action<T> {
+public abstract class NamedAction<S> extends Named implements Action<S> {
     /**
      * Create a named action.
      */

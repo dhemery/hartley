@@ -1,7 +1,7 @@
 package com.dhemery.core;
 
 /**
- * A feature that determines whether the {@link MaybeVisible} subject is visible.
+ * A feature that determines whether its {@link MaybeVisible} subject is visible.
  */
 public class VisibleFeature extends NamedFeature<MaybeVisible, Boolean> {
     private VisibleFeature() {
@@ -9,8 +9,8 @@ public class VisibleFeature extends NamedFeature<MaybeVisible, Boolean> {
     }
 
     @Override
-    public Boolean of(MaybeVisible object) {
-        return object.isVisible();
+    public Boolean of(MaybeVisible subject) {
+        return subject.isVisible();
     }
 
     /**

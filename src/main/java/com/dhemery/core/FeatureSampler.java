@@ -6,20 +6,20 @@ import org.hamcrest.internal.SelfDescribingValue;
 
 /**
  * A sampler that samples a feature of a subject.
- * @param <S> the type of subject
- * @param <V> the type of feature
+ * @param <S> the type of subject that has the feature
+ * @param <F> the type of feature
  */
-public class FeatureSampler<S,V> implements Sampler<V> {
+public class FeatureSampler<S, F> implements Sampler<F> {
     private final S subject;
-    private final Feature<? super S, V> feature;
-    private V sampledValue;
+    private final Feature<? super S, F> feature;
+    private F sampledValue;
 
     /**
      * Create a sampler that samples the feature of the subject.
      * @param subject the subject whose feature to sample
      * @param feature the feature to sample
      */
-    public FeatureSampler(S subject, Feature<? super S, V> feature) {
+    public FeatureSampler(S subject, Feature<? super S, F> feature) {
         this.subject = subject;
         this.feature = feature;
     }
@@ -30,7 +30,7 @@ public class FeatureSampler<S,V> implements Sampler<V> {
     }
 
     @Override
-    public V sampledValue() {
+    public F sampledValue() {
         return sampledValue;
     }
 

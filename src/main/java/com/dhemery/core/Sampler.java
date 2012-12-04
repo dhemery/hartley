@@ -4,7 +4,7 @@ import org.hamcrest.SelfDescribing;
 
 /**
  * Samples a variable and retains the sample.
- * @param <V> the type of value to sample
+ * @param <V> the type of variable to sample
  */
 public interface Sampler<V> extends SelfDescribing {
     /**

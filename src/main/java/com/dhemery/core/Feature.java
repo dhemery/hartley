@@ -3,13 +3,13 @@ package com.dhemery.core;
 import org.hamcrest.SelfDescribing;
 
 /**
- * A feature of an object.
- * @param <T> The type of object that has the feature
- * @param <V> The type of the feature
+ * Retrieves the value of a feature for a subject.
+ * @param <S> The type of subject that has the feature
+ * @param <F> The type of feature
  */
-public interface Feature<T, V>  extends SelfDescribing {
+public interface Feature<S, F>  extends SelfDescribing {
 	/**
-     * Return the current value of the feature for the object.
+     * Return the subject's current value for the feature.
 	 */
-	V of(T object);
+	F of(S subject);
 }
