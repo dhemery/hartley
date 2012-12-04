@@ -1,20 +1,22 @@
 package com.dhemery.expressing;
 
+import com.dhemery.configuring.ConfigurationException;
 import com.dhemery.core.*;
-import com.dhemery.polling.*;
-import com.dhemery.publishing.MethodSubscriptionChannel;
-import com.dhemery.publishing.NullPublisher;
+import com.dhemery.polling.PollTimeoutException;
+import com.dhemery.polling.Ticker;
+import com.dhemery.polling.TickingPoller;
 import com.dhemery.publishing.Publisher;
 import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+
+import static com.dhemery.expressing.QuietlyTrue.isQuietlyTrue;
 
 /**
  * Expressive methods to make assertions, wait for conditions,
  * and establish preconditions before taking an action.
  */
 public class Expressive {
-    private static final Publisher DEFAULT_PUBLISHER = new NullPublisher();
     private final Supplier<Publisher> publisherSupplier;
     private final Builder<Ticker> tickerBuilder;
 
@@ -44,14 +46,25 @@ public class Expressive {
     }
 
     /**
-     * Initialize {@code Expressive} to use the given ticker builder and a default publisher.
-     * <p><strong>IMPORTANT:</strong>
-     * The ticker builder <strong>must</strong> build a new ticker each time {@code build()} is called.
-     * </p>
-     * <p>The default publisher is a {@link MethodSubscriptionChannel}.</p>
+     * Initialize {@code Expressive} to get its publisher supplier and ticker builder
+     * from another {@code Expressive}.
      */
-    protected Expressive(Builder<Ticker> tickerBuilder) {
-        this(DEFAULT_PUBLISHER, tickerBuilder);
+    protected Expressive(Expressive source) {
+        publisherSupplier = source.publisherSupplier;
+        tickerBuilder = source.tickerBuilder;
+    }
+
+    /**
+     * Initialize {@code Expressive} to get its publisher supplier and ticker builder from
+     * methods implemented by a subclass.
+     * <p><strong>IMPORTANT:</strong>
+     * Each subclass that uses this constructor <strong>must</strong> override
+     * both {@link #publisherSupplier()} and {@link #tickerBuilder()}.
+     * </p>
+     */
+    protected Expressive() {
+        publisherSupplier = Lazily.get(publisherSupplierFromSubclass());
+        tickerBuilder = tickerBuilderFromSubclass();
     }
 
     /**
@@ -137,7 +150,7 @@ public class Expressive {
      * }
      */
     public static void assertThat(Sampler<Boolean> variable) {
-        assertThat(variable, QuietlyTrue.isQuietlyTrue());
+        assertThat(variable, isQuietlyTrue());
     }
 
     /**
@@ -167,7 +180,7 @@ public class Expressive {
      * }
      */
     public void assertThat(Ticker ticker, Sampler<Boolean> variable) {
-        assertThat(variable, ticker, QuietlyTrue.isQuietlyTrue());
+        assertThat(variable, ticker, isQuietlyTrue());
     }
 
     /**
@@ -200,7 +213,7 @@ public class Expressive {
      * }
      */
     public static <S> void assertThat(S subject, Feature<? super S,Boolean> feature) {
-        assertThat(subject, feature, QuietlyTrue.isQuietlyTrue());
+        assertThat(subject, feature, isQuietlyTrue());
     }
 
     /**
@@ -233,7 +246,7 @@ public class Expressive {
      * }
      */
     public <S> void assertThat(S subject, Ticker ticker, Feature<? super S,Boolean> feature) {
-        assertThat(subject, feature, ticker, QuietlyTrue.isQuietlyTrue());
+        assertThat(subject, feature, ticker, isQuietlyTrue());
     }
 
     /**
@@ -267,7 +280,7 @@ public class Expressive {
      * Report whether a sample of the variable is {@code true}.
      */
     public static boolean the(Sampler<Boolean> variable) {
-        return the(variable, QuietlyTrue.isQuietlyTrue());
+        return the(variable, isQuietlyTrue());
     }
 
     /**
@@ -281,7 +294,7 @@ public class Expressive {
      * Report whether a polled sample of the variable is {@code true}.
      */
     public boolean the(Sampler<Boolean> variable, Ticker ticker) {
-        return the(variable, ticker, QuietlyTrue.isQuietlyTrue());
+        return the(variable, ticker, isQuietlyTrue());
     }
 
     /**
@@ -302,7 +315,7 @@ public class Expressive {
      * Report whether a sample of the feature is {@code true}.
      */
     public static <S> boolean the(S subject, Feature<? super S,Boolean> feature) {
-        return the(subject, feature, QuietlyTrue.isQuietlyTrue());
+        return the(subject, feature, isQuietlyTrue());
     }
 
     /**
@@ -316,7 +329,7 @@ public class Expressive {
      * Report whether a polled sample of the feature is {@code true}.
      */
     public <S> boolean the(S subject, Ticker ticker, Feature<? super S,Boolean> feature) {
-        return the(subject, feature, ticker, QuietlyTrue.isQuietlyTrue());
+        return the(subject, feature, ticker, isQuietlyTrue());
     }
 
     /**
@@ -347,7 +360,7 @@ public class Expressive {
      * Uses the default poller.
      */
     public void waitUntil(Sampler<Boolean> variable) {
-        waitUntil(variable, eventually(), QuietlyTrue.isQuietlyTrue());
+        waitUntil(variable, eventually(), isQuietlyTrue());
     }
 
     /**
@@ -361,7 +374,7 @@ public class Expressive {
      * Wait until a polled sample of the variable is [@code true).
      */
     public void waitUntil(Sampler<Boolean> variable, Ticker ticker) {
-        waitUntil(variable, ticker, QuietlyTrue.isQuietlyTrue());
+        waitUntil(variable, ticker, isQuietlyTrue());
     }
 
     /**
@@ -377,7 +390,7 @@ public class Expressive {
      * Uses the default poller.
      */
     public <S> void waitUntil(S subject, Feature<? super S,Boolean> feature) {
-        waitUntil(subject, feature, eventually(), QuietlyTrue.isQuietlyTrue());
+        waitUntil(subject, feature, eventually(), isQuietlyTrue());
     }
 
     /**
@@ -391,7 +404,7 @@ public class Expressive {
      * Wait until a polled sample of the feature is {@code true}.
      */
     public <S> void waitUntil(S subject, Ticker ticker, Feature<? super S,Boolean> feature) {
-        waitUntil(subject, feature, ticker, QuietlyTrue.isQuietlyTrue());
+        waitUntil(subject, feature, ticker, isQuietlyTrue());
     }
 
     /**
@@ -407,7 +420,7 @@ public class Expressive {
      * Uses the default poller.
      */
     public <S> S when(S subject, Feature<? super S,Boolean> feature) {
-        return when(subject, feature, eventually(), QuietlyTrue.isQuietlyTrue());
+        return when(subject, feature, eventually(), isQuietlyTrue());
     }
 
     /**
@@ -422,7 +435,7 @@ public class Expressive {
      * Return the subject when a polled sample of the feature is {@code true}.
      */
     public <S> S when(S subject, Ticker ticker, Feature<? super S,Boolean> feature) {
-        return when(subject, feature, ticker, QuietlyTrue.isQuietlyTrue());
+        return when(subject, feature, ticker, isQuietlyTrue());
     }
 
     /**
@@ -438,7 +451,7 @@ public class Expressive {
      * Uses the default poller.
      */
     public <S> void when(S subject, Feature<? super S,Boolean> feature, Action<? super S> action) {
-        when(subject, feature, QuietlyTrue.isQuietlyTrue(), action);
+        when(subject, feature, isQuietlyTrue(), action);
     }
 
     /**
@@ -453,7 +466,7 @@ public class Expressive {
      * Act on the subject when a polled sample of the feature is {@code true}.
      */
     public <S> void when(S subject, Ticker ticker, Feature<? super S,Boolean> feature, Action<? super S> action) {
-        when(subject, feature, ticker, QuietlyTrue.isQuietlyTrue(), action);
+        when(subject, feature, ticker, isQuietlyTrue(), action);
     }
 
     /**
@@ -533,5 +546,41 @@ public class Expressive {
 
     private Condition publishing(Condition condition) {
         return new PublishingCondition(condition, publisher());
+    }
+
+    private Builder<Ticker> tickerBuilderFromSubclass() {
+        return new Builder<Ticker>() {
+            @Override
+            public Ticker build() {
+                return tickerBuilder().build();
+            }
+        };
+    }
+
+    private Supplier<Publisher> publisherSupplierFromSubclass() {
+        return new Supplier<Publisher>() {
+            @Override
+            public Publisher get() {
+                return publisherSupplier().get();
+            }
+        };
+    }
+
+    protected Supplier<Publisher> publisherSupplier() {
+        StringBuilder message = new StringBuilder()
+                .append("Default Expressive cannot get a publisher supplier.\n")
+                .append("Each class that extends Expressive must do one of the following:\n")
+                .append("  - Call an Expressive constructor other than the default one (Expressive()).")
+                .append("  - Override the publisherSupplier() method to return a publisher supplier.");
+        throw new ConfigurationException(message.toString());
+    }
+
+    protected Builder<Ticker> tickerBuilder() {
+        StringBuilder message = new StringBuilder()
+                .append("Default Expressive cannot get a ticker builder.\n")
+                .append("Each class that extends Expressive must do one of the following:\n")
+                .append("  - Call an Expressive constructor other than the default one (Expressive()).")
+                .append("  - Override the tickerBuilder() method to return a ticker builder.");
+        throw new ConfigurationException(message.toString());
     }
 }
