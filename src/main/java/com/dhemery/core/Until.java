@@ -1,6 +1,4 @@
-package com.dhemery.polling;
-
-import com.dhemery.core.Condition;
+package com.dhemery.core;
 
 public class Until {
     private final Condition condition;
