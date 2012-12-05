@@ -2,119 +2,62 @@ package com.dhemery.configuring;
 
 import com.dhemery.core.Supplier;
 
-import java.util.*;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 
 /**
  * A set of configuration options.
  */
-public class Configuration {
-    private final Map<String, String> options = new HashMap<String, String>();
+public interface Configuration {
+    /**
+     * Return a map of this configuration's options.
+     */
+    Map<String,String> asMap();
 
     /**
-     * Create a configuration with no options defined.
+     * Return a properties list with this configuration's options.
      */
-    public Configuration() {
-    }
-
-
-    /**
-     * Create a configuration by copying options from another configuration.
-     */
-    public Configuration(Configuration other) {
-        merge(other.options);
-    }
-
-    /**
-     * Create a configuration by copying options from a map.
-     */
-    public Configuration(Map<String, String> map) {
-        merge(map);
-    }
-
-    /**
-     * Create a configuration by copying options from a property list.
-     */
-    public Configuration(Properties properties) {
-        merge(properties);
-    }
+    Properties asProperties();
 
     /**
      * Define an option by supplying a value.
      * If the configuration already defines the option
      * the given value replaces the old one.
      */
-    public void define(String name, String value) {
-        options.put(name, value);
-    }
+    void define(String name, String value);
 
     /**
      * Indicate whether this configuration defines the named option.
      */
-    public Boolean defines(String name) {
-        return options.containsKey(name);
-    }
+    Boolean defines(String name);
 
     /**
      * Merge a set of options from another configuration into this configuration.
      */
-    public void merge(Configuration other) {
-        merge(other.options);
-    }
+    void merge(Configuration other);
 
     /**
      * Merge a set of options from a map into this configuration.
      */
-    public void merge(Map<String,String> map) {
-        options.putAll(map);
-    }
+    void merge(Map<String, String> map);
 
     /**
      * Merge a set of options from a property list into this configuration.
      */
-    public void merge(Properties properties) {
-        for(String propertyName : properties.stringPropertyNames()) {
-            options.put(propertyName, properties.getProperty(propertyName));
-        }
-    }
-
-    /**
-     * Merge this configuration's options into another configuration.
-     */
-    public void mergeInto(Configuration other) {
-        mergeInto(other.options);
-    }
-
-    /**
-     * Merge this configuration's options into a map.
-     */
-    public void mergeInto(Map<String, String> map) {
-        map.putAll(options);
-    }
-
-    /**
-     * Merge this configuration's options into a property list.
-     */
-    public void mergeInto(Properties properties) {
-        for(Map.Entry<String,String> entry : options.entrySet()) {
-            properties.setProperty(entry.getKey(), entry.getValue());
-        }
-    }
+    void merge(Properties properties);
 
     /**
      * Return the names of the configuration's defined options.
      */
-    public Set<String> names() {
-        return Collections.unmodifiableSet(options.keySet());
-    }
+    Set<String> names();
 
     /**
      * Return the value of an option.
      * @param name the name of an option
      * @return the value of the option, or {@code null} if the configuration does not define the option
      */
-    public String option(String name) {
-        return options.get(name);
-    }
+    String option(String name);
 
     /**
      * Return the value of an option,
@@ -126,9 +69,7 @@ public class Configuration {
      * @param defaultValue the value to return if the configuration does not define the option
      * @return the value of the option, or {@code defaultValue} if the configuration does not define the option
      */
-    public String option(String name, String defaultValue) {
-        return defines(name) ? option(name) : defaultValue;
-    }
+    String option(String name, String defaultValue);
 
     /**
      * Return the value of an option,
@@ -140,18 +81,13 @@ public class Configuration {
      * @param supplier a supplier that supplies a value if the configuration does not define the option
      * @return the value of the option, or the value supplied by {@code supplier} if the configuration does not define the option
      */
-    public String option(String name, Supplier<String> supplier) {
-        return defines(name) ? option(name) : supplier.get();
-    }
+    String option(String name, Supplier<String> supplier);
 
     /**
      * Return the value of a required option.
      * @param name the name of an option
      * @return the value of the option
-     * @throws ConfigurationException if this configuration does not define the option
+     * @throws com.dhemery.configuring.ConfigurationException if this configuration does not define the option
      */
-    public String requiredOption(String name) {
-        if(defines(name)) return option(name);
-        throw new ConfigurationException("The configuration does not define the required option " + name);
-    }
+    String requiredOption(String name);
 }

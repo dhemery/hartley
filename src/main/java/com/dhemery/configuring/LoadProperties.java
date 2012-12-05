@@ -36,7 +36,7 @@ public class LoadProperties {
     /**
      * Copy the loaded properties into a configuration.
      */
-    public void into(Configuration configuration) {
+    public void into(MapBackedConfiguration configuration) {
         for (String name : properties.stringPropertyNames()) {
             configuration.define(name, properties.getProperty(name));
         }
