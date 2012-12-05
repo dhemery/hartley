@@ -12,7 +12,7 @@ import org.hamcrest.Description;
 public class PublishingCondition implements Condition {
     private final Condition condition;
     private final Publisher publisher;
-    private int failureCount;
+    private int failureCount = 0;
 
     /**
      * Wraps the given condition to publish the results of its evaluations.

@@ -15,8 +15,36 @@ import static com.dhemery.expressing.QuietlyTrue.isQuietlyTrue;
  * and establish preconditions before taking an action.
  */
 public abstract class AbstractExpressive {
-    public abstract Builder<Ticker> tickerBuilder();
+    /**
+     * Return a decorator to decorate a condition in preparation for a poll.
+     * Before polling each condition,
+     * {@code Expressive} calls this method to obtain a decorator,
+     * then calls the decorator's {@link Decorator#decorate(Object)} method
+     * to decorate the condition.
+     * <p>A typical implementation will return the same decorator for each call.</p>
+     * <p>A common use for condition decorators is to wrap the condition in a {@link PublishingCondition}
+     * that publishes the result of each evaluation during the poll.</p>
+     * @return a condition decorator
+     */
     public abstract Decorator<Condition> conditionDecorator();
+
+    /**
+     * Return a builder that can build a default ticker for use in polling.
+     * Whenever {@code Expressive} needs a default ticker,
+     * it first calls this method to obtain a builder,
+     * then calls the builder's {@link Builder#build()} method to obtain a ticker.
+     * {@code Expressive} obtains a default ticker whenever:
+     * <ul>
+     * <li>A user calls {@link #eventually()} to obtain a default ticker.</li>
+     * <li>A user calls a {@code waitUntil()} or {@code when()} method that does not take an explicit ticker parameter.</li>
+     * </ul>
+     * A typical implementation will return the same builder for each call.
+     * <p><strong>IMPORTANT:</strong>
+     * The returned builder <strong>must</strong> build a new ticker each time its {@code build()} method is called.
+     * </p>
+     * @return a ticker builder
+     */
+    public abstract Builder<Ticker> tickerBuilder();
 
     /**
      * Assert that the condition is true.
@@ -198,7 +226,7 @@ public abstract class AbstractExpressive {
     }
 
     /**
-     * Return a new ticker created by the ticker builder.
+     * Create a new default ticker built by calling the ticker builder.
      * This method is named to read nicely in expressions.
      * <p>Example:</p>
      * <pre>
@@ -341,7 +369,7 @@ public abstract class AbstractExpressive {
 
     /**
      * Wait until the polled condition is satisfied.
-     * Uses the default poller.
+     * Uses a default ticker.
      */
     public void waitUntil(Condition condition) {
         waitUntil(eventually(), condition);
@@ -356,7 +384,7 @@ public abstract class AbstractExpressive {
 
     /**
      * Wait until a polled sample of the variable satisfies the criteria.
-     * Uses the default poller.
+     * Uses a default ticker.
      */
     public <V> void waitUntil(Sampler<V> variable, Matcher<? super V> criteria) {
         waitUntil(variable, eventually(), criteria);
@@ -364,7 +392,7 @@ public abstract class AbstractExpressive {
 
     /**
      * Wait until a polled sample of the variable is {@code true}.
-     * Uses the default poller.
+     * Uses a default ticker.
      */
     public void waitUntil(Sampler<Boolean> variable) {
         waitUntil(variable, eventually(), isQuietlyTrue());
@@ -386,7 +414,7 @@ public abstract class AbstractExpressive {
 
     /**
      * Wait until a polled sample of the feature satisfies the criteria.
-     * Uses the default poller.
+     * Uses a default ticker.
      */
     public <S,V> void waitUntil(S subject, Feature<? super S,V> feature, Matcher<? super V> criteria) {
         waitUntil(subject, feature, eventually(), criteria);
@@ -394,7 +422,7 @@ public abstract class AbstractExpressive {
 
     /**
      * Wait until a polled sample of the feature is {@code true}.
-     * Uses the default poller.
+     * Uses a default ticker.
      */
     public <S> void waitUntil(S subject, Feature<? super S,Boolean> feature) {
         waitUntil(subject, feature, eventually(), isQuietlyTrue());
@@ -416,7 +444,7 @@ public abstract class AbstractExpressive {
 
     /**
      * Return the subject when a polled sample of the feature satisfies the criteria.
-     * Uses the default poller.
+     * Uses a default ticker.
      */
     public <S,V> S when(S subject, Feature<? super S,V> feature, Matcher<? super V> criteria) {
         return when(subject, feature, eventually(), criteria);
@@ -424,7 +452,7 @@ public abstract class AbstractExpressive {
 
     /**
      * Return the subject when a polled sample of the feature is {@code true}.
-     * Uses the default poller.
+     * Uses a default ticker.
      */
     public <S> S when(S subject, Feature<? super S,Boolean> feature) {
         return when(subject, feature, eventually(), isQuietlyTrue());
@@ -447,7 +475,7 @@ public abstract class AbstractExpressive {
 
     /**
      * Act on the subject when a polled sample of the feature satisfies the criteria.
-     * Uses the default poller.
+     * Uses a default ticker.
      */
     public <S,V> void when(S subject, Feature<? super S,V> feature, Matcher<? super V> criteria, Action<? super S> action) {
         when(subject, feature, eventually(), criteria, action);
@@ -455,7 +483,7 @@ public abstract class AbstractExpressive {
 
     /**
      * Act on the subject when a polled sample of the feature is {@code true}.
-     * Uses the default poller.
+     * Uses a default ticker.
      */
     public <S> void when(S subject, Feature<? super S,Boolean> feature, Action<? super S> action) {
         when(subject, feature, isQuietlyTrue(), action);
@@ -485,10 +513,14 @@ public abstract class AbstractExpressive {
     }
 
     private void poll(Ticker ticker, Condition condition) {
-        new TickingPoller(ticker).poll(decorated(condition));
+        poller(ticker).poll(decorated(condition));
     }
 
     private Condition decorated(Condition condition) {
         return conditionDecorator().decorate(condition);
+    }
+
+    private TickingPoller poller(Ticker ticker) {
+        return new TickingPoller(ticker);
     }
 }

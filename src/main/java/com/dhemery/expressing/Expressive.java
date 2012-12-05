@@ -23,7 +23,7 @@ public class Expressive extends AbstractExpressive {
      * Create an {@code Expressive} that gets its ticker builder and condition decorator
      * from the given source.
      */
-    public Expressive(Expressive source) {
+    public Expressive(AbstractExpressive source) {
         this(source.tickerBuilder(), source.conditionDecorator());
     }
 
