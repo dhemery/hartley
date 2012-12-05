@@ -19,7 +19,7 @@ public class PublishingProcess implements OSProcess {
      * Wrap the given process and publish events when its {@link #output()} method is called.
      * @param publisher the publisher through which to publish events
      * @param command the command that launched the process
-     * @param process the process to wrap
+     * @param process the process to decorate
      */
     public PublishingProcess(Publisher publisher, OSCommand command, OSProcess process) {
         this.publisher = publisher;

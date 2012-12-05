@@ -19,7 +19,7 @@ public class PublishingCommand implements RunnableCommand {
     /**
      * Wrap the given command and publish events when it runs.
      * @param publisher the publisher through which to publish events
-     * @param command the command to wrap
+     * @param command the command to decorate
      */
     public PublishingCommand(Publisher publisher, RunnableCommand command) {
         this.publisher = publisher;
