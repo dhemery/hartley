@@ -5,7 +5,7 @@ import com.dhemery.polling.Ticker;
 
 /**
  * An {@link Expressive} that forwards to another {@code Expressive}
- * to obtain tickers and perform polls.
+ * to obtain default tickers and perform polls.
  */
 public class ForwardingExpressive extends AbstractExpressive {
     private final Expressive base;

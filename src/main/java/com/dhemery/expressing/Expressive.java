@@ -8,10 +8,11 @@ import com.dhemery.polling.Ticker;
 import org.hamcrest.Matcher;
 
 /**
- * Expressive methods to make assertions,
+ * Composable methods to
  * evaluate boolean expressions,
+ * make assertions,
  * wait for conditions,
- * and perform actions when preconditions are met.
+ * and take action when preconditions are met.
  */
 public interface Expressive {
     /**
@@ -85,11 +86,11 @@ public interface Expressive {
 
     /**
      * Return the {@code Expressive} that ultimately
-     * supplies this {@code Expressive}'s tickers
-     * and performs this {@code Expressive}'s polls.
+     * supplies this {@code Expressive}'s default tickers
+     * and conducts this {@code Expressive}'s polls.
      * Typically one {@code Expressive} in a system is the base,
      * and all others are {@link ForwardingExpressive}s
-     * that delegate to the base to obtain default tickers and perform polls.
+     * that delegate to the base to obtain default tickers and conduct polls.
      */
     Expressive base();
 

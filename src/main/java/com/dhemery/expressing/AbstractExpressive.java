@@ -13,7 +13,7 @@ import static com.dhemery.core.SamplerCondition.sampleOf;
 import static com.dhemery.expressing.QuietlyTrue.isQuietlyTrue;
 
 /**
- * An abstract {@link Expressive} that delegates {@link #eventually} and {@link #poll} calls to its subclass.
+ * An abstract {@link Expressive} that delegates to a subclass to obtain default tickers and conduct polls.
  */
 public abstract class AbstractExpressive extends ImmediateExpressions implements Expressive {
 
