@@ -38,4 +38,11 @@ public class SamplerCondition<V> implements Condition {
     public void describeDissatisfactionTo(Description description) {
         criteria.describeMismatch(variable.sampledValue(), description);
     }
+
+    /**
+     * A factory method for creating {@code SamplerCondition}s.
+     */
+    public static <V> Condition sampleOf(Sampler<V> variable, Matcher<? super V> criteria) {
+        return new SamplerCondition<V>(variable, criteria);
+    }
 }

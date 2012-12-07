@@ -46,4 +46,11 @@ public class FeatureSampler<S, F> implements Sampler<F> {
         if(subject instanceof SelfDescribing) return (SelfDescribing) subject;
         return new SelfDescribingValue<S>(subject);
     }
+
+    /**
+     * A factory method for creating {@code FeatureSampler}s.
+     */
+    public static <S,V> Sampler<V> sampled(S subject, Feature<? super S, V> feature) {
+        return new FeatureSampler<S,V>(subject, feature);
+    }
 }
