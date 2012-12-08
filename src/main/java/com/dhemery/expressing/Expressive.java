@@ -4,8 +4,14 @@ import com.dhemery.core.Action;
 import com.dhemery.core.Condition;
 import com.dhemery.core.Feature;
 import com.dhemery.core.Sampler;
+import com.dhemery.polling.PollTimeoutException;
 import com.dhemery.polling.Ticker;
+import com.dhemery.polling.TickingPoller;
 import org.hamcrest.Matcher;
+
+import static com.dhemery.core.FeatureSampler.sampled;
+import static com.dhemery.core.SamplerCondition.sampleOf;
+import static com.dhemery.expressing.QuietlyTrue.isQuietlyTrue;
 
 /**
  * Composable methods to
@@ -14,7 +20,19 @@ import org.hamcrest.Matcher;
  * wait for conditions,
  * and take action when preconditions are met.
  */
-public interface Expressive {
+public abstract class Expressive extends ImmediateExpressions {
+    public abstract Ticker createDefaultTicker();
+
+    /**
+     * Prepare the condition for polling.
+     * This implementation simply returns the condition unenhanced.
+     * Subclasses may wish to override this method to enhance the condition before polling.
+     * A typical use is to wrap the condition in a {@link PublishingCondition}.
+     */
+    public Condition prepareToPoll(Condition condition) {
+        return condition;
+    }
+
     /**
      * Assert that the condition is satisfied during a poll.
      * <p>Example:</p>
@@ -27,7 +45,9 @@ public interface Expressive {
      * assertThat(withinTenSeconds, launchIsInProgress);
      * }
      */
-    void assertThat(Ticker ticker, Condition condition);
+    public void assertThat(Ticker ticker, Condition condition) {
+        poll(ticker, condition);
+    }
 
     /**
      * Assert that a polled sample of the variable satisfies the criteria.
@@ -40,7 +60,9 @@ public interface Expressive {
      * assertThat(threadCount, eventually(), is(9));
      * }
      */
-    <V> void assertThat(Sampler<V> variable, Ticker ticker, Matcher<? super V> criteria);
+    public <V> void assertThat(Sampler<V> variable, Ticker ticker, Matcher<? super V> criteria) {
+        assertThat(ticker, sampleOf(variable, criteria));
+    }
 
     /**
      * Assert that a polled sample of the variable is {@code true}.
@@ -53,7 +75,9 @@ public interface Expressive {
      * assertThat(eventually(), theresAFlyInMySoup);
      * }
      */
-    void assertThat(Ticker ticker, Sampler<Boolean> variable);
+    public void assertThat(Ticker ticker, Sampler<Boolean> variable) {
+        assertThat(variable, ticker, isQuietlyTrue());
+    }
 
     /**
      * Assert that a polled sample of the feature satisfies the criteria.
@@ -68,7 +92,9 @@ public interface Expressive {
      * assertThat(searchResultsPage, resultCount(), withinTenSeconds, is(greaterThan(9)));
      * }
      */
-    <S,V> void assertThat(S subject, Feature<? super S, V> feature, Ticker ticker, Matcher<? super V> criteria);
+    public <S,V> void assertThat(S subject, Feature<? super S, V> feature, Ticker ticker, Matcher<? super V> criteria) {
+        assertThat(sampled(subject, feature), ticker, criteria);
+    }
 
     /**
      * Assert that a polled sample of the feature is {@code true}.
@@ -82,150 +108,206 @@ public interface Expressive {
      * assertThat(settingsPage, eventually(), is(displayed()));
      * }
      */
-    <S> void assertThat(S subject, Ticker ticker, Feature<? super S, Boolean> feature);
+    public <S> void assertThat(S subject, Ticker ticker, Feature<? super S, Boolean> feature) {
+        assertThat(subject, feature, ticker, isQuietlyTrue());
+    }
 
     /**
-     * Return the {@code Expressive} that ultimately
-     * supplies this {@code Expressive}'s default tickers
-     * and conducts this {@code Expressive}'s polls.
-     * Typically one {@code Expressive} in a system is the base,
-     * and all others are {@link ForwardingExpressive}s
-     * that delegate to the base to obtain default tickers and conduct polls.
+     * Return a new default ticker obtained from this {@code Expressive}'s helper.
+     * This method is named to read nicely in expressions.
+     * <p>Example:</p>
+     * <pre>
+     * {@code
+     *
+     * View settingsView = ...;
+     * Feature<View,Boolean> visible() { ... }
+     * assertThat(settingsView, eventually(), is(visible()));
+     * }
+     * </pre>
      */
-    Expressive base();
 
-    Ticker createDefaultTicker();
-
-    /**
-     * Prepare the condition for polling.
-     * A typical implementation will wrap the condition in a
-     * {@link PublishingCondition} that publishes each evaluation.
-     * Other implementations will simply return the condition
-     * without enhancement.
-     */
-    Condition prepareToPoll(Condition condition);
+    public Ticker eventually() {
+        return createDefaultTicker();
+    }
 
     /**
      * Report whether the condition is satisfied during a poll.
      */
-    boolean the(Condition condition, Ticker ticker);
+    public boolean the(Condition condition, Ticker ticker) {
+        try {
+            poll(ticker, condition);
+            return true;
+        } catch (PollTimeoutException ignored) {
+            return false;
+        }
+    }
 
     /**
      * Report whether a polled sample of the variable satisfies the criteria.
      */
-    <V> boolean the(Sampler<V> variable, Ticker ticker, Matcher<? super V> criteria);
+    public <V> boolean the(Sampler<V> variable, Ticker ticker, Matcher<? super V> criteria) {
+        return the(sampleOf(variable, criteria), ticker);
+    }
 
     /**
      * Report whether a polled sample of the variable is {@code true}.
      */
-    boolean the(Sampler<Boolean> variable, Ticker ticker);
+    public boolean the(Sampler<Boolean> variable, Ticker ticker) {
+        return the(variable, ticker, isQuietlyTrue());
+    }
 
     /**
      * Report whether a polled sample of the feature satisfies the criteria.
      */
-    <S,V> boolean the(S subject, Feature<? super S, V> feature, Ticker ticker, Matcher<? super V> criteria);
+    public <S,V> boolean the(S subject, Feature<? super S, V> feature, Ticker ticker, Matcher<? super V> criteria) {
+        return the(sampled(subject, feature), ticker, criteria);
+    }
 
     /**
      * Report whether a polled sample of the feature is {@code true}.
      */
-    <S> boolean the(S subject, Ticker ticker, Feature<? super S, Boolean> feature);
+    public <S> boolean the(S subject, Ticker ticker, Feature<? super S, Boolean> feature) {
+        return the(subject, feature, ticker, isQuietlyTrue());
+    }
 
     /**
      * Wait until the polled condition is satisfied.
      * Uses a default ticker.
      */
-    void waitUntil(Condition condition);
+    public void waitUntil(Condition condition) {
+        waitUntil(eventually(), condition);
+    }
 
     /**
      * Wait until the polled condition is satisfied.
      */
-    void waitUntil(Ticker ticker, Condition condition);
+    public void waitUntil(Ticker ticker, Condition condition) {
+        poll(ticker, condition);
+    }
 
     /**
      * Wait until a polled sample of the variable satisfies the criteria.
      * Uses a default ticker.
      */
-    <V> void waitUntil(Sampler<V> variable, Matcher<? super V> criteria);
+    public <V> void waitUntil(Sampler<V> variable, Matcher<? super V> criteria) {
+        waitUntil(variable, eventually(), criteria);
+    }
 
     /**
      * Wait until a polled sample of the variable is {@code true}.
      * Uses a default ticker.
      */
-    void waitUntil(Sampler<Boolean> variable);
+    public void waitUntil(Sampler<Boolean> variable) {
+        waitUntil(variable, eventually(), isQuietlyTrue());
+    }
 
     /**
      * Wait until a polled sample of the variable satisfies the criteria.
      */
-    <V> void waitUntil(Sampler<V> variable, Ticker ticker, Matcher<? super V> criteria);
+    public <V> void waitUntil(Sampler<V> variable, Ticker ticker, Matcher<? super V> criteria) {
+        waitUntil(ticker, sampleOf(variable, criteria));
+    }
 
     /**
      * Wait until a polled sample of the variable is [@code true).
      */
-    void waitUntil(Sampler<Boolean> variable, Ticker ticker);
+    public void waitUntil(Sampler<Boolean> variable, Ticker ticker) {
+        waitUntil(variable, ticker, isQuietlyTrue());
+    }
 
     /**
      * Wait until a polled sample of the feature satisfies the criteria.
      * Uses a default ticker.
      */
-    <S,V> void waitUntil(S subject, Feature<? super S, V> feature, Matcher<? super V> criteria);
+    public <S,V> void waitUntil(S subject, Feature<? super S, V> feature, Matcher<? super V> criteria) {
+        waitUntil(subject, feature, eventually(), criteria);
+    }
 
     /**
      * Wait until a polled sample of the feature is {@code true}.
      * Uses a default ticker.
      */
-    <S> void waitUntil(S subject, Feature<? super S, Boolean> feature);
+    public <S> void waitUntil(S subject, Feature<? super S, Boolean> feature) {
+        waitUntil(subject, feature, eventually(), isQuietlyTrue());
+    }
 
     /**
      * Wait until a polled sample of the feature satisfies the criteria.
      */
-    <S,V> void waitUntil(S subject, Feature<? super S, V> feature, Ticker ticker, Matcher<? super V> criteria);
+    public <S,V> void waitUntil(S subject, Feature<? super S, V> feature, Ticker ticker, Matcher<? super V> criteria) {
+        waitUntil(sampled(subject, feature), ticker, criteria);
+    }
 
     /**
      * Wait until a polled sample of the feature is {@code true}.
      */
-    <S> void waitUntil(S subject, Ticker ticker, Feature<? super S, Boolean> feature);
+    public <S> void waitUntil(S subject, Ticker ticker, Feature<? super S, Boolean> feature) {
+        waitUntil(subject, feature, ticker, isQuietlyTrue());
+    }
 
     /**
      * Return the subject when a polled sample of the feature satisfies the criteria.
      * Uses a default ticker.
      */
-    <S,V> S when(S subject, Feature<? super S, V> feature, Matcher<? super V> criteria);
+    public <S,V> S when(S subject, Feature<? super S, V> feature, Matcher<? super V> criteria) {
+        return when(subject, feature, eventually(), criteria);
+    }
 
     /**
      * Return the subject when a polled sample of the feature is {@code true}.
      * Uses a default ticker.
      */
-    <S> S when(S subject, Feature<? super S, Boolean> feature);
+    public <S> S when(S subject, Feature<? super S, Boolean> feature) {
+        return when(subject, feature, eventually(), isQuietlyTrue());
+    }
 
     /**
      * Return the subject when a polled sample of the feature satisfies the criteria.
      */
-    <S,V> S when(S subject, Feature<? super S, V> feature, Ticker ticker, Matcher<? super V> criteria);
+    public <S,V> S when(S subject, Feature<? super S, V> feature, Ticker ticker, Matcher<? super V> criteria) {
+        waitUntil(subject, feature, ticker, criteria);
+        return subject;
+    }
 
     /**
      * Return the subject when a polled sample of the feature is {@code true}.
      */
-    <S> S when(S subject, Ticker ticker, Feature<? super S, Boolean> feature);
+    public <S> S when(S subject, Ticker ticker, Feature<? super S, Boolean> feature) {
+        return when(subject, feature, ticker, isQuietlyTrue());
+    }
 
     /**
      * Act on the subject when a polled sample of the feature satisfies the criteria.
      * Uses a default ticker.
      */
-    <S,V> void when(S subject, Feature<? super S, V> feature, Matcher<? super V> criteria, Action<? super S> action);
+    public <S,V> void when(S subject, Feature<? super S, V> feature, Matcher<? super V> criteria, Action<? super S> action) {
+        when(subject, feature, eventually(), criteria, action);
+    }
 
     /**
      * Act on the subject when a polled sample of the feature is {@code true}.
      * Uses a default ticker.
      */
-    <S> void when(S subject, Feature<? super S, Boolean> feature, Action<? super S> action);
+    public <S> void when(S subject, Feature<? super S, Boolean> feature, Action<? super S> action) {
+        when(subject, feature, isQuietlyTrue(), action);
+    }
 
     /**
      * Act on the subject when a polled sample of the feature satisfies the criteria.
      */
-    <S,V> void when(S subject, Feature<? super S, V> feature, Ticker ticker, Matcher<? super V> criteria, Action<? super S> action);
+    public <S,V> void when(S subject, Feature<? super S, V> feature, Ticker ticker, Matcher<? super V> criteria, Action<? super S> action) {
+        waitUntil(subject, feature, ticker, criteria);
+        action.actOn(subject);
+    }
 
     /**
      * Act on the subject when a polled sample of the feature is {@code true}.
      */
-    <S> void when(S subject, Ticker ticker, Feature<? super S, Boolean> feature, Action<? super S> action);
+    public <S> void when(S subject, Ticker ticker, Feature<? super S, Boolean> feature, Action<? super S> action) {
+        when(subject, feature, ticker, isQuietlyTrue(), action);
+    }
+
+    private void poll(Ticker ticker, Condition condition) {
+        new TickingPoller(ticker).poll(prepareToPoll(condition));
+    }
 }

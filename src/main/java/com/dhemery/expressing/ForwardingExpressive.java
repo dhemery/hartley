@@ -7,35 +7,25 @@ import com.dhemery.polling.Ticker;
  * An {@link Expressive} that forwards to another {@code Expressive}
  * to create default tickers and prepare conditions for polling.
  */
-public class ForwardingExpressive extends AbstractExpressive {
-    private final Expressive base;
+public class ForwardingExpressive extends Expressive {
+    private final Expressive source;
 
     /**
      * Create an {@code Expressive}
-     * that forwards to the source {@code Expressive}'s base
+     * that forwards to the source {@code Expressive}
      * to create default tickers and prepare conditions for polling.
      */
     public ForwardingExpressive(Expressive source) {
-        base = source.base();
-    }
-
-    /**
-     * Return the base {@code Expressive} to which this {@code Expressove}
-     * forwards to create default tickers and prepare conditions for polling.
-     * on behalf of this {@code ForwardingExpressive}.
-     */
-    @Override
-    public Expressive base() {
-        return base;
+        this.source = source;
     }
 
     @Override
     public Ticker createDefaultTicker() {
-        return base.createDefaultTicker();
+        return source.createDefaultTicker();
     }
 
     @Override
     public Condition prepareToPoll(Condition condition) {
-        return base.prepareToPoll(condition);
+        return source.prepareToPoll(condition);
     }
 }

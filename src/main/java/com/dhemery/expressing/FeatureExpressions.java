@@ -7,7 +7,7 @@ import org.hamcrest.Description;
  * Syntactic sugar for boolean features.
  * <p>
  * Example: If you have a feature (for Cheshire cats) called {@code grinning()},
- * you can write {@link AbstractExpressive} phrases like:
+ * you can write {@link Expressive} phrases like:
  * </p>
  * <pre>
  * {@code
