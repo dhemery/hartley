@@ -6,6 +6,7 @@ import com.dhemery.core.Feature;
 import com.dhemery.core.Sampler;
 import com.dhemery.polling.PollTimeoutException;
 import com.dhemery.polling.Ticker;
+import com.dhemery.polling.TickingPoller;
 import org.hamcrest.Matcher;
 
 import static com.dhemery.core.FeatureSampler.sampled;
@@ -49,6 +50,34 @@ public abstract class AbstractExpressive extends ImmediateExpressions implements
     @Override
     public Expressive base() {
         return this;
+    }
+
+    /**
+     * Return a new default ticker obtained by calling {@link #createDefaultTicker()}.
+     * This method is named to read nicely in expressions.
+     * <p>Example:</p>
+     * <pre>
+     * {@code
+     *
+     * View settingsView = ...;
+     * Feature<View,Boolean> visible() { ... }
+     * assertThat(settingsView, eventually(), is(visible()));
+     * }
+     * </pre>
+     */
+
+    public Ticker eventually() {
+        return createDefaultTicker();
+    }
+
+    /**
+     * Return the condition unchanged.
+     * Subclasses may wish to override this method
+     * to wrap the condition in a {@link PublishingCondition}.
+     */
+    @Override
+    public Condition prepareToPoll(Condition condition) {
+        return condition;
     }
 
     @Override
@@ -173,4 +202,7 @@ public abstract class AbstractExpressive extends ImmediateExpressions implements
         when(subject, feature, ticker, isQuietlyTrue(), action);
     }
 
+    private void poll(Ticker ticker, Condition condition) {
+        new TickingPoller(ticker).poll(prepareToPoll(condition));
+    }
 }

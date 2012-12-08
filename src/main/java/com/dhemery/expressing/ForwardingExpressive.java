@@ -5,7 +5,7 @@ import com.dhemery.polling.Ticker;
 
 /**
  * An {@link Expressive} that forwards to another {@code Expressive}
- * to obtain default tickers and perform polls.
+ * to create default tickers and prepare conditions for polling.
  */
 public class ForwardingExpressive extends AbstractExpressive {
     private final Expressive base;
@@ -13,16 +13,16 @@ public class ForwardingExpressive extends AbstractExpressive {
     /**
      * Create an {@code Expressive}
      * that forwards to the source {@code Expressive}'s base
-     * to obtain default tickers and perform polls.
-     * Note that the source {@code Expressive} may or may not be its own base.
+     * to create default tickers and prepare conditions for polling.
      */
     public ForwardingExpressive(Expressive source) {
         base = source.base();
     }
 
     /**
-     * Return the base {@code Expressive} that supplies default tickers and performs polls
-     * for this {@code ForwardingExpressive}.
+     * Return the base {@code Expressive} to which this {@code Expressove}
+     * forwards to create default tickers and prepare conditions for polling.
+     * on behalf of this {@code ForwardingExpressive}.
      */
     @Override
     public Expressive base() {
@@ -30,12 +30,12 @@ public class ForwardingExpressive extends AbstractExpressive {
     }
 
     @Override
-    public Ticker eventually() {
-        return base.eventually();
+    public Ticker createDefaultTicker() {
+        return base.createDefaultTicker();
     }
 
     @Override
-    public void poll(Ticker ticker, Condition condition) {
-        base.poll(ticker, condition);
+    public Condition prepareToPoll(Condition condition) {
+        return base.prepareToPoll(condition);
     }
 }

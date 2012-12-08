@@ -94,25 +94,16 @@ public interface Expressive {
      */
     Expressive base();
 
-    /**
-     * Create a new default ticker built by calling the ticker builder.
-     * This method is named to read nicely in expressions.
-     * <p>Example:</p>
-     * <pre>
-     * {@code
-     *
-     * View settingsView = ...;
-     * Feature<View,Boolean> visible() { ... }
-     * assertThat(settingsView, eventually(), is(visible()));
-     * }
-     * </pre>
-     */
-    Ticker eventually();
+    Ticker createDefaultTicker();
 
     /**
-     * Poll using the ticker until the condition is satisfied or the ticker expires.
+     * Prepare the condition for polling.
+     * A typical implementation will wrap the condition in a
+     * {@link PublishingCondition} that publishes each evaluation.
+     * Other implementations will simply return the condition
+     * without enhancement.
      */
-    void poll(Ticker ticker, Condition condition);
+    Condition prepareToPoll(Condition condition);
 
     /**
      * Report whether the condition is satisfied during a poll.
