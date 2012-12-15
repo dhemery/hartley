@@ -1,7 +1,5 @@
 package com.dhemery.configuring;
 
-import com.dhemery.core.Supplier;
-
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
@@ -60,28 +58,12 @@ public interface Configuration {
     String option(String name);
 
     /**
-     * Return the value of an option,
-     * or the given default value if the configuration does not define the option.
-     * This method does <em>not</em> add the default value to the configuration.
-     * If the option is undefined when this method is called,
-     * it remains undefined when the method returns.
+     * Return the filtered value of an option.
      * @param name the name of an option
-     * @param defaultValue the value to return if the configuration does not define the option
-     * @return the value of the option, or {@code defaultValue} if the configuration does not define the option
+     * @param filters the filters to apply to the value of the option
+     * @return the value of the option filtered through the filteres
      */
-    String option(String name, String defaultValue);
-
-    /**
-     * Return the value of an option,
-     * or the value obtained from a supplier if the configuration does not define the option.
-     * This method does <em>not</em> add the supplied value to the configuration.
-     * If the option is undefined when this method is called,
-     * it remains undefined when the method returns.
-     * @param name the name of an option
-     * @param supplier a supplier that supplies a value if the configuration does not define the option
-     * @return the value of the option, or the value supplied by {@code supplier} if the configuration does not define the option
-     */
-    String option(String name, Supplier<String> supplier);
+    String option(String name, OptionFilter... filters);
 
     /**
      * Return the value of a required option.

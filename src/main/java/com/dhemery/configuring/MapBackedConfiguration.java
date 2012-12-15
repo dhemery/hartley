@@ -1,8 +1,8 @@
 package com.dhemery.configuring;
 
-import com.dhemery.core.Supplier;
-
 import java.util.*;
+
+import static com.dhemery.configuring.OptionExpressions.required;
 
 /**
  * A set of configuration options backed by a {@link Map}.
@@ -86,19 +86,15 @@ public class MapBackedConfiguration implements Configuration {
     }
 
     @Override
-    public String option(String name, String defaultValue) {
-        return defines(name) ? option(name) : defaultValue;
-    }
-
-    @Override
-    public String option(String name, Supplier<String> supplier) {
-        return defines(name) ? option(name) : supplier.get();
+    public String option(String name, OptionFilter... filters) {
+        Option option = new Option(this, name, option(name));
+        option.apply(Arrays.asList(filters));
+        return option.value();
     }
 
     @Override
     public String requiredOption(String name) {
-        if(defines(name)) return option(name);
-        throw new ConfigurationException("The configuration does not define the required option " + name);
+        return option(name, required());
     }
 
     private static void merge(Map<String, String> map, Map<String, String> options) {
