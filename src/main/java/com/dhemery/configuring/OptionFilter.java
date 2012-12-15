@@ -1,5 +1,6 @@
 package com.dhemery.configuring;
 
-public interface OptionFilter {
-    String valueOf(Option option);
+import com.dhemery.core.Feature;
+
+public interface OptionFilter extends Feature<Option,String> {
 }

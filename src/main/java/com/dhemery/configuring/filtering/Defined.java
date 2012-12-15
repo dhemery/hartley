@@ -1,9 +1,10 @@
-package com.dhemery.configuring;
+package com.dhemery.configuring.filtering;
 
+import com.dhemery.configuring.Option;
 import org.hamcrest.Description;
 import org.hamcrest.TypeSafeMatcher;
 
-class Defined extends TypeSafeMatcher<Option> {
+public class Defined extends TypeSafeMatcher<Option> {
     @Override
     protected boolean matchesSafely(Option option) {
         return option.configuration().defines(option.name());
@@ -11,7 +12,7 @@ class Defined extends TypeSafeMatcher<Option> {
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("defines");
+        description.appendText("defined");
     }
 
     @Override

@@ -27,7 +27,7 @@ public class Option {
 
     public void apply(List<OptionFilter> filters) {
         for(OptionFilter filtered : filters) {
-            optionValue = filtered.valueOf(this);
+            optionValue = filtered.of(this);
         }
     }
 }

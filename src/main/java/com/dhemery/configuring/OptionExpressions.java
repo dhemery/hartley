@@ -1,23 +1,33 @@
 package com.dhemery.configuring;
 
+import com.dhemery.configuring.filtering.*;
 import org.hamcrest.Matcher;
 
 /**
  * Factory methods to create option matchers and filters.
  */
 public class OptionExpressions {
-    /**
-     * Return a fixed value.
-     */
-    public static OptionFilter defaultValue(String defaultValue) {
+    public static OptionFilter or(OptionFilter fallbackValue) {
+        return fallbackValue;
+    }
+
+    public static OptionFilter or(String defaultValue) {
         return new FixedValue(defaultValue);
     }
 
     /**
      * Report whether the configuration defines the option.
      */
-    private static Matcher<Option> defined() {
+    public static Matcher<Option> defined() {
         return new Defined();
+    }
+
+    public static Matcher<Option> nil() {
+        return new Null();
+    }
+
+    public static OptionFilter either(Matcher<? super Option> criteria, OptionFilter fallback) {
+        return new Either(criteria, fallback);
     }
 
     /**
@@ -26,15 +36,8 @@ public class OptionExpressions {
      * Note that if the option does not satisfy the criteria,
      * this filter ignores any value supplied by previous filters.
      */
-    public static OptionFilter require(Matcher<? super Option> criteria) {
-        return new Constraint(criteria);
-    }
-
-    /**
-     * Apply a recovery filter if the option does not satisfy the criteria.
-     */
-    public static OptionFilter require(Matcher<? super Option> criteria, OptionFilter recovery) {
-        return new RecoverableConstraint(criteria, recovery);
+    public static OptionFilter require(Matcher<? super Option> constraint) {
+        return new Constrained(constraint);
     }
 
     /**
