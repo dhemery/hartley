@@ -30,6 +30,14 @@ public class ConfigurationBuilder implements Builder<Configuration> {
         return new ConfigurationBuilder(configuration);
     }
 
+    public static ConfigurationBuilder into(Properties properties) {
+        return into(new PropertiesBackedConfiguration(properties));
+    }
+
+    public static ConfigurationBuilder into(Map<String,String> map) {
+        return into(new MapBackedConfiguration(map));
+    }
+
     /**
      * Merge properties from the named file into the configuration.
      */

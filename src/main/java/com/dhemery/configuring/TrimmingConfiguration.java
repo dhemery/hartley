@@ -1,5 +1,7 @@
 package com.dhemery.configuring;
 
+import java.util.Arrays;
+
 import static com.dhemery.configuring.OptionExpressions.trimmed;
 
 /**
@@ -10,6 +12,6 @@ import static com.dhemery.configuring.OptionExpressions.trimmed;
  */
 public class TrimmingConfiguration extends FilteringConfiguration {
     public TrimmingConfiguration(Configuration configuration) {
-        super(configuration, trimmed());
+        super(configuration, Arrays.asList(trimmed()));
     }
 }

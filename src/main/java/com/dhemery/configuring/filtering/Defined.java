@@ -7,7 +7,7 @@ import org.hamcrest.TypeSafeMatcher;
 public class Defined extends TypeSafeMatcher<Option> {
     @Override
     protected boolean matchesSafely(Option option) {
-        return option.configuration().defines(option.name());
+        return option.source().defines(option.name());
     }
 
     @Override

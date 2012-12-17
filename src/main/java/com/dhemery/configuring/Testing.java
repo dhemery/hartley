@@ -25,5 +25,4 @@ public class Testing {
     private OptionFilter withoutPrefix(final String prefix) {
         return new WithoutPrefix(prefix);
     }
-
 }

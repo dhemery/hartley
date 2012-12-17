@@ -23,7 +23,7 @@ public class OptionExpressions {
     }
 
     public static Matcher<Option> nil() {
-        return new Null();
+        return new NullString();
     }
 
     public static OptionFilter either(Matcher<? super Option> criteria, OptionFilter fallback) {

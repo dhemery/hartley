@@ -13,6 +13,6 @@ public class Trimmed implements OptionFilter {
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("trimmed value");
+        description.appendText("trimmed");
     }
 }

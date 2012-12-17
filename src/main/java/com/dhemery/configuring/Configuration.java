@@ -9,16 +9,6 @@ import java.util.Set;
  */
 public interface Configuration {
     /**
-     * Return a map of this configuration's options.
-     */
-    Map<String,String> asMap();
-
-    /**
-     * Return a properties list with this configuration's options.
-     */
-    Properties asProperties();
-
-    /**
      * Define an option by supplying a value.
      * If the configuration already defines the option
      * the given value replaces the old one.
@@ -26,14 +16,9 @@ public interface Configuration {
     void define(String name, String value);
 
     /**
-     * Indicate whether this configuration defines the named option.
-     */
-    Boolean defines(String name);
-
-    /**
      * Merge a set of options from another configuration into this configuration.
      */
-    void merge(Configuration other);
+    void merge(Configuration source);
 
     /**
      * Merge a set of options from a map into this configuration.
@@ -44,18 +29,6 @@ public interface Configuration {
      * Merge a set of options from a property list into this configuration.
      */
     void merge(Properties properties);
-
-    /**
-     * Return the names of the configuration's defined options.
-     */
-    Set<String> names();
-
-    /**
-     * Return the value of an option.
-     * @param name the name of an option
-     * @return the value of the option, or {@code null} if the configuration does not define the option
-     */
-    String option(String name);
 
     /**
      * Return the filtered value of an option.
@@ -72,4 +45,31 @@ public interface Configuration {
      * @throws com.dhemery.configuring.ConfigurationException if this configuration does not define the option
      */
     String requiredOption(String name);
+
+    /**
+     * Return a map of this configuration's options.
+     */
+    Map<String,String> asMap();
+
+    /**
+     * Return a properties list with this configuration's options.
+     */
+    Properties asProperties();
+
+    /**
+     * Indicate whether this configuration defines the named option.
+     */
+    boolean defines(String name);
+
+    /**
+     * Return the names of the defined options.
+     */
+    Set<String> names();
+
+    /**
+     * Return the value of an option.
+     * @param name the name of an option
+     * @return the value of the option, or {@code null} if the configuration does not define the option
+     */
+    String option(String name);
 }

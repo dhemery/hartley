@@ -1,20 +1,18 @@
 package com.dhemery.configuring;
 
-import java.util.List;
-
 public class Option {
-    private final Configuration configuration;
+    private final Configuration source;
     private final String optionName;
-    private String optionValue;
+    private final String optionValue;
 
-    public Option(Configuration configuration, String optionName, String optionValue) {
-        this.configuration = configuration;
+    public Option(Configuration source, String optionName, String optionValue) {
+        this.source = source;
         this.optionName = optionName;
         this.optionValue = optionValue;
     }
 
-    public Configuration configuration() {
-        return configuration;
+    public Configuration source() {
+        return source;
     }
 
     public String name() {
@@ -23,11 +21,5 @@ public class Option {
 
     public String value() {
         return optionValue;
-    }
-
-    public void apply(List<OptionFilter> filters) {
-        for(OptionFilter filtered : filters) {
-            optionValue = filtered.of(this);
-        }
     }
 }

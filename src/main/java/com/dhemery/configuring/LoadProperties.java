@@ -45,7 +45,7 @@ public class LoadProperties {
      * @throws ConfigurationException   if the properties resource does not exist or an IO exception occurs while loading properties
      */
     public static LoadProperties fromResource(String resourceName) {
-        return fromResource(resourceName);
+        return fromResources(resourceName);
     }
 
     /**
