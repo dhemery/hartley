@@ -1,42 +1,13 @@
 package com.dhemery.configuring;
 
-import java.util.Map;
-import java.util.Properties;
-
 /**
- * A set of configuration options.
+ * A set of configuration options that can be queried, merged, and transformed.
  */
 public interface Configuration extends ModifiableOptions {
     /**
-     * Return a map of this configuration's options.
-     */
-    Map<String,String> asMap();
-
-    /**
-     * Return a properties list with this configuration's options.
-     */
-    Properties asProperties();
-
-
-    /**
-     * Indicate whether this configuration defines the named option.
+     * Indicate whether named option is defined.
      */
     boolean defines(String name);
-
-    /**
-     * Merge a set of options into this configuration.
-     */
-    void merge(Options options);
-
-    /**
-     * Merge a set of options from a map into this configuration.
-     */
-    void merge(Map<String, String> map);
-
-    /**
-     * Merge a set of options from a property list into this configuration.
-     */
-    void merge(Properties properties);
 
     /**
      * Return the named option filtered by the given filters.
@@ -50,7 +21,7 @@ public interface Configuration extends ModifiableOptions {
      * Return the named option, and throw an exception if it is not defined.
      * @param name the name of an option
      * @return the value of the option
-     * @throws com.dhemery.configuring.ConfigurationException if this configuration does not define the option
+     * @throws com.dhemery.configuring.ConfigurationException if the named option is not defined
      */
     String requiredOption(String name);
 }

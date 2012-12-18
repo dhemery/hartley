@@ -4,6 +4,8 @@ import com.dhemery.core.Builder;
 
 import java.util.*;
 
+import static com.dhemery.configuring.Conversions.mergeInto;
+
 /**
  * Builds configurations.
  * Each configuration is constructed from three parts:
@@ -27,8 +29,7 @@ import java.util.*;
  */
 public class ConfigurationBuilder implements Builder<Configuration> {
     private final ModifiableOptions baseOptions;
-    private final ModifiableOptions overrideOptions = backedBy(new HashMap<String, String>());
-    private final Configuration overrides = configuration(overrideOptions);
+    private final Map<String,String> overrides = new HashMap<String, String>();
     private List<OptionFilter> filters = new ArrayList<OptionFilter>();
 
     private ConfigurationBuilder(ModifiableOptions baseOptions) {
@@ -43,17 +44,17 @@ public class ConfigurationBuilder implements Builder<Configuration> {
     }
 
     /**
-     * Create a builder to build a configuration into the given {@link ModifiableOptions}.
-     */
-    public static ConfigurationBuilder into(ModifiableOptions options) {
-        return new ConfigurationBuilder(options);
-    }
-
-    /**
      * Create a builder to build a configuration into the given map.
      */
     public static ConfigurationBuilder into(Map<String,String> map) {
         return new ConfigurationBuilder(backedBy(map));
+    }
+
+    /**
+     * Create a builder to build a configuration into the given {@link ModifiableOptions}.
+     */
+    public static ConfigurationBuilder into(ModifiableOptions options) {
+        return new ConfigurationBuilder(options);
     }
 
     /**
@@ -94,26 +95,26 @@ public class ConfigurationBuilder implements Builder<Configuration> {
     }
 
     /**
-     * Merge a set of options into the overrides for the configuration.
+     * Merge options into the overrides for the configuration.
      */
     public ConfigurationBuilder merge(Options options) {
-        overrides.merge(options);
+        mergeInto(overrides, options);
         return this;
     }
 
     /**
-     * Merge the given map's entries into the overrides for the configuration.
+     * Merge a map into the overrides for the configuration.
      */
     public ConfigurationBuilder merge(Map<String, String> map) {
-        overrides.merge(map);
+        mergeInto(overrides, map);
         return this;
     }
 
     /**
-     * Merge the given properties into the overrides for the configuration.
+     * Merge properties into the overrides for the configuration.
      */
     public ConfigurationBuilder merge(Properties properties) {
-        overrides.merge(properties);
+        mergeInto(overrides, properties);
         return this;
     }
 
@@ -134,10 +135,9 @@ public class ConfigurationBuilder implements Builder<Configuration> {
      */
     @Override
     public Configuration build() {
+        mergeInto(baseOptions, overrides);
         ModifiableOptions filteredOptions = new FilteringOptions(baseOptions, filters);
-        Configuration configuration = new OptionsBackedConfiguration(filteredOptions);
-        configuration.merge(overrides);
-        return configuration;
+        return new OptionsBackedConfiguration(filteredOptions);
     }
 
     private static ModifiableOptions backedBy(Map<String, String> map) {
