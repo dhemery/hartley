@@ -7,7 +7,7 @@ public class APropertiesBackedOptions extends ABackedOptions {
 
     @Override
     protected ModifiableOptions optionsForContract() {
-        return new PropertiesBackedOptions(properties);
+        return new PropertiesOptions(properties);
     }
 
     @Override

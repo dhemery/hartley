@@ -6,25 +6,25 @@ import java.util.Properties;
 import java.util.Set;
 
 /**
- * A default implementation of {@link Configuration}.
+ * A {@link Configuration} backed by a {@link ModifiableOptions}.
+ * Changes to this configuration are written through to the underlying options.
+ * Changes in the underlying options are reflected in queries of this configuration.
  */
-public class DefaultConfiguration implements Configuration {
+public class OptionsBackedConfiguration implements Configuration {
     private final ModifiableOptions options;
 
     /**
-     * Create an empty configuration.
+     * Create a configuration backed by an empty {@code ModifiableOptions}.
      */
-    public DefaultConfiguration() {
-        this(new MapBackedOptions(new HashMap<String, String>()));
+    public OptionsBackedConfiguration() {
+        this(new MappedOptions(new HashMap<String, String>()));
     }
 
     /**
      * Create a configuration backed by the given options.
-     * Changes to this configuration are written through to the underlying options.
-     * Changes in the underlying options are reflected in queries of this configuration.
      * @param options the {@code ModifiableOptions} in which to store this configuration's options
      */
-    public DefaultConfiguration(ModifiableOptions options) {
+    public OptionsBackedConfiguration(ModifiableOptions options) {
         this.options = options;
     }
 
@@ -68,11 +68,6 @@ public class DefaultConfiguration implements Configuration {
     }
 
     @Override
-    public String option(String name, OptionFilter... filters) {
-        return new FilteringOptions(options, filters).option(name);
-    }
-
-    @Override
     public Set<String> names() {
         return options.names();
     }
@@ -80,6 +75,11 @@ public class DefaultConfiguration implements Configuration {
     @Override
     public String option(String name) {
         return options.option(name);
+    }
+
+    @Override
+    public String option(String name, OptionFilter... filters) {
+        return new FilteringOptions(options, filters).option(name);
     }
 
     @Override

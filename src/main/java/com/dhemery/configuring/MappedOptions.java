@@ -10,20 +10,20 @@ import java.util.Set;
  * Changes to the options are written through to the underlying map.
  * Changes to the underlying map are reflected in queries to this set's options.
  */
-public class MapBackedOptions implements ModifiableOptions {
+public class MappedOptions implements ModifiableOptions {
     private final Map<String, String> map;
 
     /**
      * Create a set of options backed by an empty map.
      */
-    public MapBackedOptions() {
+    public MappedOptions() {
         this(new HashMap<String, String>());
     }
 
     /**
      * Create a set of options backed by the given map.
      */
-    public MapBackedOptions(Map<String, String> map) {
+    public MappedOptions(Map<String, String> map) {
         this.map = map;
     }
 

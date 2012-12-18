@@ -6,6 +6,24 @@ import java.util.*;
 
 /**
  * Builds configurations.
+ * Each configuration is constructed from three parts:
+ * <ul>
+ * <ol>A backing store that the configuration uses to store options</ol>
+ * <ol>A set of overrides to merge into the configuration</ol>
+ * <ol>A set of filters for the configuration to apply
+ * when its {@code option()} methods are called</ol>
+ * </ul>
+ * <p>Each {@code into} method creates a builder and supplies a backing store
+ * to be used by the constructed configuration.
+ * The backing store is not altered until the {@code build} method is called.
+ * </p>
+ * <p>Each {@code merge} method merges options from a given source into
+ * a set of overrides.
+ * If multiple merged sources define an option,
+ * the overrides retain the value from the last defining source to be merged.
+ * When {@code build()} is called,
+ * these overrides are merged into the constructed configuration.
+ * </p>
  */
 public class ConfigurationBuilder implements Builder<Configuration> {
     private final ModifiableOptions baseOptions;
@@ -18,112 +36,119 @@ public class ConfigurationBuilder implements Builder<Configuration> {
     }
 
     /**
-     * Build a configuration.
+     * Create a builder to build a configuration into a new, empty backing store.
      */
-    public static ConfigurationBuilder newBuilder() {
+    public static ConfigurationBuilder intoNewConfiguration() {
         return into(new HashMap<String, String>());
     }
 
     /**
-     * Build a configuration that stores options in the given configuration.
+     * Create a builder to build a configuration into the given {@link ModifiableOptions}.
      */
-    public static ConfigurationBuilder into(Configuration configuration) {
-        return new ConfigurationBuilder(configuration);
+    public static ConfigurationBuilder into(ModifiableOptions options) {
+        return new ConfigurationBuilder(options);
     }
 
     /**
-     * Build a configuration that stores options in the given map.
+     * Create a builder to build a configuration into the given map.
      */
     public static ConfigurationBuilder into(Map<String,String> map) {
         return new ConfigurationBuilder(backedBy(map));
     }
 
     /**
-     * Build a configuration that stores options in the given properties.
+     * Create a builder to build a configuration into the given properties.
      */
     public static ConfigurationBuilder into(Properties properties) {
         return new ConfigurationBuilder(backedBy(properties));
     }
 
     /**
-     * Merge properties from the named file into the configuration.
+     * Merge properties from the named file into the overrides for the configuration.
      */
-    public ConfigurationBuilder overriddenByFile(String fileName) {
-        return overriddenByFiles(fileName);
+    public ConfigurationBuilder mergeFile(String fileName) {
+        return mergeFiles(fileName);
     }
 
     /**
-     * Merge properties from the named files into the configuration.
+     * Merge properties from the named files into the overrides for the configuration.
      */
-    public ConfigurationBuilder overriddenByFiles(String... fileNames) {
+    public ConfigurationBuilder mergeFiles(String... fileNames) {
         LoadProperties.fromFiles(fileNames).into(overrides);
         return this;
     }
 
     /**
-     * Merge properties from the named resource into the configuration.
+     * Merge properties from the named resource into the overrides for the configuration.
      */
-    public ConfigurationBuilder overriddenByResource(String resourceName) {
-        return overriddenByResources(resourceName);
+    public ConfigurationBuilder mergeResource(String resourceName) {
+        return mergeResources(resourceName);
     }
 
     /**
-     * Merge properties from the named resources into the configuration.
+     * Merge properties from the named resources into the overrides for the configuration.
      */
-    public ConfigurationBuilder overriddenByResources(String... resourceNames) {
+    public ConfigurationBuilder mergeResources(String... resourceNames) {
         LoadProperties.fromResources(resourceNames).into(overrides);
         return this;
     }
 
     /**
-     * Merge another configuration's options into the configuration.
+     * Merge a set of options into the overrides for the configuration.
      */
-    public ConfigurationBuilder overriddenBy(Configuration configuration) {
-        overrides.merge(configuration);
+    public ConfigurationBuilder merge(Options options) {
+        overrides.merge(options);
         return this;
     }
 
     /**
-     * Merge map entries from the given map into the configuration.
+     * Merge the given map's entries into the overrides for the configuration.
      */
-    public ConfigurationBuilder overriddenBy(Map<String,String> map) {
+    public ConfigurationBuilder merge(Map<String, String> map) {
         overrides.merge(map);
         return this;
     }
 
     /**
-     * Merge the given properties into the configuration.
+     * Merge the given properties into the overrides for the configuration.
      */
-    public ConfigurationBuilder overriddenBy(Properties properties) {
+    public ConfigurationBuilder merge(Properties properties) {
         overrides.merge(properties);
         return this;
     }
 
     /**
-     * Append option value filters onto the configuration's filter list.
+     * Append option filters onto the configuration's filter list.
      */
     public ConfigurationBuilder withOptionValues(OptionFilter... filters) {
         this.filters.addAll(Arrays.asList(filters));
         return this;
     }
 
+    /**
+     * Construct the configuration specified by the builder.
+     * This creates a new configuration backed by the specified backing store,
+     * attaches the specified filters.
+     * and merges the specified overrides into the newly constructed configuration,
+     * @return the constructed configuration
+     */
     @Override
     public Configuration build() {
         ModifiableOptions filteredOptions = new FilteringOptions(baseOptions, filters);
-        Configuration configuration = new DefaultConfiguration(filteredOptions);
+        Configuration configuration = new OptionsBackedConfiguration(filteredOptions);
         configuration.merge(overrides);
         return configuration;
     }
 
     private static ModifiableOptions backedBy(Map<String, String> map) {
-        return new MapBackedOptions(map);
+        return new MappedOptions(map);
     }
 
-    private static PropertiesBackedOptions backedBy(Properties properties) {
-        return new PropertiesBackedOptions(properties);
+    private static PropertiesOptions backedBy(Properties properties) {
+        return new PropertiesOptions(properties);
     }
 
-    private static DefaultConfiguration configuration(ModifiableOptions options) {
-        return new DefaultConfiguration(options);
+    private static OptionsBackedConfiguration configuration(ModifiableOptions options) {
+        return new OptionsBackedConfiguration(options);
     }
 }

@@ -7,7 +7,7 @@ public class AMapBackedOptions extends ABackedOptions {
 
     @Override
     protected ModifiableOptions optionsForContract() {
-        return new MapBackedOptions(backingMap);
+        return new MappedOptions(backingMap);
     }
 
     @Override
