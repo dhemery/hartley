@@ -24,9 +24,9 @@ public interface Configuration extends ModifiableOptions {
     boolean defines(String name);
 
     /**
-     * Merge a set of options from another configuration into this configuration.
+     * Merge a set of options into this configuration.
      */
-    void merge(Configuration source);
+    void merge(Options options);
 
     /**
      * Merge a set of options from a map into this configuration.
@@ -41,7 +41,7 @@ public interface Configuration extends ModifiableOptions {
     /**
      * Return the named option filtered by the given filters.
      * @param name the name of the options
-     * @param filters the filters to apply
+     * @param filters the filters to transform
      * @return the filtered value of the option
      */
     String option(String name, OptionFilter... filters);

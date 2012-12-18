@@ -5,12 +5,26 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
-import static com.dhemery.configuring.FilteringOptionsChain.filterChain;
-
-public class StoreBackedConfiguration implements Configuration {
+/**
+ * A default implementation of {@link Configuration}.
+ */
+public class DefaultConfiguration implements Configuration {
     private final ModifiableOptions options;
 
-    public StoreBackedConfiguration(ModifiableOptions options) {
+    /**
+     * Create an empty configuration.
+     */
+    public DefaultConfiguration() {
+        this(new MapBackedOptions(new HashMap<String, String>()));
+    }
+
+    /**
+     * Create a configuration backed by the given options.
+     * Changes to this configuration are written through to the underlying options.
+     * Changes in the underlying options are reflected in queries of this configuration.
+     * @param options the {@code ModifiableOptions} in which to store this configuration's options
+     */
+    public DefaultConfiguration(ModifiableOptions options) {
         this.options = options;
     }
 
@@ -39,13 +53,13 @@ public class StoreBackedConfiguration implements Configuration {
     }
 
     @Override
-    public void merge(Configuration source) {
-        for(String name : source.names()) define(name, source.option(name));
+    public void merge(Options options) {
+        for(String name : options.names()) define(name, options.option(name));
     }
 
     @Override
     public void merge(Map<String, String> map) {
-        for(Map.Entry<String, String> option : map.entrySet()) define(option.getKey(), option.getValue());
+        for(Map.Entry<String, String> entry : map.entrySet()) define(entry.getKey(), entry.getValue());
     }
 
     @Override
@@ -55,7 +69,7 @@ public class StoreBackedConfiguration implements Configuration {
 
     @Override
     public String option(String name, OptionFilter... filters) {
-        return filterChain(options, filters).option(name);
+        return new FilteringOptions(options, filters).option(name);
     }
 
     @Override

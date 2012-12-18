@@ -3,7 +3,7 @@ package com.dhemery.configuring;
 import java.util.Set;
 
 /**
- * Stores options as named strings.
+ * A set of named options.
  */
 public interface Options {
     /**
@@ -14,7 +14,7 @@ public interface Options {
     /**
      * Return the named option.
      * @param name the name of an option
-     * @return the named option, or {@code null} if the option is not defined
+     * @return the named option, or {@code null} if this set does not define the option
      */
     String option(String name);
 }

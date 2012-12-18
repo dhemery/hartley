@@ -5,13 +5,24 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * A set of options backed by a {@link Map}.
+ * Changes to the options are written through to the underlying map.
+ * Changes to the underlying map are reflected in queries to this set's options.
+ */
 public class MapBackedOptions implements ModifiableOptions {
     private final Map<String, String> map;
 
+    /**
+     * Create a set of options backed by an empty map.
+     */
     public MapBackedOptions() {
         this(new HashMap<String, String>());
     }
 
+    /**
+     * Create a set of options backed by the given map.
+     */
     public MapBackedOptions(Map<String, String> map) {
         this.map = map;
     }

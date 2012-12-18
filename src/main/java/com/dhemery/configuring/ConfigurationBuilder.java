@@ -109,8 +109,8 @@ public class ConfigurationBuilder implements Builder<Configuration> {
 
     @Override
     public Configuration build() {
-        ModifiableOptions filteredOptions = FilteringOptionsChain.filterChain(baseOptions, filters);
-        Configuration configuration = new StoreBackedConfiguration(filteredOptions);
+        ModifiableOptions filteredOptions = new FilteringOptions(baseOptions, filters);
+        Configuration configuration = new DefaultConfiguration(filteredOptions);
         configuration.merge(overrides);
         return configuration;
     }
@@ -123,7 +123,7 @@ public class ConfigurationBuilder implements Builder<Configuration> {
         return new PropertiesBackedOptions(properties);
     }
 
-    private static StoreBackedConfiguration configuration(ModifiableOptions options) {
-        return new StoreBackedConfiguration(options);
+    private static DefaultConfiguration configuration(ModifiableOptions options) {
+        return new DefaultConfiguration(options);
     }
 }

@@ -1,14 +1,26 @@
 package com.dhemery.configuring;
 
-import java.util.*;
+import java.util.Properties;
+import java.util.Set;
 
-public class PropertiesBackedOptions implements ModifiableOptions{
+/**
+ * A set of options backed by a {@link Properties}.
+ * Changes to the options are written through to the underlying properties.
+ * Changes to the underlying properties are reflected in queries to this set's options.
+ */
+public class PropertiesBackedOptions implements ModifiableOptions {
     private final Properties properties;
 
+    /**
+     * Create a set of options backed by an empty {@code Properties}.
+     */
     public PropertiesBackedOptions() {
         this(new Properties());
     }
 
+    /**
+     * Create a set of options backed by the given properties.
+     */
     public PropertiesBackedOptions(Properties properties) {
         this.properties = properties;
     }

@@ -16,6 +16,13 @@ import java.util.Properties;
 public class LoadProperties {
     private final Properties properties;
 
+    private LoadProperties(List<InputStream> streams) {
+        properties = new Properties();
+        for (InputStream stream : streams) {
+            loadPropertiesFromStream(stream);
+        }
+    }
+
     /**
      * Load properties from a properties file.
      * @param fileName the name of the properties file to load
@@ -63,13 +70,6 @@ public class LoadProperties {
 
     private static LoadProperties from(List<InputStream> streams) {
         return new LoadProperties(streams);
-    }
-
-    private LoadProperties(List<InputStream> streams) {
-        properties = new Properties();
-        for (InputStream stream : streams) {
-            loadPropertiesFromStream(stream);
-        }
     }
 
     /**

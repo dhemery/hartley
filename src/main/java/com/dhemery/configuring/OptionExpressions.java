@@ -4,7 +4,7 @@ import com.dhemery.configuring.filters.FixedValue;
 import com.dhemery.configuring.filters.Trimmed;
 
 /**
- * Factory methods to create option matchers and filters.
+ * Static utility methods to create option filters.
  */
 public class OptionExpressions {
     public static OptionFilter or(OptionFilter fallbackValue) {
