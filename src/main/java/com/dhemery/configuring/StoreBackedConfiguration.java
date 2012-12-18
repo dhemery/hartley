@@ -1,14 +1,17 @@
 package com.dhemery.configuring;
 
-import com.dhemery.configuring.filtering.OptionFilterList;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
-import static com.dhemery.configuring.OptionExpressions.required;
+public class StoreBackedConfiguration implements Configuration {
+    private final ModifiableOptionStore store;
 
-public abstract class AbstractConfiguration implements Configuration {
+    public StoreBackedConfiguration(ModifiableOptionStore store) {
+        this.store = store;
+    }
+
     @Override
     public Map<String, String> asMap() {
         Map<String,String> map = new HashMap<String, String>();
@@ -21,6 +24,16 @@ public abstract class AbstractConfiguration implements Configuration {
         Properties copy = new Properties();
         for(String name : names()) copy.setProperty(name, option(name));
         return copy;
+    }
+
+    @Override
+    public void define(String name, String value) {
+        store.define(name, value);
+    }
+
+    @Override
+    public boolean defines(String name) {
+        return store.defines(name);
     }
 
     @Override
@@ -39,17 +52,18 @@ public abstract class AbstractConfiguration implements Configuration {
     }
 
     @Override
-    public String option(String name, OptionFilter... filters) {
-        return filteredOption(name, option(name), new OptionFilterList(filters));
+    public Set<String> names() {
+        return store.names();
+    }
+
+    @Override
+    public String option(String name) {
+        return store.option(name);
     }
 
     @Override
     public String requiredOption(String name) {
-        return option(name, required());
-    }
-
-    protected String filteredOption(String name, String value, OptionFilter filter) {
-        Option option = new Option(this, name, value);
-        return filter.of(option);
+        if(defines(name)) return option(name);
+        throw new ConfigurationException("Undefined option " + name);
     }
 }

@@ -5,45 +5,49 @@ import com.dhemery.core.Builder;
 import java.util.*;
 
 /**
- * A builder that builds configurations.
+ * Builds configurations.
  */
 public class ConfigurationBuilder implements Builder<Configuration> {
-    private final List<OptionFilter> filters = new ArrayList<OptionFilter>();
     private final Configuration configuration;
-    private final Configuration overrides = new MapBackedConfiguration();
+    private final Configuration overrides = configuration(backedBy(new HashMap<String, String>()));
 
     private ConfigurationBuilder(Configuration configuration) {
         this.configuration = configuration;
     }
 
     /**
-     * Create a new builder that builds into an empty {@link MapBackedConfiguration}.
+     * Build a configuration.
      */
     public static ConfigurationBuilder newBuilder() {
-        return into(new MapBackedConfiguration());
+        return into(new HashMap<String, String>());
     }
 
     /**
-     * Create a new builder that builds into the given configuration.
+     * Build a configuration that stores options in the given configuration.
      */
     public static ConfigurationBuilder into(Configuration configuration) {
         return new ConfigurationBuilder(configuration);
     }
 
-    public static ConfigurationBuilder into(Properties properties) {
-        return into(new PropertiesBackedConfiguration(properties));
+    /**
+     * Build a configuration that stores options in the given map.
+     */
+    public static ConfigurationBuilder into(Map<String,String> map) {
+        return new ConfigurationBuilder(configuration(backedBy(map)));
     }
 
-    public static ConfigurationBuilder into(Map<String,String> map) {
-        return into(new MapBackedConfiguration(map));
+    /**
+     * Build a configuration that stores options in the given properties.
+     */
+    public static ConfigurationBuilder into(Properties properties) {
+        return new ConfigurationBuilder(configuration(backedBy(properties)));
     }
 
     /**
      * Merge properties from the named file into the configuration.
      */
     public ConfigurationBuilder fromFile(String fileName) {
-        LoadProperties.fromFile(fileName).into(overrides);
-        return this;
+        return fromFiles(fileName);
     }
 
     /**
@@ -58,8 +62,7 @@ public class ConfigurationBuilder implements Builder<Configuration> {
      * Merge properties from the named resource into the configuration.
      */
     public ConfigurationBuilder fromResource(String resourceName) {
-        LoadProperties.fromResource(resourceName).into(configuration);
-        return this;
+        return fromResources(resourceName);
     }
 
     /**
@@ -97,15 +100,26 @@ public class ConfigurationBuilder implements Builder<Configuration> {
     /**
      * Append option value filters onto the configuration's filter list.
      */
-    public ConfigurationBuilder withOptionValues(OptionFilter... filters) {
-        this.filters.addAll(Arrays.asList(filters));
-        return this;
-    }
+//    public ConfigurationBuilder withOptionValues(OptionFilter... filters) {
+//        this.filters.addAll(Arrays.asList(filters));
+//        return this;
+//    }
 
     @Override
     public Configuration build() {
         configuration.merge(overrides);
-        if(filters.isEmpty()) return configuration;
-        return new FilteringConfiguration(configuration, filters);
+        return configuration;
+    }
+
+    private static ModifiableOptionStore backedBy(Map<String, String> map) {
+        return new MapBackedOptionStore(map);
+    }
+
+    private static PropertiesBackedOptionStore backedBy(Properties properties) {
+        return new PropertiesBackedOptionStore(properties);
+    }
+
+    private static StoreBackedConfiguration configuration(ModifiableOptionStore store) {
+        return new StoreBackedConfiguration(store);
     }
 }
