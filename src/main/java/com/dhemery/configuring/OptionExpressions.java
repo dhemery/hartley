@@ -1,21 +1,24 @@
 package com.dhemery.configuring;
 
+import com.dhemery.configuring.filters.FixedValue;
+import com.dhemery.configuring.filters.Trimmed;
+
 /**
  * Factory methods to create option matchers and filters.
  */
 public class OptionExpressions {
-//    public static OptionFilter or(OptionFilter fallbackValue) {
-//        return fallbackValue;
-//    }
-//
-//    public static OptionFilter or(String defaultValue) {
-//        return new FixedValue(defaultValue);
-//    }
-//
+    public static OptionFilter or(OptionFilter fallbackValue) {
+        return fallbackValue;
+    }
+
+    public static OptionFilter or(String defaultValue) {
+        return new FixedValue(defaultValue);
+    }
+
 //    /**
 //     * Report whether the configuration defines the option.
 //     */
-//    public static Matcher<Option> defined() {
+//    public static OptionFilter defined() {
 //        return new Defined();
 //    }
 //
@@ -46,11 +49,11 @@ public class OptionExpressions {
 //    public static OptionFilter required() {
 //        return require(defined());
 //    }
-//
-//    /**
-//     * Trim whitespace from the ends of the option value.
-//     */
-//    public static OptionFilter trimmed() {
-//        return new Trimmed();
-//    }
+
+    /**
+     * Trim whitespace from the ends of the option value.
+     */
+    public static OptionFilter trimmed() {
+        return new Trimmed();
+    }
 }
