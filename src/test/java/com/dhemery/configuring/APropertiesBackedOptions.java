@@ -2,18 +2,20 @@ package com.dhemery.configuring;
 
 import java.util.Properties;
 
-public class APropertiesBackedOptionStore extends ABackedOptionStore {
+public class APropertiesBackedOptions extends ABackedOptions {
     private final Properties properties = new Properties();
 
     @Override
-    protected ModifiableOptionStore storeForContract() {
-        return new PropertiesBackedOptionStore(properties);
+    protected ModifiableOptions optionsForContract() {
+        return new PropertiesBackedOptions(properties);
     }
 
+    @Override
     protected String backingStoreValueOf(String name) {
         return properties.getProperty(name);
     }
 
+    @Override
     protected void writeToBackingStore(String name, String value) {
         properties.setProperty(name, value);
     }

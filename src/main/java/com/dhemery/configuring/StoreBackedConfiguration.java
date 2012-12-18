@@ -6,10 +6,10 @@ import java.util.Properties;
 import java.util.Set;
 
 public class StoreBackedConfiguration implements Configuration {
-    private final ModifiableOptionStore store;
+    private final ModifiableOptions options;
 
-    public StoreBackedConfiguration(ModifiableOptionStore store) {
-        this.store = store;
+    public StoreBackedConfiguration(ModifiableOptions options) {
+        this.options = options;
     }
 
     @Override
@@ -28,12 +28,12 @@ public class StoreBackedConfiguration implements Configuration {
 
     @Override
     public void define(String name, String value) {
-        store.define(name, value);
+        options.define(name, value);
     }
 
     @Override
     public boolean defines(String name) {
-        return store.defines(name);
+        return options.names().contains(name);
     }
 
     @Override
@@ -53,12 +53,12 @@ public class StoreBackedConfiguration implements Configuration {
 
     @Override
     public Set<String> names() {
-        return store.names();
+        return options.names();
     }
 
     @Override
     public String option(String name) {
-        return store.option(name);
+        return options.option(name);
     }
 
     @Override

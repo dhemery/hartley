@@ -111,15 +111,15 @@ public class ConfigurationBuilder implements Builder<Configuration> {
         return configuration;
     }
 
-    private static ModifiableOptionStore backedBy(Map<String, String> map) {
-        return new MapBackedOptionStore(map);
+    private static ModifiableOptions backedBy(Map<String, String> map) {
+        return new MapBackedOptions(map);
     }
 
-    private static PropertiesBackedOptionStore backedBy(Properties properties) {
-        return new PropertiesBackedOptionStore(properties);
+    private static PropertiesBackedOptions backedBy(Properties properties) {
+        return new PropertiesBackedOptions(properties);
     }
 
-    private static StoreBackedConfiguration configuration(ModifiableOptionStore store) {
-        return new StoreBackedConfiguration(store);
+    private static StoreBackedConfiguration configuration(ModifiableOptions options) {
+        return new StoreBackedConfiguration(options);
     }
 }

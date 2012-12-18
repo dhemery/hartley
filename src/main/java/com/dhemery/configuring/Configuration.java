@@ -2,12 +2,11 @@ package com.dhemery.configuring;
 
 import java.util.Map;
 import java.util.Properties;
-import java.util.Set;
 
 /**
  * A set of configuration options.
  */
-public interface Configuration {
+public interface Configuration extends ModifiableOptions {
     /**
      * Return a map of this configuration's options.
      */
@@ -18,12 +17,6 @@ public interface Configuration {
      */
     Properties asProperties();
 
-    /**
-     * Define an option by supplying a value.
-     * If the configuration already defines the option
-     * the given value replaces the old one.
-     */
-    void define(String name, String value);
 
     /**
      * Indicate whether this configuration defines the named option.
@@ -44,18 +37,6 @@ public interface Configuration {
      * Merge a set of options from a property list into this configuration.
      */
     void merge(Properties properties);
-
-    /**
-     * Return the names of the defined options.
-     */
-    Set<String> names();
-
-    /**
-     * Return the value of an option.
-     * @param name the name of an option
-     * @return the value of the option, or {@code null} if the configuration does not define the option
-     */
-    String option(String name);
 
     /**
      * Return the value of a required option.

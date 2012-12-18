@@ -2,14 +2,14 @@ package com.dhemery.configuring;
 
 import java.util.*;
 
-public class PropertiesDictionary implements ModifiableDictionary {
+public class PropertiesBackedOptions implements ModifiableOptions{
     private final Properties properties;
 
-    public PropertiesBackedOptionStore() {
+    public PropertiesBackedOptions() {
         this(new Properties());
     }
 
-    public PropertiesBackedOptionStore(Properties properties) {
+    public PropertiesBackedOptions(Properties properties) {
         this.properties = properties;
     }
 
@@ -24,7 +24,7 @@ public class PropertiesDictionary implements ModifiableDictionary {
     }
 
     @Override
-    public String retrieve(String name) {
+    public String option(String name) {
         return properties.getProperty(name);
     }
 }

@@ -5,14 +5,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class MapBackedOptionStore implements ModifiableOptionStore {
+public class MapBackedOptions implements ModifiableOptions {
     private final Map<String, String> map;
 
-    public MapBackedOptionStore() {
+    public MapBackedOptions() {
         this(new HashMap<String, String>());
     }
 
-    public MapBackedOptionStore(Map<String, String> map) {
+    public MapBackedOptions(Map<String, String> map) {
         this.map = map;
     }
 
