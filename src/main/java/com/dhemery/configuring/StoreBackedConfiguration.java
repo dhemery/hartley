@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
+import static com.dhemery.configuring.FilteringOptionsChain.filterChain;
+
 public class StoreBackedConfiguration implements Configuration {
     private final ModifiableOptions options;
 
@@ -49,6 +51,11 @@ public class StoreBackedConfiguration implements Configuration {
     @Override
     public void merge(Properties properties) {
         for(String name : properties.stringPropertyNames()) define(name, properties.getProperty(name));
+    }
+
+    @Override
+    public String option(String name, OptionFilter... filters) {
+        return filterChain(options, filters).option(name);
     }
 
     @Override

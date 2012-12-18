@@ -8,11 +8,13 @@ import java.util.*;
  * Builds configurations.
  */
 public class ConfigurationBuilder implements Builder<Configuration> {
-    private final Configuration configuration;
-    private final Configuration overrides = configuration(backedBy(new HashMap<String, String>()));
+    private final ModifiableOptions baseOptions;
+    private final ModifiableOptions overrideOptions = backedBy(new HashMap<String, String>());
+    private final Configuration overrides = configuration(overrideOptions);
+    private List<OptionFilter> filters = new ArrayList<OptionFilter>();
 
-    private ConfigurationBuilder(Configuration configuration) {
-        this.configuration = configuration;
+    private ConfigurationBuilder(ModifiableOptions baseOptions) {
+        this.baseOptions = baseOptions;
     }
 
     /**
@@ -33,27 +35,27 @@ public class ConfigurationBuilder implements Builder<Configuration> {
      * Build a configuration that stores options in the given map.
      */
     public static ConfigurationBuilder into(Map<String,String> map) {
-        return new ConfigurationBuilder(configuration(backedBy(map)));
+        return new ConfigurationBuilder(backedBy(map));
     }
 
     /**
      * Build a configuration that stores options in the given properties.
      */
     public static ConfigurationBuilder into(Properties properties) {
-        return new ConfigurationBuilder(configuration(backedBy(properties)));
+        return new ConfigurationBuilder(backedBy(properties));
     }
 
     /**
      * Merge properties from the named file into the configuration.
      */
-    public ConfigurationBuilder fromFile(String fileName) {
-        return fromFiles(fileName);
+    public ConfigurationBuilder overriddenByFile(String fileName) {
+        return overriddenByFiles(fileName);
     }
 
     /**
      * Merge properties from the named files into the configuration.
      */
-    public ConfigurationBuilder fromFiles(String... fileNames) {
+    public ConfigurationBuilder overriddenByFiles(String... fileNames) {
         LoadProperties.fromFiles(fileNames).into(overrides);
         return this;
     }
@@ -61,22 +63,22 @@ public class ConfigurationBuilder implements Builder<Configuration> {
     /**
      * Merge properties from the named resource into the configuration.
      */
-    public ConfigurationBuilder fromResource(String resourceName) {
-        return fromResources(resourceName);
+    public ConfigurationBuilder overriddenByResource(String resourceName) {
+        return overriddenByResources(resourceName);
     }
 
     /**
      * Merge properties from the named resources into the configuration.
      */
-    public ConfigurationBuilder fromResources(String... resourceNames) {
-        LoadProperties.fromResources(resourceNames).into(configuration);
+    public ConfigurationBuilder overriddenByResources(String... resourceNames) {
+        LoadProperties.fromResources(resourceNames).into(overrides);
         return this;
     }
 
     /**
      * Merge another configuration's options into the configuration.
      */
-    public ConfigurationBuilder from(Configuration configuration) {
+    public ConfigurationBuilder overriddenBy(Configuration configuration) {
         overrides.merge(configuration);
         return this;
     }
@@ -84,7 +86,7 @@ public class ConfigurationBuilder implements Builder<Configuration> {
     /**
      * Merge map entries from the given map into the configuration.
      */
-    public ConfigurationBuilder from(Map<String,String> map) {
+    public ConfigurationBuilder overriddenBy(Map<String,String> map) {
         overrides.merge(map);
         return this;
     }
@@ -92,7 +94,7 @@ public class ConfigurationBuilder implements Builder<Configuration> {
     /**
      * Merge the given properties into the configuration.
      */
-    public ConfigurationBuilder from(Properties properties) {
+    public ConfigurationBuilder overriddenBy(Properties properties) {
         overrides.merge(properties);
         return this;
     }
@@ -100,13 +102,15 @@ public class ConfigurationBuilder implements Builder<Configuration> {
     /**
      * Append option value filters onto the configuration's filter list.
      */
-//    public ConfigurationBuilder withOptionValues(OptionFilter... filters) {
-//        this.filters.addAll(Arrays.asList(filters));
-//        return this;
-//    }
+    public ConfigurationBuilder withOptionValues(OptionFilter... filters) {
+        this.filters.addAll(Arrays.asList(filters));
+        return this;
+    }
 
     @Override
     public Configuration build() {
+        ModifiableOptions filteredOptions = FilteringOptionsChain.filterChain(baseOptions, filters);
+        Configuration configuration = new StoreBackedConfiguration(filteredOptions);
         configuration.merge(overrides);
         return configuration;
     }

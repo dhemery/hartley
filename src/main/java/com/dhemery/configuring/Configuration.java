@@ -39,7 +39,15 @@ public interface Configuration extends ModifiableOptions {
     void merge(Properties properties);
 
     /**
-     * Return the value of a required option.
+     * Return the named option filtered by the given filters.
+     * @param name the name of the options
+     * @param filters the filters to apply
+     * @return the filtered value of the option
+     */
+    String option(String name, OptionFilter... filters);
+
+    /**
+     * Return the named option, and throw an exception if it is not defined.
      * @param name the name of an option
      * @return the value of the option
      * @throws com.dhemery.configuring.ConfigurationException if this configuration does not define the option

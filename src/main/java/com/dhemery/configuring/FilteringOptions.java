@@ -2,13 +2,18 @@ package com.dhemery.configuring;
 
 import java.util.Set;
 
-public class FilteringOptions implements Options {
-    private final Options source;
+public class FilteringOptions implements ModifiableOptions {
+    private final ModifiableOptions source;
     private final OptionFilter filter;
 
-    public FilteringOptions(Options source, OptionFilter filter) {
+    public FilteringOptions(ModifiableOptions source, OptionFilter filter) {
         this.source = source;
         this.filter = filter;
+    }
+
+    @Override
+    public void define(String name, String value) {
+        source.define(name, value);
     }
 
     @Override
