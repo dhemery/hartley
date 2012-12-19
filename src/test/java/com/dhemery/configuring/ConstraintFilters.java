@@ -3,9 +3,7 @@ package com.dhemery.configuring;
 import org.junit.Test;
 
 import static com.dhemery.configuring.ConfigurationBuilder.intoNewConfiguration;
-import static com.dhemery.configuring.OptionExpressions.defined;
-import static com.dhemery.configuring.OptionExpressions.nil;
-import static com.dhemery.configuring.OptionExpressions.require;
+import static com.dhemery.configuring.OptionExpressions.*;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.not;
 
@@ -25,6 +23,13 @@ public class ConstraintFilters {
     @Test
     public void throwsJustBecause() {
         Configuration configuration = intoNewConfiguration().build();
-        configuration.option("foo", require(allOf(defined(), nil(), not(nil()))));
+        configuration.option("foo", require(allOf(nil(), defined(), nil(), not(nil()))));
+    }
+
+    @Test
+    public void performsTrimming() {
+        Configuration configuration = intoNewConfiguration().build();
+        configuration.define("foo", "   bar   ");
+        configuration.option("foo", trimmed(), require(defined()), require(nil()));
     }
 }
