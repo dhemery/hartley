@@ -1,5 +1,7 @@
 package com.dhemery.configuring;
 
+import com.dhemery.core.Feature;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -13,7 +15,7 @@ import java.util.Set;
 @SuppressWarnings("unchecked")
 public class OptionsBackedConfiguration implements Configuration {
     private final ModifiableOptions options;
-    private final Transformation<Option> transformations;
+    private final Transformer transformer;
 
     /**
      * Create a configuration backed by an empty {@code ModifiableOptions}.
@@ -23,15 +25,15 @@ public class OptionsBackedConfiguration implements Configuration {
     }
 
     public OptionsBackedConfiguration(ModifiableOptions options) {
-        this(options, new ArrayList<Transformation<Option>>());
+        this(options, new ArrayList<Feature<Option,String>>());
     }
     /**
      * Create a configuration backed by the given options.
      * @param options the {@code ModifiableOptions} in which to store this configuration's options
      */
-    public OptionsBackedConfiguration(ModifiableOptions options, List<Transformation<Option>> transformations) {
+    public OptionsBackedConfiguration(ModifiableOptions options, List<Feature<Option,String>> transformations) {
         this.options = options;
-        this.transformations = new ChainedTransformation(transformations);
+        transformer = new Transformer(transformations);
     }
 
     @Override
@@ -51,16 +53,17 @@ public class OptionsBackedConfiguration implements Configuration {
 
     @Override
     public String option(String name) {
-        return filter(name, transformations);
+        return filter(name, transformer);
     }
 
     @Override
-    public String option(String name, Transformation<Option>... transformations) {
-        return filter(name, transformations);
+    public String option(String name, Feature<Option,String>... transformations) {
+        return filter(name, new Transformer(Arrays.asList(transformations)));
     }
 
-    private String filter(String name, Transformation<Option>... transformations) {
-        return new ChainedTransformation(Arrays.asList(transformations)).of(new BaseOption(options, name)).value();
+    private String filter(String name, Transformer transformer) {
+        Option option = new BaseOption(options, name);
+        return transformer.transform(option).value();
     }
 
     @Override

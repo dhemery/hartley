@@ -4,6 +4,7 @@ import com.dhemery.configuring.filters.Constraint;
 import com.dhemery.configuring.filters.Defined;
 import com.dhemery.configuring.filters.Nil;
 import com.dhemery.configuring.filters.Trimmed;
+import com.dhemery.core.Feature;
 import org.hamcrest.Matcher;
 
 /**
@@ -31,14 +32,14 @@ public class OptionExpressions {
      * Note that if the option does not satisfy the criteria,
      * this filter ignores any value supplied by previous filters.
      */
-    public static Transformation<Option> require(Matcher<? super Option> constraint) {
+    public static Feature<Option,String> require(Matcher<? super Option> constraint) {
         return new Constraint(constraint);
     }
 
     /**
      * Trim whitespace from the ends of the option value.
      */
-    public static Transformation<Option> trimmed() {
+    public static Feature<Option,String> trimmed() {
         return new Trimmed();
     }
 }

@@ -1,27 +1,32 @@
 package com.dhemery.configuring.filters;
 
 import com.dhemery.configuring.Option;
-import com.dhemery.configuring.Transformation;
+import com.dhemery.core.Feature;
 import org.hamcrest.Description;
+import org.hamcrest.StringDescription;
 
 /**
  * Trims whitespace from the ends of the option value.
  */
-public class Trimmed implements Transformation<Option> {
+public class Trimmed implements Feature<Option,String> {
     /**
      * Return the option value with whitespace trimmed from both ends.
      * @param option the option whose value to trim
      * @return the trimmed value, or null if the option value is null
      */
     @Override
-    public Option of(Option option) {
+    public String of(Option option) {
         String value = option.value();
-        String newValue = value == null ? value : value.trim();
-        return new TransformedOption(option, this, newValue);
+        return value == null ? value : value.trim();
     }
 
     @Override
     public void describeTo(Description description) {
         description.appendText("trimmed");
+    }
+
+    @Override
+    public String toString() {
+        return StringDescription.asString(this);
     }
 }

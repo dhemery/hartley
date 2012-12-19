@@ -1,5 +1,7 @@
 package com.dhemery.configuring;
 
+import com.dhemery.core.Feature;
+
 /**
  * A set of configuration options that can be queried, merged, and transformed.
  */
@@ -15,7 +17,7 @@ public interface Configuration extends ModifiableOptions {
      * @param transformations the transformations to perform
      * @return the transformed value of the option
      */
-    String option(String name, Transformation<Option>... transformations);
+    String option(String name, Feature<Option,String>... transformations);
 
     /**
      * Return the named option, and throw an exception if it is not defined.
