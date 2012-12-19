@@ -1,19 +1,27 @@
 package com.dhemery.configuring.filters;
 
-import com.dhemery.configuring.OptionFilter;
-import com.dhemery.configuring.Options;
+import com.dhemery.configuring.Option;
+import com.dhemery.core.NamedFeature;
 
 /**
- * Returns the option value with whitespace trimmed from both ends.
+ * Trims whitespace from the ends of the option value.
  */
-public class Trimmed implements OptionFilter {
+public class Trimmed extends NamedFeature<Option,String> {
     /**
-     * Return the given value with whitespace trimmed from both ends.
-     * @param value the value to trim
-     * @return the trimmed value, or null if the given value is null
+     * Create a feature that trims whitespace from the option value.
+     */
+    public Trimmed() {
+        super("trimmed");
+    }
+
+    /**
+     * Return the option value with whitespace trimmed from both ends.
+     * @param option the option whose value to trim
+     * @return the trimmed value, or null if the option value is null
      */
     @Override
-    public String transform(Options source, String name, String value) {
-        return value == null ? null : value.trim();
+    public String of(Option option) {
+        String value = option.value();
+        return value == null ? null : option.value();
     }
 }

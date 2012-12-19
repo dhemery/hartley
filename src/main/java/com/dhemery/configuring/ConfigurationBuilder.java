@@ -1,6 +1,7 @@
 package com.dhemery.configuring;
 
 import com.dhemery.core.Builder;
+import com.dhemery.core.Feature;
 
 import java.util.*;
 
@@ -32,7 +33,7 @@ import static com.dhemery.configuring.LoadProperties.propertiesFromResources;
 public class ConfigurationBuilder implements Builder<Configuration> {
     private final ModifiableOptions baseOptions;
     private final Map<String,String> overrides = new HashMap<String, String>();
-    private List<OptionFilter> filters = new ArrayList<OptionFilter>();
+    private List<Feature<Option,String>> filters = new ArrayList<Feature<Option,String>>();
 
     private ConfigurationBuilder(ModifiableOptions baseOptions) {
         this.baseOptions = baseOptions;
@@ -123,7 +124,7 @@ public class ConfigurationBuilder implements Builder<Configuration> {
     /**
      * Append option filters onto the configuration's filter list.
      */
-    public ConfigurationBuilder withOptionValues(OptionFilter... filters) {
+    public ConfigurationBuilder withOptionValues(Feature<Option,String>... filters) {
         this.filters.addAll(Arrays.asList(filters));
         return this;
     }

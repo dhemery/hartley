@@ -54,7 +54,6 @@ public class ACodecEndpoint {
         final TheUserReturnType theCodecResponse = new TheUserReturnType(){};
         context.checking(new Expectations(){{
             ignoring(delegateEndpoint);
-            //noinspection unchecked
             oneOf(codec).decode(with(any(String.class)), with(any(Class.class)));
                 will(returnValue(theCodecResponse));
 

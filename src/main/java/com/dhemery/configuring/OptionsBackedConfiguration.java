@@ -1,12 +1,18 @@
 package com.dhemery.configuring;
 
+import com.dhemery.core.Feature;
+
 import java.util.Set;
+
+import static com.dhemery.configuring.OptionExpressions.defined;
+import static com.dhemery.configuring.OptionExpressions.require;
 
 /**
  * A {@link Configuration} backed by a {@link ModifiableOptions}.
  * Changes to this configuration are written through to the underlying options.
  * Changes in the underlying options are reflected in queries of this configuration.
  */
+@SuppressWarnings("unchecked")
 public class OptionsBackedConfiguration implements Configuration {
     private final ModifiableOptions options;
 
@@ -46,13 +52,12 @@ public class OptionsBackedConfiguration implements Configuration {
     }
 
     @Override
-    public String option(String name, OptionFilter... filters) {
+    public String option(String name, Feature<Option,String>... filters) {
         return new FilteringOptions(options, filters).option(name);
     }
 
     @Override
     public String requiredOption(String name) {
-        if(defines(name)) return option(name);
-        throw new ConfigurationException("Undefined option " + name);
+        return option(name, require(defined()));
     }
 }

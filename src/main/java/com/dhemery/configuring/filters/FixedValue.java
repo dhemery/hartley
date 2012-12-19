@@ -1,26 +1,27 @@
 package com.dhemery.configuring.filters;
 
-import com.dhemery.configuring.OptionFilter;
-import com.dhemery.configuring.Options;
+import com.dhemery.configuring.Option;
+import com.dhemery.core.NamedFeature;
 
 /**
- * Returns a fixed value.
+ * Returns a fixed value, regardless of the option.
  */
-public class FixedValue implements OptionFilter {
+public class FixedValue extends NamedFeature<Option,String> {
     private final String fixedValue;
 
     /**
-     * Create a filter that always returns the given fixed value.
+     * Create a filter that returns the fixed value, regardless of the option.
      */
     public FixedValue(String fixedValue) {
+        super("fixed value " + fixedValue);
         this.fixedValue = fixedValue;
     }
 
     /**
-     * Return the filter's fixed value, regardless of the method's arguments.
+     * Return the filter's fixed value, regardless of the option.
      */
     @Override
-    public String transform(Options source, String name, String value) {
+    public String of(Option option) {
         return fixedValue;
     }
 }
