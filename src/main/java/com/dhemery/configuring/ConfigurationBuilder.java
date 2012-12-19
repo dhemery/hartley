@@ -5,6 +5,8 @@ import com.dhemery.core.Builder;
 import java.util.*;
 
 import static com.dhemery.configuring.Copy.copy;
+import static com.dhemery.configuring.LoadProperties.propertiesFromFiles;
+import static com.dhemery.configuring.LoadProperties.propertiesFromResources;
 
 /**
  * Builds configurations.
@@ -75,7 +77,7 @@ public class ConfigurationBuilder implements Builder<Configuration> {
      * Merge properties from the named files into the overrides for the configuration.
      */
     public ConfigurationBuilder mergeFiles(String... fileNames) {
-        LoadProperties.fromFiles(fileNames).into(overrides);
+        copy(propertiesFromFiles(fileNames)).into(overrides);
         return this;
     }
 
@@ -90,7 +92,7 @@ public class ConfigurationBuilder implements Builder<Configuration> {
      * Merge properties from the named resources into the overrides for the configuration.
      */
     public ConfigurationBuilder mergeResources(String... resourceNames) {
-        LoadProperties.fromResources(resourceNames).into(overrides);
+        copy(propertiesFromResources(resourceNames)).into(overrides);
         return this;
     }
 

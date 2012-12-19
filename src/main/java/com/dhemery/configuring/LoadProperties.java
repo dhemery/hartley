@@ -8,11 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
-import static com.dhemery.configuring.Copy.copy;
-
 /**
- * Static utility methods to load properties from one or more property files or resources
- * and deliver them in a variety of representations.
+ * Static utility methods to load properties from property files and resources.
  */
 public class LoadProperties {
     /**
@@ -20,8 +17,8 @@ public class LoadProperties {
      * @param fileName the name of the properties file to load
      * @throws ConfigurationException   if the properties file does not exist or an IO exception occurs while loading properties
      */
-    public static Copy fromFile(String fileName) {
-        return fromFiles(fileName);
+    public static Properties propertiesFromFile(String fileName) {
+        return propertiesFromFiles(fileName);
     }
 
     /**
@@ -32,8 +29,8 @@ public class LoadProperties {
      * @param fileNames the names of the properties files to load
      * @throws ConfigurationException   if a properties file does not exist or an IO exception occurs while loading properties
      */
-    public static Copy fromFiles(String... fileNames) {
-        return from(streamsForFiles(fileNames));
+    public static Properties propertiesFromFiles(String... fileNames) {
+        return propertiesFrom(streamsForFiles(fileNames));
     }
 
     /**
@@ -43,8 +40,8 @@ public class LoadProperties {
      * @param resourceName the name of the properties resource to load
      * @throws ConfigurationException   if the properties resource does not exist or an IO exception occurs while loading properties
      */
-    public static Copy fromResource(String resourceName) {
-        return fromResources(resourceName);
+    public static Properties propertiesFromResource(String resourceName) {
+        return propertiesFromResources(resourceName);
     }
 
     /**
@@ -56,16 +53,16 @@ public class LoadProperties {
      * @param resourceNames the names of the properties resources to load
      * @throws ConfigurationException   if a properties resource does not exist or an IO exception occurs while loading properties
      */
-    public static Copy fromResources(String... resourceNames) {
-        return from(streamsForResources(resourceNames));
+    public static Properties propertiesFromResources(String... resourceNames) {
+        return propertiesFrom(streamsForResources(resourceNames));
     }
 
-    private static Copy from(List<InputStream> streams) {
+    private static Properties propertiesFrom(List<InputStream> streams) {
         Properties properties = new Properties();
         for (InputStream stream : streams) {
             loadPropertiesFromStream(properties, stream);
         }
-        return copy(properties);
+        return properties;
     }
 
     private static void loadPropertiesFromStream(Properties properties, InputStream stream) {
