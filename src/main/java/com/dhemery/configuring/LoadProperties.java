@@ -15,15 +15,6 @@ import static com.dhemery.configuring.Copy.copy;
  * and deliver them in a variety of representations.
  */
 public class LoadProperties {
-
-    private static Copy fromStreams(List<InputStream> streams) {
-        Properties properties = new Properties();
-        for (InputStream stream : streams) {
-            loadPropertiesFromStream(properties, stream);
-        }
-        return copy(properties);
-    }
-
     /**
      * Load properties from a properties file.
      * @param fileName the name of the properties file to load
@@ -70,7 +61,11 @@ public class LoadProperties {
     }
 
     private static Copy from(List<InputStream> streams) {
-        return fromStreams(streams);
+        Properties properties = new Properties();
+        for (InputStream stream : streams) {
+            loadPropertiesFromStream(properties, stream);
+        }
+        return copy(properties);
     }
 
     private static void loadPropertiesFromStream(Properties properties, InputStream stream) {

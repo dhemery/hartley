@@ -60,6 +60,13 @@ class Copy  {
     }
 
     /**
+     * Create a configuraton with options copied from the source.
+     */
+    public Configuration asConfiguration() {
+        return new OptionsBackedConfiguration(asModifiableOptions());
+    }
+
+    /**
      * Create a map with options copied from the source.
      */
     public Map<String,String> asMap(){
