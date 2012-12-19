@@ -9,20 +9,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import static com.dhemery.configuring.Conversions.mergeInto;
+import static com.dhemery.configuring.Copy.copy;
 
 /**
  * Loads properties from one or more property files or resources
  * and deliver the properties in a variety of representations.
  */
 public class LoadProperties {
-    private final Properties properties;
+    private final Copy copy;
 
     private LoadProperties(List<InputStream> streams) {
-        properties = new Properties();
+        Properties properties = new Properties();
         for (InputStream stream : streams) {
-            loadPropertiesFromStream(stream);
+            loadPropertiesFromStream(properties, stream);
         }
+        copy = copy(properties);
     }
 
     /**
@@ -75,27 +76,27 @@ public class LoadProperties {
     }
 
     /**
-     * Merge the loaded properties into a configuration.
+     * Merge the loaded properties into a set of options.
      */
-    public void into(Configuration configuration) {
-        mergeInto(configuration, properties);
+    public void into(ModifiableOptions options) {
+        copy.into(options);
     }
 
     /**
      * Merge the loaded properties into a map.
      */
     public void into(Map<String, String> map) {
-        mergeInto(map, properties);
+        copy.into(map);
     }
 
     /**
      * Merge the loaded properties into a properties list.
      */
     public void into(Properties properties) {
-        mergeInto(properties, this.properties);
+        copy.into(properties);
     }
 
-    private void loadPropertiesFromStream(InputStream stream) {
+    private void loadPropertiesFromStream(Properties properties, InputStream stream) {
         try {
             properties.load(stream);
             stream.close();

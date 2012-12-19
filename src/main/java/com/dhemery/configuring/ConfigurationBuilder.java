@@ -4,7 +4,7 @@ import com.dhemery.core.Builder;
 
 import java.util.*;
 
-import static com.dhemery.configuring.Conversions.mergeInto;
+import static com.dhemery.configuring.Copy.copy;
 
 /**
  * Builds configurations.
@@ -47,7 +47,7 @@ public class ConfigurationBuilder implements Builder<Configuration> {
      * Create a builder to build a configuration into the given map.
      */
     public static ConfigurationBuilder into(Map<String,String> map) {
-        return new ConfigurationBuilder(backedBy(map));
+        return new ConfigurationBuilder(new MappedOptions(map));
     }
 
     /**
@@ -61,7 +61,7 @@ public class ConfigurationBuilder implements Builder<Configuration> {
      * Create a builder to build a configuration into the given properties.
      */
     public static ConfigurationBuilder into(Properties properties) {
-        return new ConfigurationBuilder(backedBy(properties));
+        return new ConfigurationBuilder(new PropertiesOptions(properties));
     }
 
     /**
@@ -98,7 +98,7 @@ public class ConfigurationBuilder implements Builder<Configuration> {
      * Merge options into the overrides for the configuration.
      */
     public ConfigurationBuilder merge(Options options) {
-        mergeInto(overrides, options);
+        copy(options).into(overrides);
         return this;
     }
 
@@ -106,7 +106,7 @@ public class ConfigurationBuilder implements Builder<Configuration> {
      * Merge a map into the overrides for the configuration.
      */
     public ConfigurationBuilder merge(Map<String, String> map) {
-        mergeInto(overrides, map);
+        copy(map).into(overrides);
         return this;
     }
 
@@ -114,7 +114,7 @@ public class ConfigurationBuilder implements Builder<Configuration> {
      * Merge properties into the overrides for the configuration.
      */
     public ConfigurationBuilder merge(Properties properties) {
-        mergeInto(overrides, properties);
+        copy(properties).into(overrides);
         return this;
     }
 
@@ -135,20 +135,8 @@ public class ConfigurationBuilder implements Builder<Configuration> {
      */
     @Override
     public Configuration build() {
-        mergeInto(baseOptions, overrides);
+        copy(overrides).into(baseOptions);
         ModifiableOptions filteredOptions = new FilteringOptions(baseOptions, filters);
         return new OptionsBackedConfiguration(filteredOptions);
-    }
-
-    private static ModifiableOptions backedBy(Map<String, String> map) {
-        return new MappedOptions(map);
-    }
-
-    private static PropertiesOptions backedBy(Properties properties) {
-        return new PropertiesOptions(properties);
-    }
-
-    private static OptionsBackedConfiguration configuration(ModifiableOptions options) {
-        return new OptionsBackedConfiguration(options);
     }
 }

@@ -1,6 +1,5 @@
 package com.dhemery.configuring;
 
-import java.util.HashMap;
 import java.util.Set;
 
 /**
@@ -15,7 +14,7 @@ public class OptionsBackedConfiguration implements Configuration {
      * Create a configuration backed by an empty {@code ModifiableOptions}.
      */
     public OptionsBackedConfiguration() {
-        this(new MappedOptions(new HashMap<String, String>()));
+        this(new MappedOptions());
     }
 
     /**
