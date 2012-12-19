@@ -18,49 +18,49 @@ class Copy  {
     }
 
     /**
-     * Prepare to copy options from a map.
+     * Prepare to copy options from a source map.
      */
     public static Copy copy(Map<String,String> source) {
         return copy(optionsBackedBy(source));
     }
 
     /**
-     * Prepare to copy options from the source options.
+     * Prepare to copy options from a source set of options.
      */
     public static Copy copy(Options source) {
         return new Copy(source);
     }
 
     /**
-     * Prepare to copy options from properties.
+     * Prepare to copy options from a source set of properties.
      */
     public static Copy copy(Properties source) {
         return copy(optionsBackedBy(source));
     }
 
     /**
-     * Copy the options into a map.
+     * Copy the options from the source into a map.
      */
     public void into(Map<String,String> destination) {
         into(optionsBackedBy(destination));
     }
 
     /**
-     * Copy the options into another set of options.
+     * Copy the options from the source into a set of options.
      */
     public void into(ModifiableOptions destination) {
         for(String name : source.names()) destination.define(name, source.option(name));
     }
 
     /**
-     * Copy the options into properties.
+     * Copy the options from the source into a set of properties.
      */
     public void into(Properties destination) {
         into(optionsBackedBy(destination));
     }
 
     /**
-     * Copy the options as a map.
+     * Create a map with options copied from the source.
      */
     public Map<String,String> asMap(){
         Map<String,String> map = new HashMap<String, String>();
@@ -69,7 +69,7 @@ class Copy  {
     }
 
     /**
-     * Copy the options as modifiable options.
+     * Create a modifiable set of options with the options copied from the source.
      */
     public ModifiableOptions asModifiableOptions(){
         ModifiableOptions destination = new MappedOptions();
@@ -78,14 +78,14 @@ class Copy  {
     }
 
     /**
-     * Copy the options as options.
+     * Create a set of options with the options copied from the source.
      */
     public Options asOptions(){
         return asModifiableOptions();
     }
 
     /**
-     * Copy the options as properties.
+     * Create a set of properties with the options copied from the source.
      */
     public Properties asProperties(){
         Properties properties = new Properties();
