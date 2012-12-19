@@ -60,7 +60,7 @@ class Copy  {
     }
 
     /**
-     * Create a configuraton with options copied from the source.
+     * Create a configuration with options copied from the source.
      */
     public Configuration asConfiguration() {
         return new OptionsBackedConfiguration(asModifiableOptions());
