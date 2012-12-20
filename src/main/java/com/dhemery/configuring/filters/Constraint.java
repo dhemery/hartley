@@ -1,6 +1,5 @@
 package com.dhemery.configuring.filters;
 
-import com.dhemery.configuring.ConfigurationException;
 import com.dhemery.configuring.Option;
 import com.dhemery.core.Feature;
 import org.hamcrest.Description;
@@ -22,24 +21,13 @@ public class Constraint implements Feature<Option,String> {
 
     @Override
     public String of(Option option) {
-        try {
-            assertThat(option, criteria);
-        } catch (AssertionError cause) {
-            Description description = new StringDescription();
-            description.appendText("Problem with configuration option ")
-                    .appendText(option.name())
-                    .appendText(":")
-                    .appendText(cause.getMessage());
-            ConfigurationException exception = new ConfigurationException(description.toString());
-            exception.setStackTrace(cause.getStackTrace());
-            throw exception;
-        }
+        assertThat("Problem with configuration option " + option.name(), option, criteria);
         return option.value();
     }
 
     @Override
     public void describeTo(Description description) {
-        criteria.describeTo(description);
+        description.appendText("require(").appendDescriptionOf(criteria).appendText(")");
     }
 
     @Override

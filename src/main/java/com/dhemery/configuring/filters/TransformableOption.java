@@ -39,7 +39,6 @@ public class TransformableOption implements Option {
     }
 
     public void apply(Feature<Option, String> transformation) {
-        System.out.println("Applying " + transformation + " to " + this);
         transformations.add(new Transformation(transformation.toString(), transformation.of(this)));
     }
 
