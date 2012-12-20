@@ -11,7 +11,6 @@ import org.hamcrest.Matcher;
  * Static utility methods to create option filters.
  */
 public class OptionExpressions {
-
     /**
      * Report whether the option is defined.
      */

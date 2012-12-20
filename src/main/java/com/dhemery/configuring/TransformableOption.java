@@ -1,15 +1,16 @@
 package com.dhemery.configuring;
 
+import com.dhemery.core.Feature;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 
-public class BaseOption implements Option {
+public class TransformableOption implements Option {
+    private final OptionJournal journal;
     private final Options source;
-    private final String name;
 
-    public BaseOption(Options source, String name) {
+    public TransformableOption(Options source, String name) {
         this.source = source;
-        this.name = name;
+        journal = new OptionJournal(name, source.option(name));
     }
 
     @Override
@@ -19,17 +20,21 @@ public class BaseOption implements Option {
 
     @Override
     public String name() {
-        return name;
+        return journal.name();
     }
 
     @Override
     public String value() {
-        return source.option(name);
+        return journal.lastEntry();
+    }
+
+    public void apply(Feature<Option, String> transformation) {
+        journal.record(transformation, transformation.of(this));
     }
 
     @Override
     public void describeTo(Description description) {
-        description.appendText(name).appendText(":").appendValue(value());
+        journal.describeTo(description);
     }
 
     @Override

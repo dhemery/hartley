@@ -15,7 +15,7 @@ import java.util.Set;
 @SuppressWarnings("unchecked")
 public class OptionsBackedConfiguration implements Configuration {
     private final ModifiableOptions options;
-    private final Transformer transformer;
+    private final List<Feature<Option, String>> transformations;
 
     /**
      * Create a configuration backed by an empty {@code ModifiableOptions}.
@@ -33,7 +33,7 @@ public class OptionsBackedConfiguration implements Configuration {
      */
     public OptionsBackedConfiguration(ModifiableOptions options, List<Feature<Option,String>> transformations) {
         this.options = options;
-        transformer = new Transformer(transformations);
+        this.transformations = transformations;
     }
 
     @Override
@@ -53,17 +53,20 @@ public class OptionsBackedConfiguration implements Configuration {
 
     @Override
     public String option(String name) {
-        return filter(name, transformer);
+        return filter(name, transformations);
     }
 
     @Override
     public String option(String name, Feature<Option,String>... transformations) {
-        return filter(name, new Transformer(Arrays.asList(transformations)));
+        return filter(name, Arrays.asList(transformations));
     }
 
-    private String filter(String name, Transformer transformer) {
-        Option option = new BaseOption(options, name);
-        return transformer.transform(option).value();
+    private String filter(String name, List<Feature<Option,String>> transformations) {
+        TransformableOption option = new TransformableOption(options, name);
+        for(Feature<Option,String> transformation : transformations) {
+            option.apply(transformation);
+        }
+        return option.value();
     }
 
     @Override

@@ -27,7 +27,10 @@ public class Constraint implements Feature<Option,String> {
 
     @Override
     public void describeTo(Description description) {
-        description.appendText("require(").appendDescriptionOf(criteria).appendText(")");
+        description
+                .appendText("require(")
+                .appendDescriptionOf(criteria)
+                .appendText(")");
     }
 
     @Override
