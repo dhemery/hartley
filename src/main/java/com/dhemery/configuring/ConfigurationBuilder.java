@@ -2,6 +2,7 @@ package com.dhemery.configuring;
 
 import com.dhemery.core.Builder;
 import com.dhemery.core.Feature;
+import com.dhemery.core.Maybe;
 
 import java.util.*;
 
@@ -33,7 +34,7 @@ import static com.dhemery.configuring.LoadProperties.propertiesFromResources;
 public class ConfigurationBuilder implements Builder<Configuration> {
     private final ModifiableOptions baseOptions;
     private final Map<String,String> overrides = new HashMap<String, String>();
-    private List<Feature<Option,String>> transformations = new ArrayList<Feature<Option,String>>();
+    private List<Feature<Option,Maybe<String>>> transformations = new ArrayList<Feature<Option,Maybe<String>>>();
 
     private ConfigurationBuilder(ModifiableOptions baseOptions) {
         this.baseOptions = baseOptions;
@@ -124,7 +125,7 @@ public class ConfigurationBuilder implements Builder<Configuration> {
     /**
      * Append option filters onto the configuration's filter list.
      */
-    public ConfigurationBuilder withOptionValues(Feature<Option,String>... transformations) {
+    public ConfigurationBuilder withOptionValues(Feature<Option,Maybe<String>>... transformations) {
         this.transformations.addAll(Arrays.asList(transformations));
         return this;
     }

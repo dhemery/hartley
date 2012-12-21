@@ -2,14 +2,17 @@ package com.dhemery.configuring.options;
 
 import com.dhemery.configuring.Option;
 import com.dhemery.core.Feature;
+import com.dhemery.core.Maybe;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+
+import static com.dhemery.core.Maybe.absent;
 
 /**
  * Returns the option if the option satisfies all constraints.
  * Throws an exception if the option violates a constraint.
  */
-public class Constraint<F> implements Feature<Option,String> {
+public class Constraint<F> implements Feature<Option,Maybe<String>> {
     private final Feature<Option, F> feature;
     private final Matcher<? super F> constraint;
 
@@ -19,9 +22,10 @@ public class Constraint<F> implements Feature<Option,String> {
     }
 
     @Override
-    public String of(Option option) {
+    public Maybe<String> of(Option option) {
         boolean featureMatches = constraint.matches(feature.of(option));
-        return featureMatches ? option.value() : null;
+        if(featureMatches) return option.value();
+        return absent();
     }
 
     @Override

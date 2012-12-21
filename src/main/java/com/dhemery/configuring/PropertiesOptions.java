@@ -1,5 +1,7 @@
 package com.dhemery.configuring;
 
+import com.dhemery.core.Maybe;
+
 import java.util.Properties;
 import java.util.Set;
 
@@ -38,5 +40,10 @@ public class PropertiesOptions implements ModifiableOptions {
     @Override
     public String option(String name) {
         return properties.getProperty(name);
+    }
+
+    @Override
+    public Maybe<String> maybe(String name) {
+        return Maybe.maybe(properties.getProperty(name));
     }
 }

@@ -1,5 +1,7 @@
 package com.dhemery.configuring;
 
+import com.dhemery.core.Maybe;
+
 import java.util.Set;
 
 /**
@@ -17,4 +19,6 @@ public interface Options {
      * @return the named option, or {@code null} if this set does not define the option
      */
     String option(String name);
+
+    Maybe<String> maybe(String name);
 }

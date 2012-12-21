@@ -3,6 +3,7 @@ package com.dhemery.configuring.options;
 import com.dhemery.configuring.Option;
 import com.dhemery.configuring.Options;
 import com.dhemery.core.Feature;
+import com.dhemery.core.Maybe;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 
@@ -12,7 +13,7 @@ public class TransformableOption implements Option {
 
     public TransformableOption(Options source, String name) {
         this.source = source;
-        journal = new Journal(name, source.option(name));
+        journal = new Journal(name, source.maybe(name));
     }
 
     @Override
@@ -26,11 +27,11 @@ public class TransformableOption implements Option {
     }
 
     @Override
-    public String value() {
+    public Maybe<String> value() {
         return journal.lastEntry();
     }
 
-    public void apply(Feature<Option, String> transformation) {
+    public void apply(Feature<Option, Maybe<String>> transformation) {
         journal.record(transformation, transformation.of(this));
     }
 
