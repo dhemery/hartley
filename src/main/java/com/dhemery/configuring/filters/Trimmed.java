@@ -3,7 +3,6 @@ package com.dhemery.configuring.filters;
 import com.dhemery.configuring.Option;
 import com.dhemery.core.Feature;
 import org.hamcrest.Description;
-import org.hamcrest.StringDescription;
 
 /**
  * Trims whitespace from the ends of the option value.
@@ -23,10 +22,5 @@ public class Trimmed implements Feature<Option,String> {
     @Override
     public void describeTo(Description description) {
         description.appendText("trimmed");
-    }
-
-    @Override
-    public String toString() {
-        return StringDescription.asString(this);
     }
 }

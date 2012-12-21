@@ -1,16 +1,18 @@
-package com.dhemery.configuring;
+package com.dhemery.configuring.options;
 
+import com.dhemery.configuring.Option;
+import com.dhemery.configuring.Options;
 import com.dhemery.core.Feature;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 
 public class TransformableOption implements Option {
-    private final OptionJournal journal;
+    private final Journal journal;
     private final Options source;
 
     public TransformableOption(Options source, String name) {
         this.source = source;
-        journal = new OptionJournal(name, source.option(name));
+        journal = new Journal(name, source.option(name));
     }
 
     @Override

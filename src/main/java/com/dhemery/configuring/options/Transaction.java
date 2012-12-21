@@ -1,14 +1,14 @@
-package com.dhemery.configuring;
+package com.dhemery.configuring.options;
 
 import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
 import org.hamcrest.StringDescription;
 
-public class OptionTransaction implements SelfDescribing {
+public class Transaction implements SelfDescribing {
     private final String name;
     private final String value;
 
-    public OptionTransaction(String name, String value) {
+    public Transaction(String name, String value) {
         this.name = name;
         this.value = value;
     }
@@ -24,10 +24,5 @@ public class OptionTransaction implements SelfDescribing {
                 .appendText(":")
                 .appendValue(value)
                 .appendText("]");
-    }
-
-    @Override
-    public String toString() {
-        return StringDescription.asString(this);
     }
 }

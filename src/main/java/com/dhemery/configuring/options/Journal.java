@@ -1,5 +1,6 @@
-package com.dhemery.configuring;
+package com.dhemery.configuring.options;
 
+import com.dhemery.configuring.Option;
 import com.dhemery.core.Feature;
 import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
@@ -8,10 +9,10 @@ import org.hamcrest.StringDescription;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OptionJournal implements SelfDescribing {
-    private final List<OptionTransaction> entries = new ArrayList<OptionTransaction>();
+public class Journal implements SelfDescribing {
+    private final List<Transaction> entries = new ArrayList<Transaction>();
 
-    public OptionJournal(String name, String initialValue) {
+    public Journal(String name, String initialValue) {
         record(name, initialValue);
     }
 
@@ -25,7 +26,7 @@ public class OptionJournal implements SelfDescribing {
     }
 
     public void record(String name, String value) {
-        entries.add(new OptionTransaction(name, value));
+        entries.add(new Transaction(name, value));
     }
 
     public void record(Feature<Option, String> transformation, String value) {
@@ -34,10 +35,5 @@ public class OptionJournal implements SelfDescribing {
 
     public void describeTo(Description description) {
         description.appendList("", " -> ", "", entries);
-    }
-
-    @Override
-    public String toString() {
-        return StringDescription.asString(this);
     }
 }

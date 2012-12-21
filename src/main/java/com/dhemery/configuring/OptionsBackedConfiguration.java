@@ -1,5 +1,6 @@
 package com.dhemery.configuring;
 
+import com.dhemery.configuring.options.TransformableOption;
 import com.dhemery.core.Feature;
 
 import java.util.ArrayList;
