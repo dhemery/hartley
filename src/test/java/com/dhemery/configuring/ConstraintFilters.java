@@ -8,28 +8,22 @@ import static org.hamcrest.Matchers.*;
 
 public class ConstraintFilters {
     @Test
-    public void throwsIfNotDefined() {
-        Configuration configuration = intoNewConfiguration().build();
-        configuration.option("foo", require(option(is(defined()))));
-    }
-
-    @Test
     public void throwsIfNil() {
         Configuration configuration = intoNewConfiguration().build();
-        configuration.option("foo", require(option(value(is(not(nullValue()))))));
+        configuration.requiredOption("foo");
     }
 
     @Test
     public void throwsJustBecause() {
         Configuration configuration = intoNewConfiguration().build();
-        configuration.option("foo", require(option(is(defined())), option(value(is(allOf(nullValue(), not(nullValue())))))));
+        configuration.requiredOption("foo", ensuring(value(), is(allOf(nullValue(), not(nullValue())))));
     }
 
     @Test
     public void performsTrimming() {
         Configuration configuration = intoNewConfiguration().build();
         configuration.define("foo", "   bar   ");
-        configuration.option("foo", require(option(is(defined()))), trimmed(), require(option(value(is(nullValue())))));
-        configuration.option("foo");
+//        configuration.requiredOption("foo", trimmed(), ensuring(value(), is(nullValue())));
+        configuration.requiredOption("foo", trimmed(), ensuring(value(), is(nullValue())), defaultingTo("monkey"), ensuring(is("monkoo")));
     }
 }

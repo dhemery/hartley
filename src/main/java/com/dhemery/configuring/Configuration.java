@@ -25,5 +25,5 @@ public interface Configuration extends ModifiableOptions {
      * @return the value of the option
      * @throws com.dhemery.configuring.ConfigurationException if the named option is not defined
      */
-    String requiredOption(String name);
+    String requiredOption(String name, Feature<Option,String>... transformations);
 }

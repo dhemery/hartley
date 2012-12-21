@@ -8,6 +8,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import static com.dhemery.configuring.options.OptionExpressions.value;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
 /**
  * A {@link Configuration} backed by a {@link ModifiableOptions}.
  * Changes to this configuration are written through to the underlying options.
@@ -54,24 +58,26 @@ public class OptionsBackedConfiguration implements Configuration {
 
     @Override
     public String option(String name) {
-        return filter(name, transformations);
+        return filter(name, transformations).value();
     }
 
     @Override
     public String option(String name, Feature<Option,String>... transformations) {
-        return filter(name, Arrays.asList(transformations));
+        return filter(name, Arrays.asList(transformations)).value();
     }
 
-    private String filter(String name, List<Feature<Option,String>> transformations) {
+    @Override
+    public String requiredOption(String name, Feature<Option,String>... transformations) {
+        Option option = filter(name, Arrays.asList(transformations));
+        assertThat("Problem with configuration option " + option.name(), option, value(is(not(nullValue()))));
+        return option.value();
+    }
+
+    private Option filter(String name, List<Feature<Option,String>> transformations) {
         TransformableOption option = new TransformableOption(options, name);
         for(Feature<Option,String> transformation : transformations) {
             option.apply(transformation);
         }
-        return option.value();
-    }
-
-    @Override
-    public String requiredOption(String name) {
-        return null;
+        return option;
     }
 }
