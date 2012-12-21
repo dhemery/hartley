@@ -16,7 +16,7 @@ public class ConstraintFilters {
     @Test
     public void throwsJustBecause() {
         Configuration configuration = intoNewConfiguration().build();
-        configuration.requiredOption("foo", ensuring(value(), is(allOf(nullValue(), not(nullValue())))));
+        configuration.requiredOption("foo", requiring(value(), is(allOf(nullValue(), not(nullValue())))));
     }
 
     @Test
@@ -24,6 +24,6 @@ public class ConstraintFilters {
         Configuration configuration = intoNewConfiguration().build();
         configuration.define("foo", "   bar   ");
         configuration.requiredOption("foo", trimmed());
-        configuration.requiredOption("foo", trimmed(), ensuring(value(), is(nullValue())), defaultingTo("monkey"), ensuring(is("monkoo")));
+        configuration.requiredOption("foo", trimmed(), requiring(is(nullValue())), defaultingTo("monkey"), requiring(is("monkoo")));
     }
 }

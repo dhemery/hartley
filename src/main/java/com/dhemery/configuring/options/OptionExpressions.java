@@ -24,11 +24,11 @@ public class OptionExpressions {
         };
     }
 
-    public static Feature<Option,String> ensuring(Matcher<? super String>... criteria) {
-        return ensuring(value(), matcherFor(criteria));
+    public static Feature<Option,String> requiring(Matcher<? super String>... criteria) {
+        return requiring(value(), matcherFor(criteria));
     }
 
-    public static <F> Feature<Option,String> ensuring(Feature<Option,F> feature, Matcher<? super F>... criteria) {
+    public static <F> Feature<Option,String> requiring(Feature<Option, F> feature, Matcher<? super F>... criteria) {
         return new Constraint(feature, matcherFor(criteria));
     }
 

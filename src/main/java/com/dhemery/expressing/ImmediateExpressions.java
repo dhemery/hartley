@@ -1,12 +1,11 @@
 package com.dhemery.expressing;
 
 import com.dhemery.core.Condition;
-import com.dhemery.core.ConditionAssert;
 import com.dhemery.core.Feature;
 import com.dhemery.core.Sampler;
 import org.hamcrest.*;
 
-import static com.dhemery.core.SamplerFeature.sample;
+import static com.dhemery.core.SamplerCondition.sampleOf;
 import static com.dhemery.expressing.QuietlyTrue.isQuietlyTrue;
 
 /**
@@ -34,7 +33,15 @@ public class ImmediateExpressions {
         assertThat("", condition);
     }
     public static void assertThat(String reason, Condition condition) {
-        ConditionAssert.assertThat(reason, condition);
+        if(!condition.isSatisfied()) {
+            Description description = new StringDescription();
+            description.appendText(reason)
+                    .appendText("\nExpected: ")
+                    .appendDescriptionOf(condition)
+                    .appendText("\n     but: ");
+            condition.describeDissatisfactionTo(description);
+            throw new AssertionError(description.toString());
+        }
     }
 
     /**
@@ -52,8 +59,7 @@ public class ImmediateExpressions {
         assertThat("", variable, criteria);
     }
     public static <V> void assertThat(String reason, Sampler<V> variable, Matcher<? super V> criteria) {
-        Feature<Sampler<V>, V> sample = sample();
-        assertThat(reason, variable, sample, criteria);
+        assertThat(reason, sampleOf(variable, criteria));
     }
 
     /**
@@ -75,7 +81,7 @@ public class ImmediateExpressions {
     }
 
     /**
-     * Assert that a sample of the feature satisfies the criteria.
+     * Assert that the feature of the subject satisfies the criteria.
      * <p>Example:</p>
      * <pre>
      * {@code
@@ -91,25 +97,24 @@ public class ImmediateExpressions {
         assertThat("", subject, feature, criteria);
     }
     public static <S,F> void assertThat(String reason, S subject, Feature<? super S,F> feature, Matcher<? super F> criteria) {
-        F value = feature.of(subject);
-        if(!criteria.matches(value)) {
+        F featureValue = feature.of(subject);
+        if(!criteria.matches(featureValue)) {
             Description description = new StringDescription();
             description.appendText(reason)
                     .appendText("\nExamined: ")
                     .appendDescriptionOf(feature)
                     .appendText(" of ")
                     .appendValue(subject)
-                    .appendText("\nexpected: ")
+                    .appendText("\nExpected: ")
                     .appendDescriptionOf(criteria)
                     .appendText("\n     but: ");
-            criteria.describeMismatch(value, description);
-
+            criteria.describeMismatch(featureValue, description);
             throw new AssertionError(description.toString());
         }
     }
 
     /**
-     * Assert that a sample of the feature is {@code true}.
+     * Assert that the boolean feature of the subject is {@code true}.
      * <p>Example:</p>
      * <pre>
      * {@code
@@ -121,7 +126,7 @@ public class ImmediateExpressions {
      * }
      */
     public static <S> void assertThat(S subject, Feature<? super S,Boolean> feature) {
-        assertThat("", subject, feature, isQuietlyTrue());
+        assertThat(subject, feature, isQuietlyTrue());
     }
     public static <S> void assertThat(String reason, S subject, Feature<? super S,Boolean> feature) {
         assertThat(reason, subject, feature, isQuietlyTrue());
