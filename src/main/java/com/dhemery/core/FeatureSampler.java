@@ -2,6 +2,7 @@ package com.dhemery.core;
 
 import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
+import org.hamcrest.StringDescription;
 import org.hamcrest.internal.SelfDescribingValue;
 
 /**
@@ -52,5 +53,10 @@ public class FeatureSampler<S, F> implements Sampler<F> {
      */
     public static <S,V> Sampler<V> sampled(S subject, Feature<? super S, V> feature) {
         return new FeatureSampler<S,V>(subject, feature);
+    }
+
+    @Override
+    public String toString() {
+        return StringDescription.asString(this);
     }
 }

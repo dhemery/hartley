@@ -1,12 +1,12 @@
 package com.dhemery.expressing;
 
-import com.dhemery.core.*;
-import org.hamcrest.Matcher;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
+import com.dhemery.core.Condition;
+import com.dhemery.core.ConditionAssert;
+import com.dhemery.core.Feature;
+import com.dhemery.core.Sampler;
+import org.hamcrest.*;
 
-import static com.dhemery.core.FeatureSampler.sampled;
-import static com.dhemery.core.SamplerCondition.sampleOf;
+import static com.dhemery.core.SamplerFeature.sample;
 import static com.dhemery.expressing.QuietlyTrue.isQuietlyTrue;
 
 /**
@@ -19,7 +19,7 @@ import static com.dhemery.expressing.QuietlyTrue.isQuietlyTrue;
  */
 public class ImmediateExpressions {
     /**
-     * Assert that the condition is true.
+     * Assert that the condition is satisfied.
      * <p>Example:</p>
      * <pre>
      * {@code
@@ -31,7 +31,10 @@ public class ImmediateExpressions {
      * </pre>
      */
     public static void assertThat(Condition condition) {
-        ConditionAssert.assertThat(condition);
+        assertThat("", condition);
+    }
+    public static void assertThat(String reason, Condition condition) {
+        ConditionAssert.assertThat(reason, condition);
     }
 
     /**
@@ -46,7 +49,11 @@ public class ImmediateExpressions {
      * }
      */
     public static <V> void assertThat(Sampler<V> variable, Matcher<? super V> criteria) {
-        assertThat(sampleOf(variable, criteria));
+        assertThat("", variable, criteria);
+    }
+    public static <V> void assertThat(String reason, Sampler<V> variable, Matcher<? super V> criteria) {
+        Feature<Sampler<V>, V> sample = sample();
+        assertThat(reason, variable, sample, criteria);
     }
 
     /**
@@ -61,7 +68,10 @@ public class ImmediateExpressions {
      * }
      */
     public static void assertThat(Sampler<Boolean> variable) {
-        assertThat(variable, isQuietlyTrue());
+        assertThat("", variable);
+    }
+    public static void assertThat(String reason, Sampler<Boolean> variable) {
+        assertThat(reason, variable, isQuietlyTrue());
     }
 
     /**
@@ -77,8 +87,25 @@ public class ImmediateExpressions {
      * assertThat(userNameField, textColor(), is(blue()));
      * }
      */
-    public static <S,V> void assertThat(S subject, Feature<? super S,V> feature, Matcher<? super V> criteria) {
-        assertThat(sampled(subject, feature), criteria);
+    public static <S,F> void assertThat(S subject, Feature<? super S,F> feature, Matcher<? super F> criteria) {
+        assertThat("", subject, feature, criteria);
+    }
+    public static <S,F> void assertThat(String reason, S subject, Feature<? super S,F> feature, Matcher<? super F> criteria) {
+        F value = feature.of(subject);
+        if(!criteria.matches(value)) {
+            Description description = new StringDescription();
+            description.appendText(reason)
+                    .appendText("\nExamined: ")
+                    .appendDescriptionOf(feature)
+                    .appendText(" of ")
+                    .appendValue(subject)
+                    .appendText("\nexpected: ")
+                    .appendDescriptionOf(criteria)
+                    .appendText("\n     but: ");
+            criteria.describeMismatch(value, description);
+
+            throw new AssertionError(description.toString());
+        }
     }
 
     /**
@@ -94,7 +121,10 @@ public class ImmediateExpressions {
      * }
      */
     public static <S> void assertThat(S subject, Feature<? super S,Boolean> feature) {
-        assertThat(subject, feature, isQuietlyTrue());
+        assertThat("", subject, feature, isQuietlyTrue());
+    }
+    public static <S> void assertThat(String reason, S subject, Feature<? super S,Boolean> feature) {
+        assertThat(reason, subject, feature, isQuietlyTrue());
     }
 
     /**

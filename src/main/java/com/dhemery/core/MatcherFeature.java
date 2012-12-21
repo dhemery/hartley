@@ -2,6 +2,7 @@ package com.dhemery.core;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.StringDescription;
 
 /**
  * A feature that evaluates whether a subject matches a matcher.
@@ -25,5 +26,10 @@ public class MatcherFeature<S> implements Feature<S,Boolean> {
     @Override
     public void describeTo(Description description) {
         matcher.describeTo(description);
+    }
+
+    @Override
+    public String toString() {
+        return StringDescription.asString(this);
     }
 }

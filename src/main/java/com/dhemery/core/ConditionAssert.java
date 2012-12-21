@@ -14,15 +14,16 @@ public class ConditionAssert {
      * @throws AssertionError if the condition is not satisfied
      */
     public static void assertThat(Condition condition) {
-        if(!condition.isSatisfied()) fail(condition);
+        assertThat("", condition);
     }
-
-    private static void fail(Condition condition) {
-        Description description = new StringDescription();
-        description.appendText("Expected: ");
-        condition.describeTo(description);
-        description.appendText("\n  but: ");
-        condition.describeDissatisfactionTo(description);
-        throw new AssertionError(description.toString());
+    public static void assertThat(String reason, Condition condition) {
+        if(!condition.isSatisfied()) {
+            Description description = new StringDescription();
+            description.appendText("Expected: ");
+            condition.describeTo(description);
+            description.appendText("\n  but: ");
+            condition.describeDissatisfactionTo(description);
+            throw new AssertionError(description.toString());
+        }
     }
 }

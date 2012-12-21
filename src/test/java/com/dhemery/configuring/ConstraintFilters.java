@@ -10,7 +10,7 @@ public class ConstraintFilters {
     @Test
     public void throwsIfNil() {
         Configuration configuration = intoNewConfiguration().build();
-        configuration.requiredOption("foo");
+        configuration.requiredOption("foo", trimmed());
     }
 
     @Test
@@ -23,7 +23,7 @@ public class ConstraintFilters {
     public void performsTrimming() {
         Configuration configuration = intoNewConfiguration().build();
         configuration.define("foo", "   bar   ");
-//        configuration.requiredOption("foo", trimmed(), ensuring(value(), is(nullValue())));
+        configuration.requiredOption("foo", trimmed());
         configuration.requiredOption("foo", trimmed(), ensuring(value(), is(nullValue())), defaultingTo("monkey"), ensuring(is("monkoo")));
     }
 }

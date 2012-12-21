@@ -2,6 +2,7 @@ package com.dhemery.core;
 
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.StringDescription;
 
 /**
  * A condition that is satisfied when a sampled variable satisfies some criteria.
@@ -44,5 +45,10 @@ public class SamplerCondition<V> implements Condition {
      */
     public static <V> Condition sampleOf(Sampler<V> variable, Matcher<? super V> criteria) {
         return new SamplerCondition<V>(variable, criteria);
+    }
+
+    @Override
+    public String toString() {
+        return StringDescription.asString(this);
     }
 }

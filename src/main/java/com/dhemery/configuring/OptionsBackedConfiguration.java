@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import static com.dhemery.configuring.options.OptionExpressions.value;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static com.dhemery.expressing.ImmediateExpressions.assertThat;
 import static org.hamcrest.Matchers.*;
 
 /**
@@ -69,7 +69,7 @@ public class OptionsBackedConfiguration implements Configuration {
     @Override
     public String requiredOption(String name, Feature<Option,String>... transformations) {
         Option option = filter(name, Arrays.asList(transformations));
-        assertThat("Problem with configuration option " + option.name(), option, value(is(not(nullValue()))));
+        assertThat("Problem with configuration option " + option.name(), option, value(), is(not(nullValue())));
         return option.value();
     }
 
