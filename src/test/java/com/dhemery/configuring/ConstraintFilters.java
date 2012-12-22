@@ -16,7 +16,7 @@ public class ConstraintFilters {
     @Test
     public void throwsJustBecause() {
         Configuration configuration = intoNewConfiguration().build();
-        configuration.requiredOption("foo");
+        configuration.requiredOption("foo", defaultingTo("monkey"), requiring(is("monkoo")));
     }
 
     @Test

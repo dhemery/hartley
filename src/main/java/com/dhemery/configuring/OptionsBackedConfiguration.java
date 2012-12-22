@@ -1,7 +1,8 @@
 package com.dhemery.configuring;
 
-import com.dhemery.core.UnaryOperatorSequence;
 import com.dhemery.core.UnaryOperator;
+import org.hamcrest.Description;
+import org.hamcrest.StringDescription;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,7 +17,7 @@ import java.util.Set;
 @SuppressWarnings("unchecked")
 public class OptionsBackedConfiguration implements Configuration {
     private final ModifiableOptions options;
-    private final UnaryOperator<String> configurationOperator;
+    private final List<UnaryOperator<String>> configurationOperators;
 
     /**
      * Create a configuration backed by an empty {@code ModifiableOptions}.
@@ -33,9 +34,9 @@ public class OptionsBackedConfiguration implements Configuration {
      * Create a configuration backed by the given options.
      * @param options the {@code ModifiableOptions} in which to store this configuration's options
      */
-    public OptionsBackedConfiguration(ModifiableOptions options, final List<UnaryOperator<String>> operators) {
+    public OptionsBackedConfiguration(ModifiableOptions options, final List<UnaryOperator<String>> configurationOperators) {
         this.options = options;
-        configurationOperator = sequence(operators);
+        this.configurationOperators = configurationOperators;
     }
 
     @Override
@@ -55,27 +56,35 @@ public class OptionsBackedConfiguration implements Configuration {
 
     @Override
     public String option(String name) {
-        return configurationOperator.operate(options.option(name));
+        return translate(options.option(name), configurationOperators, new Journal());
     }
 
     @Override
     public String option(String name, UnaryOperator<String>... queryOperators) {
-        return sequence(queryOperators).operate(option(name));
+        return translate(option(name), Arrays.asList(queryOperators), new Journal());
     }
 
     @Override
     public String requiredOption(String name, UnaryOperator<String>... queryOperators) {
-        String result = option(name, queryOperators);
-        if(result != null) return result;
-        throw new ConfigurationException("Missing value for required configuration option " + name);
+        Journal journal = new Journal();
+        String value = options.option(name);
+        journal.record(name, value);
+        value = translate(value, configurationOperators, journal);
+        value = translate(value, Arrays.asList(queryOperators), journal);
+        if(value != null) return value;
+        Description description = new StringDescription();
+        description.appendText("Missing value for required configuration option ")
+                .appendText(name)
+                .appendText("\nTried: ")
+                .appendDescriptionOf(journal);
+        throw new ConfigurationException(description.toString());
     }
 
-
-    public static <T> UnaryOperator<T> sequence(UnaryOperator<T>[] operators) {
-        return sequence(Arrays.asList(operators));
-    }
-
-    public static <T> UnaryOperator<T> sequence(List<UnaryOperator<T>> operators) {
-        return new UnaryOperatorSequence(operators);
+    private String translate(String value, List<UnaryOperator<String>> operators, Journal journal) {
+        for(UnaryOperator<String> operator : operators) {
+            value = operator.operate(value);
+            journal.record(operator.toString(), value);
+        }
+        return value;
     }
 }
