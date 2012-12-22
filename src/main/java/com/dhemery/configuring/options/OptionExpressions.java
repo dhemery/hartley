@@ -1,37 +1,30 @@
 package com.dhemery.configuring.options;
 
-import com.dhemery.configuring.MaybeUnaryOperator;
+import com.dhemery.core.DefaultValue;
+import com.dhemery.core.Constrained;
+import com.dhemery.core.UnaryOperator;
 import org.hamcrest.Matcher;
 
+import static org.hamcrest.Matchers.allOf;
+
 /**
- * Static utility methods to create option filters.
+ * Static utility methods to create option operators.
  */
 public class OptionExpressions {
-    public  static MaybeUnaryOperator<String> requiring(final Matcher<String> criteria) {
-        return new MaybeUnaryOperator<String>("requiring " + criteria.toString()) {
-            @Override
-            protected String resultForPresent(String string) {
-                if(criteria.matches(string)) return string;
-                return null;
-            }
-        };
+    public  static UnaryOperator<String> requiring(Matcher<? super String>... criteria) {
+        return new Constrained<String>(compound(criteria));
     }
 
-    public static MaybeUnaryOperator<String> defaultingTo(final String defaultValue) {
-        return new MaybeUnaryOperator<String>("defaulting to " + defaultValue) {
-            @Override
-            protected String resultForAbsent() {
-                return defaultValue;
-            }
-        };
+    public static UnaryOperator<String> defaultingTo(String defaultValue) {
+        return new DefaultValue(defaultValue);
     }
 
-    public static MaybeUnaryOperator<String> trimmed() {
-        return new MaybeUnaryOperator<String>("trimmed"){
-            @Override
-            protected String resultForPresent(String string) {
-                return string.trim();
-            }
-        };
+    public static UnaryOperator<String> trimmed() {
+        return new TrimString();
     }
+
+    private static Matcher<? super String> compound(Matcher<? super String>[] criteria) {
+        return criteria.length == 1 ? criteria[0] : allOf(criteria);
+    }
+
 }

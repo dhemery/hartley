@@ -75,6 +75,6 @@ public class OptionsBackedConfiguration implements Configuration {
     }
 
     private static <T> UnaryOperator<T> compound(List<UnaryOperator<T>> operators) {
-        return new CompoundUnaryOperator(operators);
+        return operators.size() == 1 ? operators.get(0) : new CompoundUnaryOperator(operators);
     }
 }
