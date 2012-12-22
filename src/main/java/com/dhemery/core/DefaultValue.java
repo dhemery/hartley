@@ -3,7 +3,8 @@ package com.dhemery.core;
 import org.hamcrest.Description;
 
 /**
- * An operator that supplies a default value if its operand is null.
+ * An operator that supplies a default value if its operand is {@code null}.
+ * If the operand is non-null, the operator returns the operand.
  * @param <T> the type of operand
  */
 public class DefaultValue<T> extends NullSafeUnaryOperator<T> {

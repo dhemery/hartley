@@ -1,6 +1,6 @@
 package com.dhemery.configuring;
 
-import com.dhemery.core.CompoundUnaryOperator;
+import com.dhemery.core.UnaryOperatorSequence;
 import com.dhemery.core.UnaryOperator;
 
 import java.util.Arrays;
@@ -35,7 +35,7 @@ public class OptionsBackedConfiguration implements Configuration {
      */
     public OptionsBackedConfiguration(ModifiableOptions options, final List<UnaryOperator<String>> operators) {
         this.options = options;
-        configurationOperator = compound(operators);
+        configurationOperator = sequence(operators);
     }
 
     @Override
@@ -59,22 +59,23 @@ public class OptionsBackedConfiguration implements Configuration {
     }
 
     @Override
-    public String option(String name, UnaryOperator<String>... operators) {
-        return compound(operators).operate(option(name));
+    public String option(String name, UnaryOperator<String>... queryOperators) {
+        return sequence(queryOperators).operate(option(name));
     }
 
     @Override
-    public String requiredOption(String name, UnaryOperator<String>... operators) {
-        String result = option(name, operators);
+    public String requiredOption(String name, UnaryOperator<String>... queryOperators) {
+        String result = option(name, queryOperators);
         if(result != null) return result;
         throw new ConfigurationException("Missing value for required configuration option " + name);
     }
 
-    private <T> UnaryOperator<T> compound(UnaryOperator<T>[] operators) {
-        return compound(Arrays.asList(operators));
+
+    public static <T> UnaryOperator<T> sequence(UnaryOperator<T>[] operators) {
+        return sequence(Arrays.asList(operators));
     }
 
-    private static <T> UnaryOperator<T> compound(List<UnaryOperator<T>> operators) {
-        return operators.size() == 1 ? operators.get(0) : new CompoundUnaryOperator(operators);
+    public static <T> UnaryOperator<T> sequence(List<UnaryOperator<T>> operators) {
+        return new UnaryOperatorSequence(operators);
     }
 }
