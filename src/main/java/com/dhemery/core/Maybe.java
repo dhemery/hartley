@@ -29,7 +29,7 @@ public abstract class Maybe<T> implements Iterable<T>, MaybePresent, SelfDescrib
     private static class Absent<M> extends Maybe<M> {
         @Override
         public Iterator<M> iterator() {
-            return Collections.emptyListIterator();
+            return Collections.<M>emptyList().iterator();
         }
 
         @Override

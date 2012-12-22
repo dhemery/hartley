@@ -1,7 +1,7 @@
 package com.dhemery.configuring;
 
-import com.dhemery.core.Feature;
 import com.dhemery.core.Maybe;
+import com.dhemery.core.UnaryOperator;
 
 /**
  * A set of configuration options that can be queried, merged, and transformed.
@@ -13,18 +13,19 @@ public interface Configuration extends ModifiableOptions {
     boolean defines(String name);
 
     /**
-     * Return the named option transformed by the given transformations.
+     * Return the named option transformed by the given operators.
      * @param name the name of the options
-     * @param transformations the transformations to perform
+     * @param operators the operators to apply
      * @return the transformed value of the option
      */
-    String option(String name, Feature<Option,Maybe<String>>... transformations);
+    String option(String name, UnaryOperator<Maybe<String>>... operators);
 
     /**
-     * Return the named option, and throw an exception if it is not defined.
+     * Return the named option transformed by the given operators, and throw an exception if the value is {@code null}.
      * @param name the name of an option
+     * @param operators the operators to apply
      * @return the value of the option
-     * @throws com.dhemery.configuring.ConfigurationException if the named option is not defined
+     * @throws com.dhemery.configuring.ConfigurationException if the value is {@code null}.
      */
-    String requiredOption(String name, Feature<Option,Maybe<String>>... transformations);
+    String requiredOption(String name, UnaryOperator<Maybe<String>>... operators);
 }

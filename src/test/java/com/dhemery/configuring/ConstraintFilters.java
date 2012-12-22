@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import static com.dhemery.configuring.ConfigurationBuilder.intoNewConfiguration;
 import static com.dhemery.configuring.options.OptionExpressions.*;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.is;
 
 public class ConstraintFilters {
     @Test
@@ -24,6 +24,6 @@ public class ConstraintFilters {
         Configuration configuration = intoNewConfiguration().build();
         configuration.define("foo", "   bar   ");
         configuration.requiredOption("foo", trimmed());
-        configuration.requiredOption("foo", trimmed(), defaultingTo("monkey"), requiring(value(), is("monkoo")));
+        configuration.requiredOption("foo", trimmed(), defaultingTo("monkey"), requiring(is("monkoo")));
     }
 }
