@@ -1,7 +1,6 @@
 package com.dhemery.configuring;
 
 import com.dhemery.core.CompoundUnaryOperator;
-import com.dhemery.core.Maybe;
 import com.dhemery.core.UnaryOperator;
 
 import java.util.Arrays;
@@ -17,7 +16,7 @@ import java.util.Set;
 @SuppressWarnings("unchecked")
 public class OptionsBackedConfiguration implements Configuration {
     private final ModifiableOptions options;
-    private final UnaryOperator<Maybe<String>> configurationOperator;
+    private final UnaryOperator<String> configurationOperator;
 
     /**
      * Create a configuration backed by an empty {@code ModifiableOptions}.
@@ -27,14 +26,14 @@ public class OptionsBackedConfiguration implements Configuration {
     }
 
     public OptionsBackedConfiguration(ModifiableOptions options) {
-        this(options, Collections.<UnaryOperator<Maybe<String>>>emptyList());
+        this(options, Collections.<UnaryOperator<String>>emptyList());
     }
 
     /**
      * Create a configuration backed by the given options.
      * @param options the {@code ModifiableOptions} in which to store this configuration's options
      */
-    public OptionsBackedConfiguration(ModifiableOptions options, final List<UnaryOperator<Maybe<String>>> operators) {
+    public OptionsBackedConfiguration(ModifiableOptions options, final List<UnaryOperator<String>> operators) {
         this.options = options;
         configurationOperator = compound(operators);
     }
@@ -56,29 +55,19 @@ public class OptionsBackedConfiguration implements Configuration {
 
     @Override
     public String option(String name) {
-        for(String value : maybe(name)) return value;
-        return null;
+        return configurationOperator.operate(options.option(name));
     }
 
     @Override
-    public String option(String name, UnaryOperator<Maybe<String>>... operators) {
-        for(String value : maybe(name, operators)) return value;
-        return null;
+    public String option(String name, UnaryOperator<String>... operators) {
+        return compound(operators).operate(option(name));
     }
 
     @Override
-    public String requiredOption(String name, UnaryOperator<Maybe<String>>... operators) {
-        for(String value : maybe(name, operators)) return value;
-        throw new ConfigurationException("Problem with configuration option " + name);
-    }
-
-    @Override
-    public Maybe<String> maybe(String name) {
-        return configurationOperator.operate(options.maybe(name));
-    }
-
-    private Maybe<String> maybe(String name, UnaryOperator<Maybe<String>>[] operators) {
-        return compound(operators).operate(maybe(name));
+    public String requiredOption(String name, UnaryOperator<String>... operators) {
+        String result = option(name, operators);
+        if(result != null) return result;
+        throw new ConfigurationException("Missing value for required configuration option " + name);
     }
 
     private <T> UnaryOperator<T> compound(UnaryOperator<T>[] operators) {

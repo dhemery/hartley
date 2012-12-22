@@ -1,7 +1,5 @@
 package com.dhemery.configuring;
 
-import com.dhemery.core.Maybe;
-
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -42,10 +40,5 @@ public class MappedOptions implements ModifiableOptions {
     @Override
     public String option(String name) {
         return map.get(name);
-    }
-
-    @Override
-    public Maybe<String> maybe(String name) {
-        return Maybe.maybe(map.get(name));
     }
 }

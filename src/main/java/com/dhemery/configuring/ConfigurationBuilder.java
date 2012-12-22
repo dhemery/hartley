@@ -1,7 +1,6 @@
 package com.dhemery.configuring;
 
 import com.dhemery.core.Builder;
-import com.dhemery.core.Maybe;
 import com.dhemery.core.UnaryOperator;
 
 import java.util.*;
@@ -34,7 +33,7 @@ import static com.dhemery.configuring.LoadProperties.propertiesFromResources;
 public class ConfigurationBuilder implements Builder<Configuration> {
     private final ModifiableOptions baseOptions;
     private final Map<String,String> overrides = new HashMap<String, String>();
-    private List<UnaryOperator<Maybe<String>>> configurationOperators = new ArrayList<UnaryOperator<Maybe<String>>>();
+    private List<UnaryOperator<String>> configurationOperators = new ArrayList<UnaryOperator<String>>();
 
     private ConfigurationBuilder(ModifiableOptions baseOptions) {
         this.baseOptions = baseOptions;
@@ -125,7 +124,7 @@ public class ConfigurationBuilder implements Builder<Configuration> {
     /**
      * Append option filters onto the configuration's filter list.
      */
-    public ConfigurationBuilder withOptionValues(UnaryOperator<Maybe<String>>... operators) {
+    public ConfigurationBuilder withOptionValues(UnaryOperator<String>... operators) {
         this.configurationOperators.addAll(Arrays.asList(operators));
         return this;
     }

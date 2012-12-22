@@ -1,7 +1,5 @@
 package com.dhemery.configuring;
 
-import com.dhemery.core.Maybe;
-
 import java.util.Set;
 
 /**
@@ -13,5 +11,4 @@ public interface Options {
      */
     Set<String> names();
     String option(String name);
-    Maybe<String> maybe(String name);
 }
