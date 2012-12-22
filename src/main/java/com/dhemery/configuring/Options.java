@@ -10,5 +10,9 @@ public interface Options {
      * Return the names of the defined options.
      */
     Set<String> names();
+
+    /**
+     * Return the named option.
+     */
     String option(String name);
 }

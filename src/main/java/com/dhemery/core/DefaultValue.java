@@ -2,15 +2,22 @@ package com.dhemery.core;
 
 import org.hamcrest.Description;
 
-public class DefaultValue extends NullSafeUnaryOperator<String> {
-    private final String defaultValue;
+/**
+ * An operator that supplies a default value if its operand is null.
+ * @param <T> the type of operand
+ */
+public class DefaultValue<T> extends NullSafeUnaryOperator<T> {
+    private final T defaultValue;
 
-    public DefaultValue(String defaultValue) {
+    /**
+     * Create an operator that supplies the given default value if its operand is null.
+     */
+    public DefaultValue(T defaultValue) {
         this.defaultValue = defaultValue;
     }
 
     @Override
-    protected String defaultValue() {
+    protected T defaultValue() {
         return defaultValue;
     }
 

@@ -3,7 +3,7 @@ package com.dhemery.configuring;
 import org.junit.Test;
 
 import static com.dhemery.configuring.ConfigurationBuilder.intoNewConfiguration;
-import static com.dhemery.configuring.options.OptionExpressions.*;
+import static com.dhemery.core.OperatorExpressions.*;
 import static org.hamcrest.Matchers.is;
 
 public class ConstraintFilters {

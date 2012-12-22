@@ -1,9 +1,11 @@
-package com.dhemery.configuring.options;
+package com.dhemery.core;
 
-import com.dhemery.core.NullSafeUnaryOperator;
 import org.hamcrest.Description;
 
-class TrimString extends NullSafeUnaryOperator<String> {
+/**
+ * An operator that trims its string operand.
+ */
+public class TrimString extends NullSafeUnaryOperator<String> {
     @Override
     protected String safelyOperate(String operand) {
         return operand.trim();
