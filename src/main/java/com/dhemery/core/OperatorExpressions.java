@@ -12,7 +12,7 @@ public class OperatorExpressions {
         return new DefaultValue<T>(defaultValue);
     }
 
-    public static <T> UnaryOperator<T> requiring(Matcher<? super T>... criteria) {
+    public static <T> UnaryOperator<T> requiring(Matcher<T>... criteria) {
         return new Requiring<T>(allOf(criteria));
     }
 

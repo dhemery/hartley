@@ -17,6 +17,11 @@ import static com.dhemery.expressing.QuietlyTrue.isQuietlyTrue;
  * so they can be used without instantiating an {@code Expressive}.
  */
 public class ImmediateExpressions {
+
+    public static <T> Each<T> each(Iterable<T> all) {
+        return new Each<T>(all);
+    }
+
     /**
      * Assert that the condition is satisfied.
      * <p>Example:</p>
