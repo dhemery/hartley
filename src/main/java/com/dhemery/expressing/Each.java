@@ -8,11 +8,8 @@ import org.hamcrest.Matcher;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 
-import static com.dhemery.expressing.ImmediateExpressions.each;
-
-public class Each<T> implements Iterable<T> {
+public class Each<T> {
     private final Iterable<T> all;
 
     public Each(Iterable<T> all) {
@@ -21,7 +18,7 @@ public class Each<T> implements Iterable<T> {
 
     public Each<T> filter(Matcher<? super T> criteria) {
         Collection<T> accepted = new ArrayList<T>();
-        each(all).forEach(performIf(criteria, appendTo(accepted)));
+        forEach(performIf(criteria, appendTo(accepted)));
         return new Each(accepted);
     }
 
@@ -30,14 +27,14 @@ public class Each<T> implements Iterable<T> {
         for(T each : all) action.actOn(each);
     }
 
-    @Override
-    public Iterator<T> iterator() {
-        return all.iterator();
+    public <C extends Collection<? super T>> C into(C destination) {
+        forEach(appendTo(destination));
+        return destination;
     }
 
-    public <F> Each<F> transform(Feature<? super T, F> feature) {
+    public <F> Each<F> map(Feature<? super T, F> feature) {
         Collection<F> features = new ArrayList<F>();
-        each(all).forEach(appendFeatureTo(feature, features));
+        forEach(appendFeatureTo(feature, features));
         return new Each(features);
     }
 

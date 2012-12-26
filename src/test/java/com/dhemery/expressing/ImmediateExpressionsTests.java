@@ -22,7 +22,7 @@ public class ImmediateExpressionsTests {
     @Test
     public void eachTreatsNullAsAnEmptyCollection() {
         Iterable<String> NULL = null;
-        assertThat(each(NULL).iterator().hasNext(), is(false));
+        assertThat(each(NULL).into(new ArrayList<Object>()), is(empty()));
     }
 
     @Test
@@ -40,15 +40,15 @@ public class ImmediateExpressionsTests {
     @Test
     public void filterYieldsEachMemberThatMatches() {
         List<String> all = Arrays.asList("fooA", "barB", "fooC", "fooD", "barE", "barF", "fooG");
-        assertThat(each(all).filter(beginsWith("foo")), contains("fooA", "fooC", "fooD", "fooG"));
-        assertThat(each(all).filter(beginsWith("bar")), contains("barB", "barE", "barF"));
+        assertThat(each(all).filter(beginsWith("foo")).into(new ArrayList<String>()), contains("fooA", "fooC", "fooD", "fooG"));
+        assertThat(each(all).filter(beginsWith("bar")).into(new ArrayList<String>()), contains("barB", "barE", "barF"));
     }
 
     @Test
-    public void transformYieldsATransformationForEachMember() {
+    public void mapYieldsAMappedValueForEachMember() {
         List<String> strings = Arrays.asList("a", "b", "c");
-        Iterable<String> transformed = each(strings).transform(toUpperCase());
-        assertThat(transformed, contains("A", "B", "C"));
+        Iterable<String> mapped = each(strings).map(toUpperCase()).into(new ArrayList<String>());
+        assertThat(mapped, contains("A", "B", "C"));
     }
 
     private Matcher<String> beginsWith(final String prefix) {
