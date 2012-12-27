@@ -4,7 +4,6 @@ import com.dhemery.core.Action;
 import com.dhemery.core.Feature;
 import org.hamcrest.Matcher;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
@@ -32,10 +31,6 @@ public class LazyStream<T> {
      * Return a stream of the source items that satisfy the criteria.
      */
     public LazyStream<T> filter(Matcher<? super T> criteria) {
-        return streamOf(criteria);
-    }
-
-    private LazyStream streamOf(Matcher<? super T> criteria) {
         return lazyStreamOf(filteringIterator(criteria));
     }
 
