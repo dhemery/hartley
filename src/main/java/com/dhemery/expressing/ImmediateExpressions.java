@@ -18,8 +18,8 @@ import static com.dhemery.expressing.QuietlyTrue.isQuietlyTrue;
  */
 public class ImmediateExpressions {
 
-    public static <T> Each<T> each(Iterable<T> all) {
-        return new Each<T>(all);
+    public static <T> LazyStream<T> streamOf(Iterable<T> items) {
+        return new LazyStream<T>(items);
     }
 
     /**

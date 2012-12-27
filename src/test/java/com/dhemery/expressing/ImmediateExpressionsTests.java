@@ -14,41 +14,40 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static com.dhemery.expressing.ImmediateExpressions.each;
-import static org.hamcrest.MatcherAssert.assertThat;
+import static com.dhemery.expressing.ImmediateExpressions.assertThat;
+import static com.dhemery.expressing.ImmediateExpressions.streamOf;
 import static org.hamcrest.Matchers.*;
 
 public class ImmediateExpressionsTests {
     @Test
     public void eachTreatsNullAsAnEmptyCollection() {
         Iterable<String> NULL = null;
-        assertThat(each(NULL).into(new ArrayList<Object>()), is(empty()));
+        assertThat(streamOf(NULL), yield(), is(empty()));
     }
 
     @Test
     public void forEachIteratesOverEachMember() {
         Collection<String> results = new ArrayList<String>();
-        each(Arrays.asList("a", "b", "c")).forEach(appendTo(results));
+        streamOf(Arrays.asList("a", "b", "c")).forEach(appendTo(results));
         assertThat(results, contains("a", "b", "c"));
     }
 
     @Test
     public void forEachDoesNotThrowIfActionIsNull() {
-        each(Arrays.asList("a", "b", "c")).forEach(null);
+        streamOf(Arrays.asList("a", "b", "c")).forEach(null);
     }
 
     @Test
     public void filterYieldsEachMemberThatMatches() {
         List<String> all = Arrays.asList("fooA", "barB", "fooC", "fooD", "barE", "barF", "fooG");
-        assertThat(each(all).filter(beginsWith("foo")).into(new ArrayList<String>()), contains("fooA", "fooC", "fooD", "fooG"));
-        assertThat(each(all).filter(beginsWith("bar")).into(new ArrayList<String>()), contains("barB", "barE", "barF"));
+        assertThat(streamOf(all).filter(beginsWith("foo")), yield(), contains("fooA", "fooC", "fooD", "fooG"));
+        assertThat(streamOf(all).filter(beginsWith("bar")), yield(), contains("barB", "barE", "barF"));
     }
 
     @Test
     public void mapYieldsAMappedValueForEachMember() {
         List<String> strings = Arrays.asList("a", "b", "c");
-        Iterable<String> mapped = each(strings).map(toUpperCase()).into(new ArrayList<String>());
-        assertThat(mapped, contains("A", "B", "C"));
+        assertThat(streamOf(strings).map(toUpperCase()), yield(), contains("A", "B", "C"));
     }
 
     private Matcher<String> beginsWith(final String prefix) {
@@ -76,6 +75,15 @@ public class ImmediateExpressionsTests {
             @Override
             public void actOn(String subject) {
                 collector.add(subject);
+            }
+        };
+    }
+
+    private Feature<LazyStream<String>, Collection<String>> yield() {
+        return new NamedFeature<LazyStream<String>, Collection<String>>("yield") {
+            @Override
+            public Collection<String> of(LazyStream<String> stream) {
+                return stream.into(new ArrayList<String>());
             }
         };
     }
