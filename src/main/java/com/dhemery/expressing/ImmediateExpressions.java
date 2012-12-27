@@ -5,6 +5,8 @@ import com.dhemery.core.Feature;
 import com.dhemery.core.Sampler;
 import org.hamcrest.*;
 
+import java.util.Arrays;
+
 import static com.dhemery.core.SamplerCondition.sampleOf;
 import static com.dhemery.expressing.QuietlyTrue.isQuietlyTrue;
 
@@ -18,8 +20,18 @@ import static com.dhemery.expressing.QuietlyTrue.isQuietlyTrue;
  */
 public class ImmediateExpressions {
 
-    public static <T> LazyStream<T> streamOf(Iterable<T> items) {
-        return new LazyStream<T>(items);
+    /**
+     * Return a stream over the items in the array.
+     */
+    public static <T> LazyStream<T> streamOf(T[] items) {
+        return streamOf(Arrays.asList(items));
+    }
+
+    /**
+     * Return a stream over the items supplied by the source iterable.
+     */
+    public static <T> LazyStream<T> streamOf(Iterable<T> source) {
+        return new LazyStream<T>(source);
     }
 
     /**

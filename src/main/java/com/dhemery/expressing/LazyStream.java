@@ -22,13 +22,6 @@ public class LazyStream<T> {
     }
 
     /**
-     * Create a lazy stream over the items in the source array.
-     */
-    public LazyStream(T[] items) {
-        this(Arrays.asList(items));
-    }
-
-    /**
      * Create a lazy stream over the items supplied by the iterable source.
      */
     public LazyStream(Iterable<T> items) {
