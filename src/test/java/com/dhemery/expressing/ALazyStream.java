@@ -18,34 +18,34 @@ import static com.dhemery.expressing.ImmediateExpressions.assertThat;
 import static com.dhemery.expressing.ImmediateExpressions.streamOf;
 import static org.hamcrest.Matchers.*;
 
-public class ImmediateExpressionsTests {
+public class ALazyStream {
     @Test
-    public void eachTreatsNullAsAnEmptyCollection() {
+    public void treatsNullAsAnEmptyIterable() {
         Iterable<String> NULL = null;
         assertThat(streamOf(NULL), yield(), is(empty()));
     }
 
     @Test
-    public void forEachIteratesOverEachMember() {
+    public void forEach_iteratesOverEachMember() {
         Collection<String> results = new ArrayList<String>();
         streamOf(Arrays.asList("a", "b", "c")).forEach(appendTo(results));
         assertThat(results, contains("a", "b", "c"));
     }
 
     @Test
-    public void forEachDoesNotThrowIfActionIsNull() {
+    public void forEach_doesNotThrowIfActionIsNull() {
         streamOf(Arrays.asList("a", "b", "c")).forEach(null);
     }
 
     @Test
-    public void filterYieldsEachMemberThatMatches() {
+    public void filter_yieldsEachMemberThatMatches() {
         List<String> all = Arrays.asList("fooA", "barB", "fooC", "fooD", "barE", "barF", "fooG");
         assertThat(streamOf(all).filter(beginsWith("foo")), yield(), contains("fooA", "fooC", "fooD", "fooG"));
         assertThat(streamOf(all).filter(beginsWith("bar")), yield(), contains("barB", "barE", "barF"));
     }
 
     @Test
-    public void mapYieldsAMappedValueForEachMember() {
+    public void map_yieldsAMappedValueForEachMember() {
         List<String> strings = Arrays.asList("a", "b", "c");
         assertThat(streamOf(strings).map(toUpperCase()), yield(), contains("A", "B", "C"));
     }
