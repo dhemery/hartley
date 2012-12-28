@@ -1,9 +1,5 @@
-package com.dhemery.expressing;
+package com.dhemery.core;
 
-import com.dhemery.core.Action;
-import com.dhemery.core.Feature;
-import com.dhemery.core.NamedAction;
-import com.dhemery.core.NamedFeature;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;

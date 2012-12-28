@@ -2,6 +2,7 @@ package com.dhemery.expressing;
 
 import com.dhemery.core.Condition;
 import com.dhemery.core.Feature;
+import com.dhemery.core.LazyStream;
 import com.dhemery.core.Sampler;
 import org.hamcrest.*;
 

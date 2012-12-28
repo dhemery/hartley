@@ -1,12 +1,11 @@
-package com.dhemery.expressing;
+package com.dhemery.core;
 
-import com.dhemery.core.Action;
-import com.dhemery.core.Feature;
 import org.hamcrest.Matcher;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * A lazy stream over the objects supplied by an iterable source.
@@ -68,5 +67,67 @@ public class LazyStream<T> {
 
     private FilteringIterator<T> filteringIterator(Matcher<? super T> criteria) {
         return new FilteringIterator(source, criteria);
+    }
+
+    static class FilteringIterator<T> implements Iterator<T> {
+        private final Iterator<T> source;
+        private final Matcher<? super T> criteria;
+        private T next;
+
+        public FilteringIterator(Iterator<T> source, Matcher<? super T> criteria) {
+            this.source = source;
+            this.criteria = criteria;
+            next = nextMatchingItem();
+        }
+
+        @Override
+        public boolean hasNext() {
+            return next != null;
+        }
+
+        @Override
+        public T next() {
+            if(!hasNext()) throw new NoSuchElementException();
+            T current = next;
+            next = nextMatchingItem();
+            return current;
+        }
+
+        @Override
+        public void remove() {
+            source.remove();
+        }
+
+        private T nextMatchingItem() {
+            while(source.hasNext()) {
+                T candidate = source.next();
+                if(criteria.matches(candidate)) return candidate;
+            }
+            return null;
+        }
+    }
+
+    static class MappingIterator<T, F> implements Iterator<F> {
+        private final Iterator<T> source;
+        private final Feature<? super T, F> function;
+
+        public MappingIterator(Iterator<T> source, Feature<? super T, F> function) {
+            this.source = source;
+            this.function = function;
+        }
+
+        @Override
+        public boolean hasNext() {
+            return source.hasNext();
+        }
+
+        @Override
+        public F next() {
+            return function.of(source.next());
+        }
+
+        @Override public void remove() {
+            source.remove();
+        }
     }
 }
