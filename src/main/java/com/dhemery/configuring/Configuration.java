@@ -19,6 +19,8 @@ public interface Configuration extends ModifiableOptions {
      */
     String option(String name, UnaryOperator<String>... operators);
 
+    <T> T option(String name, Class<T> type, UnaryOperator<String>... operators);
+
     /**
      * Return the named option transformed by the given operators, and throw an exception if the value is {@code null}.
      * @param name the name of an option
@@ -27,4 +29,5 @@ public interface Configuration extends ModifiableOptions {
      * @throws com.dhemery.configuring.ConfigurationException if the value is {@code null}.
      */
     String requiredOption(String name, UnaryOperator<String>... operators);
+    <T> T requiredOption(String name, Class<T> type, UnaryOperator<String>... operators);
 }

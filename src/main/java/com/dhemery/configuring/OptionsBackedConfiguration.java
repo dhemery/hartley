@@ -16,6 +16,7 @@ import java.util.Set;
  */
 @SuppressWarnings("unchecked")
 public class OptionsBackedConfiguration implements Configuration {
+    private final StringTranslator translator = new StringTranslator();
     private final ModifiableOptions options;
     private final List<UnaryOperator<String>> configurationOperators;
 
@@ -65,6 +66,11 @@ public class OptionsBackedConfiguration implements Configuration {
     }
 
     @Override
+    public <T> T option(String name, Class<T> type, UnaryOperator<String>... operators) {
+        return translator.translate(option(name, operators), type);
+    }
+
+    @Override
     public String requiredOption(String name, UnaryOperator<String>... queryOperators) {
         Journal journal = new Journal();
         String value = options.option(name);
@@ -78,6 +84,11 @@ public class OptionsBackedConfiguration implements Configuration {
                 .appendText("\nTried: ")
                 .appendDescriptionOf(journal);
         throw new ConfigurationException(description.toString());
+    }
+
+    @Override
+    public <T> T requiredOption(String name, Class<T> type, UnaryOperator<String>... operators) {
+        return translator.translate(requiredOption(name, operators), type);
     }
 
     private String translate(String value, List<UnaryOperator<String>> operators, Journal journal) {
