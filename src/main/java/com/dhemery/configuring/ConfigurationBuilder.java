@@ -1,9 +1,10 @@
 package com.dhemery.configuring;
 
 import com.dhemery.core.Builder;
-import com.dhemery.core.UnaryOperator;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Properties;
 
 import static com.dhemery.configuring.Copy.copy;
 import static com.dhemery.configuring.LoadProperties.propertiesFromFiles;
@@ -15,7 +16,7 @@ import static com.dhemery.configuring.LoadProperties.propertiesFromResources;
  * <ul>
  * <ol>A backing store that the configuration uses to store options</ol>
  * <ol>A set of overrides to merge into the configuration</ol>
- * <ol>A set of filters for the configuration to apply
+ * <ol>A set of operators for the configuration to apply
  * when its {@code option()} methods are called</ol>
  * </ul>
  * <p>Each {@code into} method creates a builder and supplies a backing store
@@ -31,53 +32,59 @@ import static com.dhemery.configuring.LoadProperties.propertiesFromResources;
  * </p>
  */
 public class ConfigurationBuilder implements Builder<Configuration> {
-    private final ModifiableOptions baseOptions;
+    private ModifiableOptions options;
     private final Map<String,String> overrides = new HashMap<String, String>();
-    private List<UnaryOperator<String>> configurationOperators = new ArrayList<UnaryOperator<String>>();
+    private String name = "(unnamed configuration)";
 
-    private ConfigurationBuilder(ModifiableOptions baseOptions) {
-        this.baseOptions = baseOptions;
+    private ConfigurationBuilder() {
+        options = new MappedOptions();
     }
 
     /**
-     * Create a builder to build a configuration into a new, empty backing store.
+     * Create a builder to build a new configuration backed by an empty map.
      */
-    public static ConfigurationBuilder intoNewConfiguration() {
-        return into(new HashMap<String, String>());
+    public static ConfigurationBuilder newConfiguration() {
+        return new ConfigurationBuilder();
     }
 
     /**
-     * Create a builder to build a configuration into the given map.
+     * Set the given map as the backing store for the configuration.
+     * Any previously configured backing store is forgotten.
      */
-    public static ConfigurationBuilder into(Map<String,String> map) {
-        return new ConfigurationBuilder(new MappedOptions(map));
+    public ConfigurationBuilder backedByMap(Map<String,String> map) {
+        options = new MappedOptions(map);
+        return this;
     }
 
     /**
-     * Create a builder to build a configuration into the given {@link ModifiableOptions}.
+     * Set the given {@code ModifiableOptions} as the backing store for the configuration.
+     * Any previously configured backing store is forgotten.
      */
-    public static ConfigurationBuilder into(ModifiableOptions options) {
-        return new ConfigurationBuilder(options);
+    public ConfigurationBuilder backedByOptions(ModifiableOptions options) {
+        this.options = options;
+        return this;
     }
 
     /**
-     * Create a builder to build a configuration into the given properties.
+     * Set the given properties as the backing store for the configuration.
+     * Any previously configured backing store is forgotten.
      */
-    public static ConfigurationBuilder into(Properties properties) {
-        return new ConfigurationBuilder(new PropertiesOptions(properties));
+    public ConfigurationBuilder backedByProperties(Properties properties) {
+        options = new PropertiesOptions(properties);
+        return this;
     }
 
     /**
      * Merge properties from the named file into the overrides for the configuration.
      */
-    public ConfigurationBuilder mergeFile(String fileName) {
-        return mergeFiles(fileName);
+    public ConfigurationBuilder withPropertiesFromFile(String fileName) {
+        return withPropertiesFromFiles(fileName);
     }
 
     /**
      * Merge properties from the named files into the overrides for the configuration.
      */
-    public ConfigurationBuilder mergeFiles(String... fileNames) {
+    public ConfigurationBuilder withPropertiesFromFiles(String... fileNames) {
         copy(propertiesFromFiles(fileNames)).into(overrides);
         return this;
     }
@@ -85,14 +92,14 @@ public class ConfigurationBuilder implements Builder<Configuration> {
     /**
      * Merge properties from the named resource into the overrides for the configuration.
      */
-    public ConfigurationBuilder mergeResource(String resourceName) {
-        return mergeResources(resourceName);
+    public ConfigurationBuilder withPropertiesFromResource(String resourceName) {
+        return withPropertiesFromResources(resourceName);
     }
 
     /**
      * Merge properties from the named resources into the overrides for the configuration.
      */
-    public ConfigurationBuilder mergeResources(String... resourceNames) {
+    public ConfigurationBuilder withPropertiesFromResources(String... resourceNames) {
         copy(propertiesFromResources(resourceNames)).into(overrides);
         return this;
     }
@@ -100,15 +107,15 @@ public class ConfigurationBuilder implements Builder<Configuration> {
     /**
      * Merge options into the overrides for the configuration.
      */
-    public ConfigurationBuilder merge(Options options) {
+    public ConfigurationBuilder withOptionsFrom(Options options) {
         copy(options).into(overrides);
         return this;
     }
 
     /**
-     * Merge a map into the overrides for the configuration.
+     * Merge map entries into the overrides for the configuration.
      */
-    public ConfigurationBuilder merge(Map<String, String> map) {
+    public ConfigurationBuilder withEntriesFrom(Map<String, String> map) {
         copy(map).into(overrides);
         return this;
     }
@@ -116,29 +123,28 @@ public class ConfigurationBuilder implements Builder<Configuration> {
     /**
      * Merge properties into the overrides for the configuration.
      */
-    public ConfigurationBuilder merge(Properties properties) {
+    public ConfigurationBuilder withPropertiesFrom(Properties properties) {
         copy(properties).into(overrides);
         return this;
     }
 
     /**
-     * Append option filters onto the configuration's filter list.
+     * Set the name for the configuration.
      */
-    public ConfigurationBuilder withOptionValues(UnaryOperator<String>... operators) {
-        this.configurationOperators.addAll(Arrays.asList(operators));
+    public ConfigurationBuilder withName(String name) {
+        this.name = name;
         return this;
     }
 
     /**
      * Construct the configuration specified by the builder.
      * This creates a new configuration backed by the specified backing store,
-     * attaches the specified filters.
      * and merges the specified overrides into the newly constructed configuration,
      * @return the constructed configuration
      */
     @Override
     public Configuration build() {
-        copy(overrides).into(baseOptions);
-        return new OptionsBackedConfiguration(baseOptions, configurationOperators);
+        copy(overrides).into(options);
+        return new OptionsBackedConfiguration(name, options);
     }
 }

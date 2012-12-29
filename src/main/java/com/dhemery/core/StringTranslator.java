@@ -1,7 +1,4 @@
-package com.dhemery.configuring;
-
-import com.dhemery.core.Feature;
-import com.dhemery.core.Self;
+package com.dhemery.core;
 
 import java.util.HashMap;
 import java.util.Map;

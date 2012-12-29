@@ -1,12 +1,13 @@
 package com.dhemery.configuring;
 
+import com.dhemery.core.Named;
+import com.dhemery.core.StringTranslator;
 import com.dhemery.core.UnaryOperator;
+import com.dhemery.core.UnaryOperatorSequence;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -15,10 +16,9 @@ import java.util.Set;
  * Changes in the underlying options are reflected in queries of this configuration.
  */
 @SuppressWarnings("unchecked")
-public class OptionsBackedConfiguration implements Configuration {
+public class OptionsBackedConfiguration extends Named implements Configuration {
     private final StringTranslator translator = new StringTranslator();
     private final ModifiableOptions options;
-    private final List<UnaryOperator<String>> configurationOperators;
 
     /**
      * Create a configuration backed by an empty {@code ModifiableOptions}.
@@ -28,16 +28,17 @@ public class OptionsBackedConfiguration implements Configuration {
     }
 
     public OptionsBackedConfiguration(ModifiableOptions options) {
-        this(options, Collections.<UnaryOperator<String>>emptyList());
+        this("(unnamed)", options);
     }
 
     /**
-     * Create a configuration backed by the given options.
+     * Create a configuration backed by the given options and applying the given operators.
+     * @param name the name of the configuration
      * @param options the {@code ModifiableOptions} in which to store this configuration's options
      */
-    public OptionsBackedConfiguration(ModifiableOptions options, final List<UnaryOperator<String>> configurationOperators) {
+    public OptionsBackedConfiguration(String name, ModifiableOptions options) {
+        super(name);
         this.options = options;
-        this.configurationOperators = configurationOperators;
     }
 
     @Override
@@ -57,33 +58,19 @@ public class OptionsBackedConfiguration implements Configuration {
 
     @Override
     public String option(String name) {
-        return translate(options.option(name), configurationOperators, new Journal());
+        return options.option(name);
     }
 
     @Override
-    public String option(String name, UnaryOperator<String>... queryOperators) {
-        return translate(option(name), Arrays.asList(queryOperators), new Journal());
+    public String option(String name, UnaryOperator<String>... operators) {
+        return transform(option(name), operators);
     }
 
     @Override
-    public <T> T option(String name, Class<T> type, UnaryOperator<String>... operators) {
-        return translator.translate(option(name, operators), type);
-    }
-
-    @Override
-    public String requiredOption(String name, UnaryOperator<String>... queryOperators) {
-        Journal journal = new Journal();
-        String value = options.option(name);
-        journal.record(name, value);
-        value = translate(value, configurationOperators, journal);
-        value = translate(value, Arrays.asList(queryOperators), journal);
+    public String requiredOption(String name, UnaryOperator<String>... operators) {
+        String value = option(name, operators);
         if(value != null) return value;
-        Description description = new StringDescription();
-        description.appendText("Missing value for required configuration option ")
-                .appendText(name)
-                .appendText("\nTried: ")
-                .appendDescriptionOf(journal);
-        throw new ConfigurationException(description.toString());
+        throw new ConfigurationException(violation(name, operators));
     }
 
     @Override
@@ -91,11 +78,27 @@ public class OptionsBackedConfiguration implements Configuration {
         return translator.translate(requiredOption(name, operators), type);
     }
 
-    private String translate(String value, List<UnaryOperator<String>> operators, Journal journal) {
-        for(UnaryOperator<String> operator : operators) {
-            value = operator.operate(value);
-            journal.record(operator.toString(), value);
-        }
-        return value;
+    private String violation(String optionName, UnaryOperator<String>[] operators) {
+        Journal journal = journalOf(optionName, option(optionName), operators);
+        Description description = new StringDescription();
+        description.appendDescriptionOf(this)
+                .appendText(" has null value for required option ")
+                .appendText(optionName)
+                .appendText("\nTried: ")
+                .appendDescriptionOf(journal);
+        return description.toString();
+    }
+
+    private static Journal journalOf(String name, String value, UnaryOperator<String>[] operators) {
+        Journal journal = new Journal();
+        journal.record(name, value);
+        UnaryOperator<String> transformer = new JournalingStringOperatorSequence(Arrays.asList(operators), journal);
+        transformer.operate(value);
+        return journal;
+    }
+
+    private static  String transform(String value, UnaryOperator<String>[] operators) {
+        UnaryOperator<String> transformer = new UnaryOperatorSequence<String>(Arrays.asList(operators));
+        return transformer.operate(value);
     }
 }

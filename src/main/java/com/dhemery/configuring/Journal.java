@@ -22,6 +22,12 @@ public class Journal implements SelfDescribing {
         description.appendList("<", " -> ", ">", operations);
     }
 
+    public String value() {
+        if(operations.isEmpty()) return null;
+        int last = operations.size() - 1;
+        return operations.get(last).result;
+    }
+
     private class Operation implements SelfDescribing {
         private final String operator;
         private final String result;
