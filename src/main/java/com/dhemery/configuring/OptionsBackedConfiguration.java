@@ -2,7 +2,6 @@ package com.dhemery.configuring;
 
 import com.dhemery.core.*;
 import org.hamcrest.Description;
-import org.hamcrest.SelfDescribing;
 import org.hamcrest.StringDescription;
 
 import java.util.Arrays;
@@ -66,9 +65,11 @@ public class OptionsBackedConfiguration extends Named implements Configuration {
 
     @Override
     public String requiredOption(String name, UnaryOperator<String>... operators) {
-        String value = option(name, operators);
+        Description diagnosis = new StringDescription();
+        UnaryOperator<String> diagnosingOperators = diagnosing(name, operators, diagnosis);
+        String value = option(name, diagnosingOperators);
         if(value != null) return value;
-        throw new ConfigurationException(violation(name, operators));
+        throw new ConfigurationException(violation(name, diagnosis));
     }
 
     @Override
@@ -76,18 +77,18 @@ public class OptionsBackedConfiguration extends Named implements Configuration {
         return converter.convert(requiredOption(name, operators), type);
     }
 
-    private String violation(String name, UnaryOperator<String>[] operators) {
+    private String violation(String name, Description diagnosis) {
         Description description = new StringDescription();
         description.appendDescriptionOf(this)
                 .appendText(" has null value for required option ")
                 .appendText(name)
                 .appendText("\n Details: ")
-                .appendValue(diagnosisOf(name, option(name), operators));
+                .appendValue(diagnosis);
         return description.toString();
     }
 
-    private SelfDescribing diagnosisOf(String name, String value, UnaryOperator<String>[] operators) {
-        return new UnaryOperatorChainDiagnosis<String>(name, value, Arrays.asList(operators));
+    private UnaryOperator<String> diagnosing(String name, UnaryOperator<String>[] operators, Description description) {
+        return new DiagnosingUnaryOperatorChain<String>(name, Arrays.asList(operators), description);
     }
 
     private static  String transform(String value, UnaryOperator<String>[] operators) {
