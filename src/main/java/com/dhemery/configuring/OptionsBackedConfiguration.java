@@ -80,13 +80,10 @@ public class OptionsBackedConfiguration extends Named implements Configuration {
 
     private String violation(String name, Journal<String> journal) {
         Description description = new StringDescription();
-        description
-                .appendText(System.lineSeparator())
-                .appendDescriptionOf(this)
+        description.appendDescriptionOf(this)
                 .appendText(" has null value for required option ")
                 .appendText(name)
-                .appendText(System.lineSeparator())
-                .appendText("Journal: ")
+                .appendText("\nJournal: ")
                 .appendValue(journal);
         return description.toString();
     }
