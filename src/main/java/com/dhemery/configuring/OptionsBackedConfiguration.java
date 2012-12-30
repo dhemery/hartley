@@ -4,8 +4,11 @@ import com.dhemery.core.*;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+
+import static com.dhemery.expressing.ImmediateExpressions.streamOf;
 
 /**
  * A {@link Configuration} backed by a {@link ModifiableOptions}.
@@ -16,16 +19,14 @@ import java.util.Set;
 public class OptionsBackedConfiguration extends Named implements Configuration {
     private final StringConverter converter = new StringConverter();
     private final ModifiableOptions options;
-
-    /**
-     * Create a configuration backed by an empty {@code ModifiableOptions}.
-     */
-    public OptionsBackedConfiguration() {
-        this(new MappedOptions());
-    }
+    private final List<UnaryOperator<String>> configurationOperators;
 
     public OptionsBackedConfiguration(ModifiableOptions options) {
-        this("(unnamed)", options);
+        this("(unnamed configuration)", options);
+    }
+
+    public OptionsBackedConfiguration(String name, ModifiableOptions options) {
+        this(name, options, Collections.<UnaryOperator<String>>emptyList());
     }
 
     /**
@@ -33,9 +34,10 @@ public class OptionsBackedConfiguration extends Named implements Configuration {
      * @param name the name of the configuration
      * @param options the {@code ModifiableOptions} in which to store this configuration's options
      */
-    public OptionsBackedConfiguration(String name, ModifiableOptions options) {
+    public OptionsBackedConfiguration(String name, ModifiableOptions options, List<UnaryOperator<String>> operators) {
         super(name);
         this.options = options;
+        configurationOperators = operators;
     }
 
     @Override
@@ -55,21 +57,20 @@ public class OptionsBackedConfiguration extends Named implements Configuration {
 
     @Override
     public String option(String name) {
-        return options.option(name);
+        return journalOf(name).value();
     }
 
     @Override
     public String option(String name, UnaryOperator<String>... operators) {
-        return transform(option(name), operators);
+        return journalOf(name, operators).value();
     }
 
     @Override
     public String requiredOption(String name, UnaryOperator<String>... operators) {
-        Description diagnosis = new StringDescription();
-        UnaryOperator<String> diagnosingOperators = diagnosing(name, operators, diagnosis);
-        String value = option(name, diagnosingOperators);
+        Journal<String> journal = journalOf(name, operators);
+        String value = journal.value();
         if(value != null) return value;
-        throw new ConfigurationException(violation(name, diagnosis));
+        throw new ConfigurationException(violation(name, journal));
     }
 
     @Override
@@ -77,22 +78,36 @@ public class OptionsBackedConfiguration extends Named implements Configuration {
         return converter.convert(requiredOption(name, operators), type);
     }
 
-    private String violation(String name, Description diagnosis) {
+    private String violation(String name, Journal<String> journal) {
         Description description = new StringDescription();
-        description.appendDescriptionOf(this)
+        description
+                .appendText(System.lineSeparator())
+                .appendDescriptionOf(this)
                 .appendText(" has null value for required option ")
                 .appendText(name)
-                .appendText("\n Details: ")
-                .appendValue(diagnosis);
+                .appendText(System.lineSeparator())
+                .appendText("Journal: ")
+                .appendValue(journal);
         return description.toString();
     }
 
-    private UnaryOperator<String> diagnosing(String name, UnaryOperator<String>[] operators, Description description) {
-        return new DiagnosingUnaryOperatorChain<String>(name, Arrays.asList(operators), description);
+    private Journal<String> journalOf(String name, UnaryOperator<String>... queryOperators) {
+        Journal<String> journal = new Journal<String>(name, options.option(name));
+        streamOf(configurationOperators).forEach(recordOperationIn(journal));
+        streamOf(queryOperators).forEach(recordOperationIn(journal));
+        return journal;
     }
 
-    private static  String transform(String value, UnaryOperator<String>[] operators) {
-        UnaryOperator<String> transformer = new UnaryOperatorChain<String>(Arrays.asList(operators));
-        return transformer.operate(value);
+    private Action<UnaryOperator<String>> recordOperationIn(final Journal<String> journal) {
+        return new Action<UnaryOperator<String>>() {
+            @Override
+            public void actOn(UnaryOperator<String> operator) {
+                String operand = journal.value();
+                String result = operator.operate(operand);
+                journal.record(operator.toString(), result);
+            }
+
+            @Override public void describeTo(Description description) {}
+        };
     }
 }
