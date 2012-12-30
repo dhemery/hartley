@@ -1,9 +1,6 @@
 package com.dhemery.configuring;
 
-import com.dhemery.core.Named;
-import com.dhemery.core.StringTranslator;
-import com.dhemery.core.UnaryOperator;
-import com.dhemery.core.UnaryOperatorSequence;
+import com.dhemery.core.*;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 
@@ -78,21 +75,19 @@ public class OptionsBackedConfiguration extends Named implements Configuration {
         return translator.translate(requiredOption(name, operators), type);
     }
 
-    private String violation(String optionName, UnaryOperator<String>[] operators) {
-        Journal journal = journalOf(optionName, option(optionName), operators);
+    private String violation(String name, UnaryOperator<String>[] operators) {
         Description description = new StringDescription();
         description.appendDescriptionOf(this)
                 .appendText(" has null value for required option ")
-                .appendText(optionName)
+                .appendText(name)
                 .appendText("\nTried: ")
-                .appendDescriptionOf(journal);
+                .appendDescriptionOf(journalOf(name, option(name), operators));
         return description.toString();
     }
 
     private static Journal journalOf(String name, String value, UnaryOperator<String>[] operators) {
-        Journal journal = new Journal();
-        journal.record(name, value);
-        UnaryOperator<String> transformer = new JournalingStringOperatorSequence(Arrays.asList(operators), journal);
+        Journal<String> journal = new Journal<String>(name, value);
+        UnaryOperator<String> transformer = new JournalingUnaryOperatorSequence(Arrays.asList(operators), journal);
         transformer.operate(value);
         return journal;
     }
