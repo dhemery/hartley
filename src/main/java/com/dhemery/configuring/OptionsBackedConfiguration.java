@@ -3,7 +3,7 @@ package com.dhemery.configuring;
 import com.dhemery.core.Named;
 import com.dhemery.core.StringConverter;
 import com.dhemery.core.UnaryOperator;
-import com.dhemery.core.UnaryOperatorSequence;
+import com.dhemery.core.UnaryOperatorChain;
 import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
 import org.hamcrest.StringDescription;
@@ -94,7 +94,7 @@ public class OptionsBackedConfiguration extends Named implements Configuration {
     }
 
     private static  String transform(String value, UnaryOperator<String>[] operators) {
-        UnaryOperator<String> transformer = new UnaryOperatorSequence<String>(Arrays.asList(operators));
+        UnaryOperator<String> transformer = new UnaryOperatorChain<String>(Arrays.asList(operators));
         return transformer.operate(value);
     }
 

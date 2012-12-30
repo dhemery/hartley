@@ -1,26 +1,25 @@
-package com.dhemery.configuring;
+package com.dhemery.core;
 
-import com.dhemery.core.UnaryOperator;
 import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
 import org.hamcrest.StringDescription;
 
-public class RequiredOptionDiagnosis implements SelfDescribing {
+public class UnaryOperatorChainDiagnosis<T> implements SelfDescribing {
     private final String name;
-    private final String value;
-    private final UnaryOperator<String>[] operators;
+    private final T initialValue;
+    private final Iterable<UnaryOperator<T>> operators;
 
-    public RequiredOptionDiagnosis(String name, String value, UnaryOperator<String>[] operators) {
-        this.name = name;
-        this.value = value;
+    public UnaryOperatorChainDiagnosis(String name, T initialValue, Iterable<UnaryOperator<T>> operators) {
+        this.initialValue = initialValue;
         this.operators = operators;
+        this.name = name;
     }
 
     @Override
     public void describeTo(Description description) {
-        String result = value;
-        operation(name, result).describeTo(description);
-        for(UnaryOperator<String> operator : operators) {
+        description.appendDescriptionOf(operation(name, initialValue));
+        T result = initialValue;
+        for(UnaryOperator<T> operator : operators) {
             result = operator.operate(result);
             description.appendText(" -> ").appendDescriptionOf(operation(operator.toString(), result));
         }

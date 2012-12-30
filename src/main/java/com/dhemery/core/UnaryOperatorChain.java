@@ -2,10 +2,10 @@ package com.dhemery.core;
 
 import java.util.List;
 
-public class UnaryOperatorSequence<T> implements UnaryOperator<T> {
+public class UnaryOperatorChain<T> implements UnaryOperator<T> {
     private final List<UnaryOperator<T>> operators;
 
-    public UnaryOperatorSequence(List<UnaryOperator<T>> operators) {
+    public UnaryOperatorChain(List<UnaryOperator<T>> operators) {
         this.operators = operators;
     }
 
