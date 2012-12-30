@@ -1,7 +1,11 @@
 package com.dhemery.configuring;
 
-import com.dhemery.core.*;
+import com.dhemery.core.Named;
+import com.dhemery.core.StringConverter;
+import com.dhemery.core.UnaryOperator;
+import com.dhemery.core.UnaryOperatorSequence;
 import org.hamcrest.Description;
+import org.hamcrest.SelfDescribing;
 import org.hamcrest.StringDescription;
 
 import java.util.Arrays;
@@ -14,7 +18,7 @@ import java.util.Set;
  */
 @SuppressWarnings("unchecked")
 public class OptionsBackedConfiguration extends Named implements Configuration {
-    private final StringTranslator translator = new StringTranslator();
+    private final StringConverter converter = new StringConverter();
     private final ModifiableOptions options;
 
     /**
@@ -72,7 +76,7 @@ public class OptionsBackedConfiguration extends Named implements Configuration {
 
     @Override
     public <T> T requiredOption(String name, Class<T> type, UnaryOperator<String>... operators) {
-        return translator.translate(requiredOption(name, operators), type);
+        return converter.convert(requiredOption(name, operators), type);
     }
 
     private String violation(String name, UnaryOperator<String>[] operators) {
@@ -80,20 +84,18 @@ public class OptionsBackedConfiguration extends Named implements Configuration {
         description.appendDescriptionOf(this)
                 .appendText(" has null value for required option ")
                 .appendText(name)
-                .appendText("\nTried: ")
-                .appendDescriptionOf(journalOf(name, option(name), operators));
+                .appendText("\n Details: ")
+                .appendValue(diagnosisOf(name, option(name), operators));
         return description.toString();
     }
 
-    private static Journal journalOf(String name, String value, UnaryOperator<String>[] operators) {
-        Journal<String> journal = new Journal<String>(name, value);
-        UnaryOperator<String> transformer = new JournalingUnaryOperatorSequence(Arrays.asList(operators), journal);
-        transformer.operate(value);
-        return journal;
+    private SelfDescribing diagnosisOf(String name, String value, UnaryOperator<String>[] operators) {
+        return new RequiredOptionDiagnosis(name, value, operators);
     }
 
     private static  String transform(String value, UnaryOperator<String>[] operators) {
         UnaryOperator<String> transformer = new UnaryOperatorSequence<String>(Arrays.asList(operators));
         return transformer.operate(value);
     }
+
 }
