@@ -1,9 +1,6 @@
 package com.dhemery.configuring;
 
-import com.dhemery.core.Named;
-import com.dhemery.core.StringConverter;
-import com.dhemery.core.UnaryOperator;
-import com.dhemery.core.UnaryOperatorChain;
+import com.dhemery.core.*;
 import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
 import org.hamcrest.StringDescription;
@@ -90,12 +87,11 @@ public class OptionsBackedConfiguration extends Named implements Configuration {
     }
 
     private SelfDescribing diagnosisOf(String name, String value, UnaryOperator<String>[] operators) {
-        return new RequiredOptionDiagnosis(name, value, operators);
+        return new UnaryOperatorChainDiagnosis<String>(name, value, Arrays.asList(operators));
     }
 
     private static  String transform(String value, UnaryOperator<String>[] operators) {
         UnaryOperator<String> transformer = new UnaryOperatorChain<String>(Arrays.asList(operators));
         return transformer.operate(value);
     }
-
 }

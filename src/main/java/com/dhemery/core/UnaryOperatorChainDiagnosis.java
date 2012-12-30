@@ -17,30 +17,28 @@ public class UnaryOperatorChainDiagnosis<T> implements SelfDescribing {
 
     @Override
     public void describeTo(Description description) {
-        description.appendDescriptionOf(operation(name, initialValue));
-        T result = initialValue;
+        T result = diagnosing(identity(name), description).operate(initialValue);
         for(UnaryOperator<T> operator : operators) {
-            result = operator.operate(result);
-            description.appendText(" -> ").appendDescriptionOf(operation(operator.toString(), result));
+            result = diagnosing(operator, " -> ", description).operate(result);
         }
     }
 
-    private static <T> SelfDescribing operation(final String name, final T result) {
-        return new SelfDescribing() {
-            @Override
-            public void describeTo(Description description) {
-                description
-                        .appendText("[")
-                        .appendText(name)
-                        .appendText(":")
-                        .appendValue(result)
-                        .appendText("]");
-            }
-        };
+    private UnaryOperator<T> diagnosing(UnaryOperator<T> operator, Description description) {
+        return diagnosing(operator, "", description);
+    }
+
+    private UnaryOperator<T> diagnosing(UnaryOperator<T> operator, String prefix, Description description) {
+        return new DiagnosingUnaryOperator<T>(operator, prefix, description);
+
+    }
+
+    private UnaryOperator<T> identity(String name) {
+        return new IdentityOperator<T>(name);
     }
 
     @Override
     public String toString() {
         return StringDescription.asString(this);
     }
+
 }
