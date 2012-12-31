@@ -7,13 +7,13 @@ import org.hamcrest.Description;
  * If the operand is non-null, the operator returns the operand.
  * @param <T> the type of operand
  */
-public class DefaultValue<T> extends NullSafeUnaryOperator<T> {
+public class DefaultingTo<T> extends NullSafeUnaryOperator<T> {
     private final T defaultValue;
 
     /**
      * Create an operator that supplies the given default value if its operand is null.
      */
-    public DefaultValue(T defaultValue) {
+    public DefaultingTo(T defaultValue) {
         this.defaultValue = defaultValue;
     }
 

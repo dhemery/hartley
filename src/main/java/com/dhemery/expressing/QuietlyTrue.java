@@ -6,7 +6,7 @@ import org.hamcrest.TypeSafeMatcher;
 
 /**
  * Quietly evaluates whether a boolean value is true.
- * "Quietly" means that it does not describe itself.
+ * "Quietly" means that the matcher does not describe itself.
  * This is primarily useful to provide a tacit matcher
  * for {@link Expressive} boolean features and samplers.
  */
@@ -28,7 +28,7 @@ public class QuietlyTrue extends TypeSafeMatcher<Boolean> {
     public void describeTo(Description description) {}
 
     /**
-     * Create a matcher that matches a {@code true} value and describes itself silently.
+     * Create a matcher that matches a {@code true} value and does not describe itself.
      */
     public static Matcher<Boolean> isQuietlyTrue() {
         return QUIETLY_TRUE;

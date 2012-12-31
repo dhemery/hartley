@@ -9,6 +9,7 @@ import java.util.NoSuchElementException;
 
 /**
  * A lazy stream over the objects supplied by an iterable source.
+ * The stream iterates over the items in the order they are delivered by the source.
  * The stream iterates over the items as late as possible.
  * @param <T> the type of object supplied by the stream
  */
@@ -42,8 +43,10 @@ public class LazyStream<T> {
     }
 
     /**
-     * Append each source item into the given destination
-     * and return the destination.
+     * Append each source item onto the given destination.
+     * Items are appended in the order they are deliverd by this stream's source.
+     * @param destination the destination to which to append the items.
+     * @return {@code destination}
      */
     public <C extends Collection<? super T>> C into(C destination) {
         while(source.hasNext()) destination.add(source.next());

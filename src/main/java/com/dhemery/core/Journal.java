@@ -9,6 +9,7 @@ import java.util.List;
 
 /**
  * A journal of named values.
+ * The "value" of the journal is the most recently recorded value.
  * @param <T> the type of value recorded in the journal
  */
 public class Journal<T> implements SelfDescribing {
@@ -34,7 +35,7 @@ public class Journal<T> implements SelfDescribing {
     }
 
     /**
-     * Return the last recorded value.
+     * Return the most recently recorded value.
      */
     public T value() {
         int last = entries.size() - 1;

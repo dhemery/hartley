@@ -12,7 +12,7 @@ public class StringToCharacter extends NamedFeature<String, Character> {
 
     @Override
     public Character of(String subject) {
-        if(subject.length() != 1) throw new IllegalArgumentException("Cannot convert \"" + subject + "\" to char");
+        if(subject.length() != 1) throw new IllegalArgumentException("Cannot convert string \"" + subject + "\" to char.  The string must have exactly one character.");
         return subject.charAt(0);
     }
 

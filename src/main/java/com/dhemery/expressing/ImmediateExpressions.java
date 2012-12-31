@@ -37,23 +37,23 @@ public class ImmediateExpressions {
 
     /**
      * Assert that the condition is satisfied.
-     * <p>Example:</p>
-     * <pre>
-     * {@code
-     *
-     * Condition lifeIsButADream = ...;
-     * ...
-     * assertThat(lifeIsButADream);
-     * }
-     * </pre>
+     * @param condition the condition to evaluate
+     * @throws AssertionError if the condition is not satisfied
      */
     public static void assertThat(Condition condition) {
         assertThat("", condition);
     }
-    public static void assertThat(String reason, Condition condition) {
+
+    /**
+     * Assert that the condition is satisfied.
+     * @param context the context of this assertion, for inclusion in any resulting {@code AssertionError}
+     * @param condition the condition to evaluate
+     * @throws AssertionError if the condition is not satisfied
+     */
+    public static void assertThat(String context, Condition condition) {
         if(!condition.isSatisfied()) {
             Description description = new StringDescription();
-            description.appendText(reason)
+            description.appendText(context)
                     .appendText("\nExpected: ")
                     .appendDescriptionOf(condition)
                     .appendText("\n     but: ");
@@ -64,61 +64,68 @@ public class ImmediateExpressions {
 
     /**
      * Assert that a sample of the variable satisfies the criteria.
-     * <p>Example:</p>
-     * <pre>
-     * {@code
-     *
-     * Sampler<Integer> threadCount = ...;
-     * ...
-     * assertThat(threadCount, is(9));
-     * }
+     * @param variable the variable to evaluate
+     * @param criteria the criteria that the sampled variable is to satisfy
+     * @throws AssertionError if the variable does not satisfy the criteria
      */
     public static <V> void assertThat(Sampler<V> variable, Matcher<? super V> criteria) {
         assertThat("", variable, criteria);
     }
-    public static <V> void assertThat(String reason, Sampler<V> variable, Matcher<? super V> criteria) {
-        assertThat(reason, sampleOf(variable, criteria));
+
+    /**
+     * Assert that a sample of the variable satisfies the criteria.
+     * @param context the context of this assertion, for inclusion in any resulting {@code AssertionError}
+     * @param variable the variable to evaluate
+     * @param criteria the criteria that the sampled variable is to satisfy
+     * @throws AssertionError if the variable does not satisfy the criteria
+     */
+    public static <V> void assertThat(String context, Sampler<V> variable, Matcher<? super V> criteria) {
+        assertThat(context, sampleOf(variable, criteria));
     }
 
     /**
-     * Assert that a sample of the variable is true.
-     * <p>Example:</p>
-     * <pre>
-     * {@code
-     *
-     * Sampler<Boolean> theresAFlyInMySoup = ...;
-     * ...
-     * assertThat(theresAFlyInMySoup);
-     * }
+     * Assert that a sample of the boolean variable is true.
+     * @param variable the boolean variable to evaluate
+     * @throws AssertionError if the variable is false
      */
     public static void assertThat(Sampler<Boolean> variable) {
         assertThat("", variable);
     }
-    public static void assertThat(String reason, Sampler<Boolean> variable) {
-        assertThat(reason, variable, isQuietlyTrue());
+
+    /**
+     * Assert that a sample of the boolean variable is true.
+     * @param context the context of this assertion, for inclusion in any resulting {@code AssertionError}
+     * @param variable the boolean variable to evaluate
+     * @throws AssertionError if the variable is false
+     */
+    public static void assertThat(String context, Sampler<Boolean> variable) {
+        assertThat(context, variable, isQuietlyTrue());
     }
 
     /**
      * Assert that the feature of the subject satisfies the criteria.
-     * <p>Example:</p>
-     * <pre>
-     * {@code
-     *
-     * TextField userNameField = ...;
-     * Feature<TextField,Color> textColor() { ... }
-     * Matcher<Color> blue() { ... }
-     * ...
-     * assertThat(userNameField, textColor(), is(blue()));
-     * }
+     * @param subject the subject whose feature to evaluate
+     * @param feature the feature of the subject to evaluate
+     * @param criteria the criteria the feature is to satisfy
+     * @throws AssertionError if the feature does not satisfy the criteria
      */
     public static <S,F> void assertThat(S subject, Feature<? super S,F> feature, Matcher<? super F> criteria) {
         assertThat("", subject, feature, criteria);
     }
-    public static <S,F> void assertThat(String reason, S subject, Feature<? super S,F> feature, Matcher<? super F> criteria) {
+
+    /**
+     * Assert that the feature of the subject satisfies the criteria.
+     * @param context the context of this assertion, for inclusion in any resulting {@code AssertionError}
+     * @param subject the subject whose feature to evaluate
+     * @param feature the feature of the subject to evaluate
+     * @param criteria the criteria the feature is to satisfy
+     * @throws AssertionError if the feature does not satisfy the criteria
+     */
+    public static <S,F> void assertThat(String context, S subject, Feature<? super S,F> feature, Matcher<? super F> criteria) {
         F featureValue = feature.of(subject);
         if(!criteria.matches(featureValue)) {
             Description description = new StringDescription();
-            description.appendText(reason)
+            description.appendText(context)
                     .appendText("\nExamined: ")
                     .appendDescriptionOf(feature)
                     .appendText(" of ")
@@ -133,42 +140,57 @@ public class ImmediateExpressions {
 
     /**
      * Assert that the boolean feature of the subject is {@code true}.
-     * <p>Example:</p>
-     * <pre>
-     * {@code
-     *
-     * Page settingsPage = ...;
-     * Feature<Page,Boolean> displayed() { ... }
-     * ...
-     * assertThat(settingsPage, is(displayed()));
-     * }
+     * @param subject the subject whose feature to evaluate
+     * @param feature the boolean feature to evaluate
+     * @throws AssertionError if the feature is false
      */
     public static <S> void assertThat(S subject, Feature<? super S,Boolean> feature) {
         assertThat(subject, feature, isQuietlyTrue());
     }
-    public static <S> void assertThat(String reason, S subject, Feature<? super S,Boolean> feature) {
-        assertThat(reason, subject, feature, isQuietlyTrue());
-    }
 
     /**
-     * Delegates to {@link org.hamcrest.MatcherAssert#assertThat(String, boolean)}.
+     * Assert that the boolean feature of the subject is {@code true}.
+     * @param context the context of this assertion, for inclusion in any resulting {@code AssertionError}
+     * @param subject the subject whose feature to evaluate
+     * @param feature the boolean feature to evaluate
+     * @throws AssertionError if the feature is false
      */
-    public static void assertThat(String reason, boolean assertion) {
-        MatcherAssert.assertThat(reason, assertion);
+    public static <S> void assertThat(String context, S subject, Feature<? super S,Boolean> feature) {
+        assertThat(context, subject, feature, isQuietlyTrue());
     }
 
     /**
+     * Assert that the boolean value is true.
+     * @param context the context of this assertion, for inclusion in any resulting {@code AssertionError}
+     * @param value the boolean value to evaluate
+     * Delegates to {@link org.hamcrest.MatcherAssert#assertThat(String, boolean)}.
+     * @throws AssertionError if the boolean value is false
+     */
+    public static void assertThat(String context, boolean value) {
+        MatcherAssert.assertThat(context, value);
+    }
+
+    /**
+     * Assert that the value satisfies the criteria.
      * Delegates to {@link org.hamcrest.MatcherAssert#assertThat(Object, org.hamcrest.Matcher)}.
+     * @param value the value to evaluate
+     * @param criteria the criteria the value is to satisfy
+     * @throws AssertionError if the value does not satisfy the criteria
      */
     public static <T> void assertThat(T value, Matcher<? super T> criteria) {
         MatcherAssert.assertThat(value, criteria);
     }
 
     /**
+     * Assert that the value satisfies the criteria.
      * Delegates to {@link org.hamcrest.MatcherAssert#assertThat(String, Object, org.hamcrest.Matcher)}.
+     * @param context the context of this assertion, for inclusion in any resulting {@code AssertionError}
+     * @param value the value to evaluate
+     * @param criteria the criteria the value is to satisfy
+     * @throws AssertionError if the value does not satisfy the criteria
      */
-    public static <T> void assertThat(String reason, T value, Matcher<? super T> criteria) {
-        MatcherAssert.assertThat(reason, value, criteria);
+    public static <T> void assertThat(String context, T value, Matcher<? super T> criteria) {
+        MatcherAssert.assertThat(context, value, criteria);
     }
 
     /**
@@ -179,6 +201,7 @@ public class ImmediateExpressions {
     }
 
     /**
+     * Create an implicit "equalTo" matcher, decorated to make it more expressive.
      * Delegates to {@link org.hamcrest.Matchers#is(Object)}.
      */
     public static <S> Matcher<S> is(S value) {
@@ -186,6 +209,7 @@ public class ImmediateExpressions {
     }
 
     /**
+     * Decorate a matcher to make it more expressive.
      * Delegates to {@link org.hamcrest.Matchers#is(org.hamcrest.Matcher)}.
      */
     public static <S> Matcher<S> is(Matcher<S> matcher) {
@@ -200,6 +224,7 @@ public class ImmediateExpressions {
     }
 
     /**
+     * Create an implicit "equalTo" matcher and decorate it to yield its logical negation.
      * Delegates to {@link org.hamcrest.Matchers#not(Object)}.
      */
     public static <S> Matcher<S> not(S value) {
@@ -207,6 +232,7 @@ public class ImmediateExpressions {
     }
 
     /**
+     * Decorate a matcher to yield its logical negation.
      * Delegates to {@link org.hamcrest.Matchers#not(org.hamcrest.Matcher)}.
      */
     public static <S> Matcher<S> not(Matcher<S> matcher) {

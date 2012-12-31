@@ -1,10 +1,9 @@
 package com.dhemery.configuring;
 
 import com.dhemery.core.Builder;
+import com.dhemery.core.UnaryOperator;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 import static com.dhemery.configuring.Copy.copy;
 import static com.dhemery.configuring.LoadProperties.propertiesFromFiles;
@@ -16,8 +15,7 @@ import static com.dhemery.configuring.LoadProperties.propertiesFromResources;
  * <ul>
  * <ol>A backing store that the configuration uses to store options</ol>
  * <ol>A set of overrides to merge into the configuration</ol>
- * <ol>A set of operators for the configuration to apply
- * when its {@code option()} methods are called</ol>
+ * <ol>A set of operators for the configuration to apply whenever an option is queried
  * </ul>
  * <p>Each {@code into} method creates a builder and supplies a backing store
  * to be used by the constructed configuration.
@@ -32,16 +30,18 @@ import static com.dhemery.configuring.LoadProperties.propertiesFromResources;
  * </p>
  */
 public class ConfigurationBuilder implements Builder<Configuration> {
+    private String name = "(unnamed configuration)";
+    private List<UnaryOperator<String>> operators = new ArrayList<UnaryOperator<String>>();
     private ModifiableOptions options;
     private final Map<String,String> overrides = new HashMap<String, String>();
-    private String name = "(unnamed configuration)";
 
     private ConfigurationBuilder() {
         options = new MappedOptions();
     }
 
     /**
-     * Create a builder to build a new configuration backed by an empty map.
+     * Create a builder to build a new configuration backed by an empty map
+     * and with an empty list of operators.
      */
     public static ConfigurationBuilder newConfiguration() {
         return new ConfigurationBuilder();
@@ -137,6 +137,14 @@ public class ConfigurationBuilder implements Builder<Configuration> {
     }
 
     /**
+     * Append the operators to the list of operators that the configuration will apply whenever an option is queried.
+     */
+    public ConfigurationBuilder withOptionsTransformedBy(UnaryOperator<String>... operators) {
+        this.operators.addAll(Arrays.asList(operators));
+        return this;
+    }
+
+    /**
      * Construct the configuration specified by the builder.
      * This creates a new configuration backed by the specified backing store,
      * and merges the specified overrides into the newly constructed configuration,
@@ -145,6 +153,6 @@ public class ConfigurationBuilder implements Builder<Configuration> {
     @Override
     public Configuration build() {
         copy(overrides).into(options);
-        return new OptionsBackedConfiguration(name, options);
+        return new OptionsBackedConfiguration(name, options, operators);
     }
 }

@@ -17,6 +17,11 @@ public class Named implements SelfDescribing {
         this.name = name;
     }
 
+    /**
+     * Return this object's name.
+     */
+    public String name() { return name; }
+
     @Override
     public void describeTo(Description description) {
         description.appendText(name);

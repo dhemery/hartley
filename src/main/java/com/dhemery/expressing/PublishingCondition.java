@@ -7,7 +7,7 @@ import com.dhemery.publishing.Publisher;
 import org.hamcrest.Description;
 
 /**
- * Wraps a condition to publish the result of its evaluations.
+ * Wraps a condition to publish the result of each evaluation.
  */
 public class PublishingCondition implements Condition {
     private final Condition condition;
@@ -15,7 +15,7 @@ public class PublishingCondition implements Condition {
     private int failureCount = 0;
 
     /**
-     * Wraps the given condition to publish the results of its evaluations.
+     * Wraps the given condition to publish the result of each evaluation.
      */
     public PublishingCondition(Condition condition, Publisher publisher) {
         this.condition = condition;
