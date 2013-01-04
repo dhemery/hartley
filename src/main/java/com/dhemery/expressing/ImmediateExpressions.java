@@ -12,7 +12,9 @@ import static com.dhemery.core.SamplerCondition.sampleOf;
 import static com.dhemery.expressing.QuietlyTrue.isQuietlyTrue;
 
 /**
- * Composed assertions and evaluations, and syntactic sugar for use with {@link Expressive}.
+ * Builds fluent expressions
+ * to make assertions
+ * and evaluate boolean conditions.
  * In contrast to the methods in other {@code Expressive}–related classes,
  * these methods evaluate expressions immediately,
  * without polling.
@@ -20,20 +22,6 @@ import static com.dhemery.expressing.QuietlyTrue.isQuietlyTrue;
  * so they can be used without instantiating an {@code Expressive}.
  */
 public class ImmediateExpressions {
-
-    /**
-     * Return a stream over the items in the array.
-     */
-    public static <T> LazyStream<T> streamOf(T[] items) {
-        return streamOf(Arrays.asList(items));
-    }
-
-    /**
-     * Return a stream over the items supplied by the source iterable.
-     */
-    public static <T> LazyStream<T> streamOf(Iterable<T> source) {
-        return new LazyStream<T>(source);
-    }
 
     /**
      * Assert that the condition is satisfied.
@@ -237,6 +225,20 @@ public class ImmediateExpressions {
      */
     public static <S> Matcher<S> not(Matcher<S> matcher) {
         return Matchers.not(matcher);
+    }
+
+    /**
+     * Return a stream over the items in the array.
+     */
+    public static <T> LazyStream<T> streamOf(T[] items) {
+        return streamOf(Arrays.asList(items));
+    }
+
+    /**
+     * Return a stream over the items supplied by the source iterable.
+     */
+    public static <T> LazyStream<T> streamOf(Iterable<T> source) {
+        return new LazyStream<T>(source);
     }
 
     /**

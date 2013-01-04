@@ -33,14 +33,12 @@ import static com.dhemery.core.StringToShort.stringToShort;
  * <p><strong>Converting to {@code Boolean}:</strong>
  * {@code StringConverter} converts to {@code Boolean} by calling {@link Boolean#parseBoolean(String)}.
  *
- * <p><strong>Converting to {@code Character}:</strong>>
+ * <p><strong>Converting to {@code Character}:</strong>
  * {@code StringConverter} converts to {@code Character} by calling {@code charAt(0)}.
  * If the string's length is other than 1, the conversion throws an exception.
- * The string must have a value that the type can parse.
- * Otherwise, the type throws an appropriate exception.
  *
  * <p><strong>Converting to other primitive types:</strong>
- * The other predefined target types are all numeric.
+ * The other built-in target types are all numeric.
  * {@code StringConverter} converts to a numeric type by calling the type's {@code parse...()} method.
  * The string must have a value that can be converted to the type.
  * Otherwise the {@code parse...()} method throws a {@code NumberFormatException}.

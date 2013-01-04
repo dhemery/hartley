@@ -8,9 +8,16 @@ import com.dhemery.os.Shell;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Builds AppleScript commands.
+ */
 public class AppleScriptBuilder implements Builder<RunnableCommand> {
     private final OSCommandBuilder<RunnableCommand> builder;
 
+    /**
+     * Create a builder for a command that will run in the given shell
+     * and describe itself with the given description.
+     */
     public AppleScriptBuilder(Shell shell, String description) {
         builder = shell.command(description, "osascript");
     }

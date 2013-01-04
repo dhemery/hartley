@@ -1,15 +1,16 @@
 package com.dhemery.core;
 
+import org.hamcrest.SelfDescribing;
 import org.hamcrest.StringDescription;
 
 /**
  * A unary operator that allows subclasses to operate on the operand without checking for null.
  * @param <T> the type of operand
  */
-public abstract class NullSafeUnaryOperator<T> implements SelfDescribingUnaryOperator<T> {
+public abstract class NullSafeUnaryOperator<T> implements UnaryOperator<T>,SelfDescribing {
     @Override
-    public T operate(T operand) {
-        return operand == null ? defaultValue() : safelyOperate(operand);
+    public final T operate(T operand) {
+        return operand == null ? valueForNullOperand() : operateOnNonNull(operand);
     }
 
     /**
@@ -20,7 +21,7 @@ public abstract class NullSafeUnaryOperator<T> implements SelfDescribingUnaryOpe
      * @param operand the non-null operand to operate on
      * @return the result of applying the operator to the operand
      */
-    protected T safelyOperate(T operand) { return operand; };
+    protected T operateOnNonNull(T operand) { return operand; };
 
     /**
      * Return the value that the operator would produce for a {@code null} operand.
@@ -29,7 +30,7 @@ public abstract class NullSafeUnaryOperator<T> implements SelfDescribingUnaryOpe
      * </p>
      * @return the result that the operator would produce for a {@code null} operand
      */
-    protected T defaultValue() { return null; };
+    protected T valueForNullOperand() { return null; };
 
     @Override
     public String toString() {

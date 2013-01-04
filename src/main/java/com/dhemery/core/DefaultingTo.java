@@ -18,7 +18,7 @@ public class DefaultingTo<T> extends NullSafeUnaryOperator<T> {
     }
 
     @Override
-    protected T defaultValue() {
+    protected T valueForNullOperand() {
         return defaultValue;
     }
 

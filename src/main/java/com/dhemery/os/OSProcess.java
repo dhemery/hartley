@@ -7,7 +7,9 @@ package com.dhemery.os;
  */
 public interface OSProcess {
     /**
-     * Retrieve the output from the represented operating system process.
+     * Retrieve the first line of the output from the represented operating system process.
+     * <p>
+     * NOTE: There is currently no way to retrieve any output beyond the first line.
      */
     String output();
 }

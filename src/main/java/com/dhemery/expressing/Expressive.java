@@ -14,13 +14,29 @@ import static com.dhemery.core.SamplerCondition.sampleOf;
 import static com.dhemery.expressing.QuietlyTrue.isQuietlyTrue;
 
 /**
- * Composable methods to
- * evaluate boolean expressions,
+ * Builds fluent expressions to
  * make assertions,
+ * evaluate boolean expressions,
  * wait for conditions,
  * and take action when preconditions are met.
  */
 public abstract class Expressive extends ImmediateExpressions {
+    /**
+     * Create a new default ticker.
+     * This method is called by the {@link #eventually()} method
+     * to obtain a default ticker for polling.
+     * The {@code eventually()} method is called in two circumstances:
+     * <ul>
+     * <li>When the expression explicitly calls it.</li>
+     * <li>When a polling expression does not include a ticker.</li>
+     * </ul>
+     * <p>
+     * Subclasses must implement this method.
+     * <p>
+     * <strong>IMPORTANT:</strong>
+     * This method must create a new ticker each time it is called.
+     * @return a newly constructed default ticker.
+     */
     public abstract Ticker createDefaultTicker();
 
     /**

@@ -4,7 +4,7 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
- * An ticker that uses the system clock to reckon time.
+ * A ticker that uses the system clock to reckon time.
  * The ticker has a duration and a tick size, both in milliseconds.
  * </p>
  * <p>

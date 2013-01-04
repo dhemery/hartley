@@ -7,7 +7,7 @@ import org.hamcrest.Description;
  */
 public class TrimString extends NullSafeUnaryOperator<String> {
     @Override
-    protected String safelyOperate(String operand) {
+    protected String operateOnNonNull(String operand) {
         return operand.trim();
     }
 

@@ -20,7 +20,7 @@ public class Requiring<T> extends NullSafeUnaryOperator<T> {
     }
 
     @Override
-    protected T safelyOperate(T operand) {
+    protected T operateOnNonNull(T operand) {
         if(criteria.matches(operand)) return operand;
         return null;
     }

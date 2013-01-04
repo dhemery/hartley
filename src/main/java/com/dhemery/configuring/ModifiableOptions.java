@@ -1,7 +1,7 @@
 package com.dhemery.configuring;
 
 /**
- * A modifiable set of options.
+ * A modifiable set of named options.
  */
 public interface ModifiableOptions extends Options {
     /**

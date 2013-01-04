@@ -4,7 +4,7 @@ import com.dhemery.core.UnaryOperator;
 import org.hamcrest.SelfDescribing;
 
 /**
- * A set of configuration options that can be queried, merged, and transformed.
+ * A set of named, configuration options that can be queried and transformed.
  */
 public interface Configuration extends ModifiableOptions, SelfDescribing {
     /**

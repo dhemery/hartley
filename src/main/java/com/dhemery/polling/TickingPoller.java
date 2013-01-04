@@ -6,12 +6,12 @@ import com.dhemery.core.*;
  * A poller that uses a ticker to delay between polls,
  * and throws a {@link PollTimeoutException} if the ticker expires before the condition is satisfied.
  */
-public class TickingPoller extends ParameterizedPoller {
+public class TickingPoller extends ComposedPoller {
     public TickingPoller(Ticker ticker) {
         super(startPolling(ticker), shouldContinuePolling(ticker), tick(ticker), throwPollTimeoutException());
     }
 
-    public static Action<Condition> startPolling(final Ticker ticker) {
+    private static Action<Condition> startPolling(final Ticker ticker) {
         return new NamedAction<Condition>("start") {
             @Override
             public void actOn(Condition object) {
@@ -20,7 +20,7 @@ public class TickingPoller extends ParameterizedPoller {
         };
     }
 
-    public static Action<Condition> tick(final Ticker ticker) {
+    private static Action<Condition> tick(final Ticker ticker) {
         return new NamedAction<Condition>("tick") {
             @Override
             public void actOn(Condition ignored) {
@@ -29,7 +29,7 @@ public class TickingPoller extends ParameterizedPoller {
         };
     }
 
-    public static Feature<Condition,Boolean> shouldContinuePolling(final Ticker ticker) {
+    private static Feature<Condition,Boolean> shouldContinuePolling(final Ticker ticker) {
         return new NamedFeature<Condition,Boolean>("continue polling") {
             @Override
             public Boolean of(Condition ignored) {
@@ -38,7 +38,7 @@ public class TickingPoller extends ParameterizedPoller {
         };
     }
 
-    public static Action<Condition> throwPollTimeoutException() {
+    private static Action<Condition> throwPollTimeoutException() {
         return new NamedAction<Condition>("poll failed") {
             @Override
             public void actOn(Condition condition) {

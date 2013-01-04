@@ -29,7 +29,7 @@ public class AComposedPoller extends PollerContract {
 
     @Before
     public void setup() {
-        poller = new ParameterizedPoller(beforePolling, shouldContinuePolling, betweenPolls, onPollFailure);
+        poller = new ComposedPoller(beforePolling, shouldContinuePolling, betweenPolls, onPollFailure);
     }
 
     @Test
