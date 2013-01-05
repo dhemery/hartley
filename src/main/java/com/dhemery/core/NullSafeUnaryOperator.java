@@ -1,16 +1,32 @@
 package com.dhemery.core;
 
-import org.hamcrest.SelfDescribing;
 import org.hamcrest.StringDescription;
 
 /**
- * A unary operator that allows subclasses to operate on the operand without checking for null.
+ * An operator that allows subclasses to operate on the operand without checking for null.
+ * <p>
+ * This implementation returns its operand, whether null or non-null.
+ * To change this behavior, override {@link #operateOnNonNull(Object)}, {@link #operateOnNull()}, or both.
  * @param <T> the type of operand
  */
-public abstract class NullSafeUnaryOperator<T> implements UnaryOperator<T>,SelfDescribing {
+public abstract class NullSafeUnaryOperator<T> extends Named implements UnaryOperator<T> {
+    /**
+     * Create a nameless null-safe operator.
+     */
+    public NullSafeUnaryOperator() {
+        this("");
+    }
+
+    /**
+     * Create a null-safe operator with a fixed name.
+     */
+    public NullSafeUnaryOperator(String name) {
+        super(name);
+    }
+
     @Override
     public final T operate(T operand) {
-        return operand == null ? valueForNullOperand() : operateOnNonNull(operand);
+        return operand == null ? operateOnNull() : operateOnNonNull(operand);
     }
 
     /**
@@ -24,13 +40,13 @@ public abstract class NullSafeUnaryOperator<T> implements UnaryOperator<T>,SelfD
     protected T operateOnNonNull(T operand) { return operand; };
 
     /**
-     * Return the value that the operator would produce for a {@code null} operand.
+     * Return the operator's value for a {@code null} operand.
      * <p>This implementation returns {@code null}.
      * Override this method to provide a value for a {@code null} operand.
      * </p>
      * @return the result that the operator would produce for a {@code null} operand
      */
-    protected T valueForNullOperand() { return null; };
+    protected T operateOnNull() { return null; };
 
     @Override
     public String toString() {

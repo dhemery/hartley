@@ -5,8 +5,5 @@ package com.dhemery.core;
  * @param <T> the type of operand
  */
 public interface UnaryOperator<T> {
-    /**
-     * Return a value based on {@code operand}.
-     */
     T operate(T operand);
 }

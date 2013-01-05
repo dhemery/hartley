@@ -1,7 +1,7 @@
 package com.dhemery.core;
 
-import org.hamcrest.Description;
 import org.hamcrest.Matcher;
+import org.hamcrest.StringDescription;
 
 /**
  * An operator that returns its operand if it satisfies some criteria.
@@ -16,6 +16,7 @@ public class Requiring<T> extends NullSafeUnaryOperator<T> {
      * @param criteria the criteria to satisfy
      */
     public Requiring(Matcher<? super T> criteria) {
+        super("requiring " + StringDescription.asString(criteria));
         this.criteria = criteria;
     }
 
@@ -23,12 +24,5 @@ public class Requiring<T> extends NullSafeUnaryOperator<T> {
     protected T operateOnNonNull(T operand) {
         if(criteria.matches(operand)) return operand;
         return null;
-    }
-
-    @Override
-    public void describeTo(Description description) {
-        description
-                .appendText("requiring ")
-                .appendDescriptionOf(criteria);
     }
 }

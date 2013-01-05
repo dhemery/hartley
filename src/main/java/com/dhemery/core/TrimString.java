@@ -1,18 +1,15 @@
 package com.dhemery.core;
 
-import org.hamcrest.Description;
-
 /**
  * An operator that trims its string operand.
  */
 public class TrimString extends NullSafeUnaryOperator<String> {
-    @Override
-    protected String operateOnNonNull(String operand) {
-        return operand.trim();
+    public TrimString() {
+        super("trimmed");
     }
 
     @Override
-    public void describeTo(Description description) {
-        description.appendText("trimmed");
+    protected String operateOnNonNull(String operand) {
+        return operand.trim();
     }
 }

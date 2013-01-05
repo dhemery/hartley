@@ -1,6 +1,7 @@
 package com.dhemery.core;
 
 import org.hamcrest.Description;
+import org.hamcrest.StringDescription;
 
 /**
  * An operator that supplies a default value if its operand is {@code null}.
@@ -14,18 +15,18 @@ public class DefaultingTo<T> extends NullSafeUnaryOperator<T> {
      * Create an operator that supplies the given default value if its operand is null.
      */
     public DefaultingTo(T defaultValue) {
+        super("defaulting to " + descriptionOf(defaultValue));
         this.defaultValue = defaultValue;
     }
 
     @Override
-    protected T valueForNullOperand() {
+    protected T operateOnNull() {
         return defaultValue;
     }
 
-    @Override
-    public void describeTo(Description description) {
-        description
-                .appendText("defaulting to ")
-                .appendValue(defaultValue);
+    private static <T> String descriptionOf(T defaultValue) {
+        Description description = new StringDescription();
+        description.appendValue(defaultValue);
+        return description.toString();
     }
 }
