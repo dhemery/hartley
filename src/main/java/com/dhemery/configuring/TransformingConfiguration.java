@@ -13,11 +13,11 @@ import static com.dhemery.expressing.ImmediateExpressions.streamOf;
  * A configuration that applies a sequence of operators
  * when an option is queried.
  * <p>
- * Every call to {@link #option} applies the configuration operators
+ * Each call to an {@code option()} method applies the configuration operators
  * before applying any query operators.
  * <p>
  * The configuration operators do not affect the values stored in the configuration.
- * The operators are applied only by the {@link #option} method.
+ * The operators are applied only by the {@code option()} methods.
  * <p>
  * Changes to the configuration are written through to the underlying dictionary.
  * The dictionary's contents,
@@ -56,10 +56,9 @@ public class TransformingConfiguration extends Named implements Configuration {
 
     /**
      * Return the value of the named option,
-     * transformed by the configuration's operators
-     * and the given query operators.
+     * transformed by the configuration and query operators.
      * @param name the name of the option
-     * @param queryOperators the operators to apply after applying the configuration's operators
+     * @param queryOperators the operators to apply after applying the configuration operators
      * @return the transformed value of the option
      * @throws com.dhemery.configuring.ConfigurationException if the transformed value is {@code null}.
      */
@@ -70,12 +69,11 @@ public class TransformingConfiguration extends Named implements Configuration {
 
     /**
      * Return the value of the named option,
-     * transformed by the configuration's operators
-     * and the given query operators,
+     * transformed by the configuration and query operators,
      * and converted to the specified type.
      * @param name the name of the option
      * @param type the type to which to convert the option
-     * @param queryOperators the operators to apply after applying the configuration's operators
+     * @param queryOperators the operators to apply after applying the configuration operators
      * @return the transformed value of the option, converted to the specified type
      * @throws com.dhemery.configuring.ConfigurationException if the transformed value is {@code null}
      * @throws IllegalArgumentException if the transformed value cannot be converted to the specified type
@@ -85,7 +83,7 @@ public class TransformingConfiguration extends Named implements Configuration {
         return converter.convert(option(name, queryOperators), type);
     }
 
-    private String violation(String name, Journal<String> journal) {
+    private String violation(String name, OptionJournal<String> journal) {
         Description description = new StringDescription();
         description.appendDescriptionOf(this)
                 .appendText(" has null value for required option ")
@@ -95,7 +93,7 @@ public class TransformingConfiguration extends Named implements Configuration {
         return description.toString();
     }
 
-    private Action<UnaryOperator<String>> recordOperationIn(final Journal<String> journal) {
+    private Action<UnaryOperator<String>> recordOperationIn(final OptionJournal<String> journal) {
         return new Action<UnaryOperator<String>>() {
             @Override
             public void actOn(UnaryOperator<String> operator) {
@@ -109,7 +107,7 @@ public class TransformingConfiguration extends Named implements Configuration {
     }
 
     private String transformedOption(String name, UnaryOperator<String>[] queryOperators) {
-        Journal<String> journal = new Journal<String>(name, dictionary.definitionOf(name));
+        OptionJournal<String> journal = new OptionJournal<String>(name, dictionary.definitionOf(name));
         streamOf(configurationOperators).forEach(recordOperationIn(journal));
         streamOf(queryOperators).forEach(recordOperationIn(journal));
         String value = journal.value();
