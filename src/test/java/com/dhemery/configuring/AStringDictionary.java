@@ -1,17 +1,17 @@
 package com.dhemery.configuring;
 
-import com.dhemery.core.Dictionary;
+import com.dhemery.core.StringDictionary;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-public abstract class ADictionary {
-    protected abstract Dictionary emptyDictionary();
+public abstract class AStringDictionary {
+    protected abstract StringDictionary emptyDictionary();
 
     @Test
     public void getsLastDefinedValue() {
-        Dictionary dictionary = emptyDictionary();
+        StringDictionary dictionary = emptyDictionary();
 
         dictionary.define("name", "old value");
         assertThat(dictionary.definitionOf("name"), is("old value"));

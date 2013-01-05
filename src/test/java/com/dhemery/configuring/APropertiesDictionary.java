@@ -5,7 +5,7 @@ import com.dhemery.core.PropertiesDictionary;
 
 import java.util.Properties;
 
-public class APropertiesDictionary extends ADictionary {
+public class APropertiesDictionary extends AStringDictionary {
     private final Properties properties = new Properties();
 
     @Override

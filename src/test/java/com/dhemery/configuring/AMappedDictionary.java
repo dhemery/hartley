@@ -5,7 +5,7 @@ import com.dhemery.core.MappedDictionary;
 
 import java.util.HashMap;
 
-public class AMappedDictionary extends ADictionary {
+public class AMappedDictionary extends AStringDictionary {
     private final HashMap<String, String> backingMap = new HashMap<String, String>();
 
     @Override
