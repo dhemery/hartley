@@ -1,7 +1,6 @@
 package com.dhemery.configuring;
 
 import com.dhemery.core.StringDictionary;
-import com.dhemery.core.MappedDictionary;
 
 import java.util.HashMap;
 

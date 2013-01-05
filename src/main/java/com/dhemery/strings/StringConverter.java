@@ -1,16 +1,10 @@
-package com.dhemery.core;
+package com.dhemery.strings;
+
+import com.dhemery.core.Feature;
+import com.dhemery.core.Self;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import static com.dhemery.core.StringToBoolean.stringToBoolean;
-import static com.dhemery.core.StringToByte.stringToByte;
-import static com.dhemery.core.StringToCharacter.stringToCharacter;
-import static com.dhemery.core.StringToDouble.stringToDouble;
-import static com.dhemery.core.StringToFloat.stringToFloat;
-import static com.dhemery.core.StringToInteger.stringToInteger;
-import static com.dhemery.core.StringToLong.stringToLong;
-import static com.dhemery.core.StringToShort.stringToShort;
 
 /**
  * Converts strings to the boxed representations of primitive types.
@@ -47,14 +41,14 @@ public class StringConverter {
     private final Map<Class<?>,Feature<String,?>> translatorsByType = new HashMap<Class<?>, Feature<String,?>>();
 
     public StringConverter() {
-        add(Boolean.class, stringToBoolean());
-        add(Byte.class, stringToByte());
-        add(Character.class, stringToCharacter());
-        add(Short.class, stringToShort());
-        add(Integer.class, stringToInteger());
-        add(Long.class, stringToLong());
-        add(Float.class, stringToFloat());
-        add(Double.class, stringToDouble());
+        add(Boolean.class, StringToBoolean.stringToBoolean());
+        add(Byte.class, StringToByte.stringToByte());
+        add(Character.class, StringToCharacter.stringToCharacter());
+        add(Short.class, StringToShort.stringToShort());
+        add(Integer.class, StringToInteger.stringToInteger());
+        add(Long.class, StringToLong.stringToLong());
+        add(Float.class, StringToFloat.stringToFloat());
+        add(Double.class, StringToDouble.stringToDouble());
         add(String.class, Self.<String>self());
     }
 

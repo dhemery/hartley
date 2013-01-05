@@ -1,4 +1,7 @@
-package com.dhemery.core;
+package com.dhemery.strings;
+
+import com.dhemery.core.Feature;
+import com.dhemery.core.NamedFeature;
 
 /**
  * A feature that translates its string subject to a byte.

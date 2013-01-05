@@ -3,7 +3,7 @@ package com.dhemery.configuring;
 import org.junit.Test;
 
 import static com.dhemery.configuring.ConfigurationBuilder.newConfiguration;
-import static com.dhemery.core.OperatorExpressions.*;
+import static com.dhemery.expressing.OperatorExpressions.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 

@@ -1,5 +1,11 @@
-package com.dhemery.core;
+package com.dhemery.expressing;
 
+import com.dhemery.core.DefaultingTo;
+import com.dhemery.core.Feature;
+import com.dhemery.core.Requiring;
+import com.dhemery.core.UnaryOperator;
+import com.dhemery.strings.ConvertedTo;
+import com.dhemery.strings.Trimmed;
 import org.hamcrest.Matcher;
 
 import static org.hamcrest.Matchers.allOf;
@@ -8,6 +14,16 @@ import static org.hamcrest.Matchers.allOf;
  * Static utility methods to create operators.
  */
 public class OperatorExpressions {
+
+    /**
+     * A feature that converts its subject to the specified type.
+     * @param type the class of the type to convert the subject to
+     * @return the subject converted to the specified type
+     */
+    public static <T> Feature<String, T> convertedTo(Class<T> type) {
+        return new ConvertedTo(type);
+    }
+
     /**
      * An operator that returns its a default value if its operand is {@code null}.
      * @param defaultValue the value to return if the operand is {@code null}
@@ -31,6 +47,6 @@ public class OperatorExpressions {
      * An operator that trims its string operand.
      */
     public static UnaryOperator<String> trimmed() {
-        return new TrimString();
+        return new Trimmed();
     }
 }

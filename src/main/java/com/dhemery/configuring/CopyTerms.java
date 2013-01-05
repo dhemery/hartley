@@ -2,8 +2,6 @@ package com.dhemery.configuring;
 
 import com.dhemery.core.Action;
 import com.dhemery.core.StringDictionary;
-import com.dhemery.core.MappedDictionary;
-import com.dhemery.core.PropertiesDictionary;
 import org.hamcrest.Description;
 
 import java.util.HashMap;

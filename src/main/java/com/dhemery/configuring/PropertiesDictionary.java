@@ -1,4 +1,6 @@
-package com.dhemery.core;
+package com.dhemery.configuring;
+
+import com.dhemery.core.StringDictionary;
 
 import java.util.Properties;
 import java.util.Set;

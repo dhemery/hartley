@@ -1,6 +1,9 @@
 package com.dhemery.configuring;
 
-import com.dhemery.core.*;
+import com.dhemery.core.Action;
+import com.dhemery.core.Named;
+import com.dhemery.core.StringDictionary;
+import com.dhemery.core.UnaryOperator;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 
@@ -8,6 +11,7 @@ import java.util.List;
 import java.util.Set;
 
 import static com.dhemery.expressing.ImmediateExpressions.streamOf;
+import static com.dhemery.expressing.OperatorExpressions.convertedTo;
 
 /**
  * A configuration that applies a sequence of operators
@@ -29,7 +33,6 @@ import static com.dhemery.expressing.ImmediateExpressions.streamOf;
 public class TransformingConfiguration extends Named implements Configuration {
     private final StringDictionary dictionary;
     private final List<UnaryOperator<String>> configurationOperators;
-    private final StringConverter converter = new StringConverter();
 
     /**
      * Create a named configuration
@@ -80,7 +83,7 @@ public class TransformingConfiguration extends Named implements Configuration {
      */
     @Override
     public <T> T option(String name, Class<T> type, UnaryOperator<String>... queryOperators) {
-        return converter.convert(option(name, queryOperators), type);
+        return convertedTo(type).of(option(name, queryOperators));
     }
 
     private String violation(String name, OptionJournal<String> journal) {
