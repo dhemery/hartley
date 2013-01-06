@@ -10,8 +10,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import static com.dhemery.expressing.ImmediateExpressions.assertThat;
-import static com.dhemery.expressing.ImmediateExpressions.streamOf;
+import static com.dhemery.expressing.Evaluations.assertThat;
+import static com.dhemery.expressing.Evaluations.streamOf;
 import static org.hamcrest.Matchers.*;
 
 public class ALazyStream {

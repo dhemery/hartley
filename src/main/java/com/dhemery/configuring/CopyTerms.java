@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
-import static com.dhemery.expressing.ImmediateExpressions.streamOf;
+import static com.dhemery.expressing.Evaluations.streamOf;
 
 /**
  * Copies dictionaries, properties, and maps.

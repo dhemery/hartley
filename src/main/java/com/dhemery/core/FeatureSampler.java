@@ -1,7 +1,5 @@
 package com.dhemery.core;
 
-import org.hamcrest.StringDescription;
-
 /**
  * A sampler that samples a feature of a subject.
  * @param <S> the type of subject that has the feature
@@ -24,11 +22,11 @@ public class FeatureSampler<S, F> extends NamedSampler<F> {
     }
 
     private static <S, F> String nameOf(S subject, Feature<? super S, F> feature) {
-        return new StringDescription()
-                .appendText("sampled ")
-                .appendDescriptionOf(feature)
-                .appendText(" of ")
-                .appendValue(subject)
+        return new StringBuilder()
+                .append("sampled ")
+                .append(feature)
+                .append(" of ")
+                .append(subject)
                 .toString();
     }
 

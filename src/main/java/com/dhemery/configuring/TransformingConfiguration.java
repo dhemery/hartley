@@ -10,7 +10,7 @@ import org.hamcrest.StringDescription;
 import java.util.List;
 import java.util.Set;
 
-import static com.dhemery.expressing.ImmediateExpressions.streamOf;
+import static com.dhemery.expressing.Evaluations.streamOf;
 import static com.dhemery.expressing.OperatorExpressions.convertedTo;
 
 /**

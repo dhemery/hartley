@@ -21,7 +21,7 @@ import static com.dhemery.expressing.QuietlyTrue.isQuietlyTrue;
  * These methods are all declared static,
  * so they can be used without instantiating an {@code Expressive}.
  */
-public class ImmediateExpressions {
+public class Evaluations {
 
     /**
      * Assert that the condition is satisfied.
@@ -112,16 +112,16 @@ public class ImmediateExpressions {
     public static <S,F> void assertThat(String context, S subject, Feature<? super S,F> feature, Matcher<? super F> criteria) {
         F featureValue = feature.of(subject);
         if(!criteria.matches(featureValue)) {
-            Description description = new StringDescription();
-            description.appendText(context)
-                    .appendText("\nExamined: ")
-                    .appendDescriptionOf(feature)
-                    .appendText(" of ")
-                    .appendValue(subject)
-                    .appendText("\nExpected: ")
-                    .appendDescriptionOf(criteria)
-                    .appendText("\n     but: ");
-            criteria.describeMismatch(featureValue, description);
+            StringBuilder description = new StringBuilder()
+                    .append(context)
+                    .append("\nExamined: ")
+                    .append(feature)
+                    .append(" of ")
+                    .append(subject)
+                    .append("\nExpected: ")
+                    .append(criteria)
+                    .append("\n     but: ")
+                    .append(descriptionOfMismatch(featureValue, criteria));
             throw new AssertionError(description.toString());
         }
     }
@@ -282,5 +282,11 @@ public class ImmediateExpressions {
      */
     public static <S> boolean the(S subject, Feature<? super S,Boolean> feature) {
         return the(subject, feature, isQuietlyTrue());
+    }
+
+    private static <T> String descriptionOfMismatch(T item, Matcher<? super T> matcher) {
+        Description description = new StringDescription();
+        matcher.describeMismatch(item, description);
+        return description.toString();
     }
 }

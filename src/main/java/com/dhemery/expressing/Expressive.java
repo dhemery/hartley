@@ -20,7 +20,7 @@ import static com.dhemery.expressing.QuietlyTrue.isQuietlyTrue;
  * wait for conditions,
  * and take action when preconditions are met.
  */
-public abstract class Expressive extends ImmediateExpressions {
+public abstract class Expressive extends Evaluations {
     /**
      * Create a new default ticker.
      * This method is called by the {@link #eventually()} method
