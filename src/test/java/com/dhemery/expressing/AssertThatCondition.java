@@ -2,6 +2,7 @@ package com.dhemery.expressing;
 
 import com.dhemery.core.Condition;
 import org.jmock.Expectations;
+import org.jmock.auto.Mock;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Rule;
 import org.junit.Test;
@@ -11,8 +12,7 @@ import static org.hamcrest.Matchers.is;
 
 public class AssertThatCondition {
     @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
-    String description = "Asserted condition";
-    Condition condition = context.mock(Condition.class, description);
+    @Mock public Condition condition;
 
     @Test
     public void doesNotThrowIfTheConditionIsSatisfied() {
@@ -39,7 +39,7 @@ public class AssertThatCondition {
             allowing(condition).isSatisfied(); will(returnValue(false));
             allowing(condition).explainDissatisfaction(); will(returnValue(explanation));
         }});
-        String expectedMessage = assertionContext + "\nExpected: " + description + "\n     but: " + explanation;
+        String expectedMessage = assertionContext + "\nExpected: " + condition + "\n     but: " + explanation;
         try {
             Evaluations.assertThat(assertionContext, condition);
         } catch (AssertionError thrown) {
