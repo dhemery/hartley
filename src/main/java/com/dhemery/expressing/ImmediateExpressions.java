@@ -40,12 +40,12 @@ public class ImmediateExpressions {
      */
     public static void assertThat(String context, Condition condition) {
         if(!condition.isSatisfied()) {
-            Description description = new StringDescription();
-            description.appendText(context)
-                    .appendText("\nExpected: ")
-                    .appendDescriptionOf(condition)
-                    .appendText("\n     but: ");
-            condition.describeDissatisfactionTo(description);
+            StringBuilder description = new StringBuilder()
+                    .append(context)
+                    .append("\nExpected: ")
+                    .append(condition)
+                    .append("\n     but: ")
+                    .append(condition.explainDissatisfaction());
             throw new AssertionError(description.toString());
         }
     }

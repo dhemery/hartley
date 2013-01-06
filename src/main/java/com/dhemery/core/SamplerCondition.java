@@ -29,15 +29,19 @@ public class SamplerCondition<V> implements Condition {
     }
 
     @Override
-    public void describeTo(Description description) {
-        description.appendDescriptionOf(variable)
-                .appendText(" ")
-                .appendDescriptionOf(criteria);
+    public String toString() {
+        return new StringBuilder()
+                .append(variable)
+                .append(" ")
+                .append(criteria)
+                .toString();
     }
 
     @Override
-    public void describeDissatisfactionTo(Description description) {
+    public String explainDissatisfaction() {
+        Description description = new StringDescription();
         criteria.describeMismatch(variable.sampledValue(), description);
+        return description.toString();
     }
 
     /**
@@ -45,10 +49,5 @@ public class SamplerCondition<V> implements Condition {
      */
     public static <V> Condition sampleOf(Sampler<V> variable, Matcher<? super V> criteria) {
         return new SamplerCondition<V>(variable, criteria);
-    }
-
-    @Override
-    public String toString() {
-        return StringDescription.asString(this);
     }
 }

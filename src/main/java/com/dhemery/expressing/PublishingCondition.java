@@ -4,7 +4,6 @@ import com.dhemery.core.Condition;
 import com.dhemery.polling.events.ConditionDissatisfied;
 import com.dhemery.polling.events.ConditionSatisfied;
 import com.dhemery.publishing.Publisher;
-import org.hamcrest.Description;
 
 /**
  * Wraps a condition to publish the result of each evaluation.
@@ -34,12 +33,7 @@ public class PublishingCondition implements Condition {
     }
 
     @Override
-    public void describeTo(Description description) {
-        condition.describeTo(description);
-    }
-
-    @Override
-    public void describeDissatisfactionTo(Description description) {
-        condition.describeDissatisfactionTo(description);
+    public String explainDissatisfaction() {
+        return null;  //To change body of implemented methods use File | Settings | File Templates.
     }
 }

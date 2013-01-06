@@ -1,12 +1,9 @@
 package com.dhemery.core;
 
-import org.hamcrest.Description;
-import org.hamcrest.SelfDescribing;
-
 /**
  * A condition that may be satisfied or dissatisfied.
  */
-public interface Condition extends SelfDescribing {
+public interface Condition {
     /**
      * Evaluate whether the condition is satisfied.
      * <p>
@@ -17,22 +14,11 @@ public interface Condition extends SelfDescribing {
     boolean isSatisfied();
 
     /**
-     * Describe the condition when satisfied.
-     * <p>
-     * Note: This method should not change the condition's state.
-     * </p>
-     * @param description the description to which to describe this condition
-     */
-    @Override
-    void describeTo(Description description);
-
-    /**
-     * Describe this condition's most recent dissatisfaction.
+     * Explain the condition's most recent dissatisfaction.
      * This method is meaningful only if the most recent {@code isSatisfied()} returned false.
      * <p>
      * Note: This method should not change the condition's state.
      * </p>
-     * @param description the description to which to describe the dissatisfaction
      */
-    void describeDissatisfactionTo(Description description);
+    String explainDissatisfaction();
 }

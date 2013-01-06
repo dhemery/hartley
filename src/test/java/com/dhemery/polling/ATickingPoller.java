@@ -1,6 +1,5 @@
 package com.dhemery.polling;
 
-import org.hamcrest.Description;
 import org.jmock.Expectations;
 import org.jmock.Sequence;
 import org.jmock.auto.Mock;
@@ -74,8 +73,7 @@ public class ATickingPoller extends PollerContract {
     @Test(expected = PollTimeoutException.class)
     public void throwsIfTickerExpiresBeforeConditionIsSatisfied() {
         context.checking(new Expectations(){{
-            ignoring(condition).describeDissatisfactionTo(with(any(Description.class)));
-            ignoring(condition).describeTo(with(any(Description.class)));
+            ignoring(condition).explainDissatisfaction();
             ignoring(ticker).start();
 
             allowing(condition).isSatisfied(); will(returnValue(false));

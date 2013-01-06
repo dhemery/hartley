@@ -26,15 +26,13 @@ public class ConditionDissatisfied implements SelfDescribing {
     /**
      * A description of the condition.
      */
-    public String description() { return StringDescription.asString(condition); }
+    public String description() { return condition.toString(); }
 
     /**
      * The reason the condition was dissatisfied.
      */
     public String reason() {
-        Description description = new StringDescription();
-        condition.describeDissatisfactionTo(description);
-        return description.toString();
+        return condition.explainDissatisfaction();
     }
 
     /**
