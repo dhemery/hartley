@@ -1,12 +1,10 @@
 package com.dhemery.core;
 
-import org.hamcrest.SelfDescribing;
-
 /**
  * Samples a variable and retains the sample.
  * @param <V> the type of variable to sample
  */
-public interface Sampler<V> extends SelfDescribing {
+public interface Sampler<V> {
     /**
      * Sample the variable and retain the sample.
      */

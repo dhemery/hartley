@@ -2,7 +2,6 @@ package com.dhemery.core;
 
 import org.hamcrest.Description;
 import org.hamcrest.SelfDescribing;
-import org.hamcrest.StringDescription;
 
 /**
  * An object that describes itself by a fixed name.
@@ -17,11 +16,6 @@ public class Named implements SelfDescribing {
         this.name = name;
     }
 
-    /**
-     * Return this object's name.
-     */
-    public String name() { return name; }
-
     @Override
     public void describeTo(Description description) {
         description.appendText(name);
@@ -29,6 +23,6 @@ public class Named implements SelfDescribing {
 
     @Override
     public String toString() {
-        return StringDescription.toString(this);
+        return name;
     }
 }
