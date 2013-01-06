@@ -2,7 +2,6 @@ package com.dhemery.configuring;
 
 import com.dhemery.core.Action;
 import com.dhemery.core.StringDictionary;
-import org.hamcrest.Description;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -103,8 +102,6 @@ class CopyTerms {
             public void actOn(String name) {
                 destination.define(name, source.definitionOf(name));
             }
-
-            @Override public void describeTo(Description description) {}
         };
     }
 }

@@ -1,12 +1,10 @@
 package com.dhemery.core;
 
-import org.hamcrest.SelfDescribing;
-
 /**
  * An action that acts on a subject.
  * @param <S> the type of subject on which to act
  */
-public interface Action<S> extends SelfDescribing {
+public interface Action<S> {
     /**
      * Act on the subject.
      */

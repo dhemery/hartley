@@ -1,7 +1,5 @@
 package com.dhemery.core;
 
-import org.hamcrest.StringDescription;
-
 /**
  * An operator that allows subclasses to operate on the operand without checking for null.
  * <p>
@@ -47,9 +45,4 @@ public abstract class NullSafeUnaryOperator<T> extends Named implements UnaryOpe
      * @return the result that the operator would produce for a {@code null} operand
      */
     protected T operateOnNull() { return null; };
-
-    @Override
-    public String toString() {
-        return StringDescription.toString(this);
-    }
 }

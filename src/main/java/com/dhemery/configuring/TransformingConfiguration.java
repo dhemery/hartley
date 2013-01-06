@@ -4,8 +4,6 @@ import com.dhemery.core.Action;
 import com.dhemery.core.Named;
 import com.dhemery.core.StringDictionary;
 import com.dhemery.core.UnaryOperator;
-import org.hamcrest.Description;
-import org.hamcrest.StringDescription;
 
 import java.util.List;
 import java.util.Set;
@@ -87,13 +85,13 @@ public class TransformingConfiguration extends Named implements Configuration {
     }
 
     private String violation(String name, OptionJournal<String> journal) {
-        Description description = new StringDescription();
-        description.appendDescriptionOf(this)
-                .appendText(" has null value for required option ")
-                .appendText(name)
-                .appendText("\nJournal: ")
-                .appendValue(journal);
-        return description.toString();
+        return new StringBuilder()
+                .append(this)
+                .append(" has null value for required option ")
+                .append(name)
+                .append("\nJournal: ")
+                .append(journal)
+                .toString();
     }
 
     private Action<UnaryOperator<String>> recordOperationIn(final OptionJournal<String> journal) {
@@ -104,8 +102,6 @@ public class TransformingConfiguration extends Named implements Configuration {
                 String result = operator.operate(operand);
                 journal.record(operator.toString(), result);
             }
-
-            @Override public void describeTo(Description description) {}
         };
     }
 

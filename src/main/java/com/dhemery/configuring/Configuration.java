@@ -1,14 +1,13 @@
 package com.dhemery.configuring;
 
 import com.dhemery.core.UnaryOperator;
-import org.hamcrest.SelfDescribing;
 
 import java.util.Set;
 
 /**
  * A set of named configuration options that can be queried and transformed.
  */
-public interface Configuration extends SelfDescribing {
+public interface Configuration {
     /**
      * Define an option with the given name and value.
      * Any previous definition of the option is lost.

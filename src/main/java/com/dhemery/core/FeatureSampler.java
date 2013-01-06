@@ -41,7 +41,7 @@ public class FeatureSampler<S, F> extends NamedSampler<F> {
     }
 
     /**
-     * A factory method for creating {@code FeatureSampler}s.
+     * Create a sampler that samples the feature of the subject.
      */
     public static <S,V> Sampler<V> sampled(S subject, Feature<? super S, V> feature) {
         return new FeatureSampler<S,V>(subject, feature);

@@ -1,9 +1,8 @@
 package com.dhemery.configuring;
 
-import org.hamcrest.Description;
-import org.hamcrest.SelfDescribing;
+import static com.dhemery.core.Descriptions.descriptionOf;
 
-class OptionTransaction<T> implements SelfDescribing {
+class OptionTransaction<T> {
     public final String name;
     public final T value;
 
@@ -13,12 +12,13 @@ class OptionTransaction<T> implements SelfDescribing {
     }
 
     @Override
-    public void describeTo(Description description) {
-        description
-                .appendText("[")
-                .appendText(name)
-                .appendText(":")
-                .appendValue(value)
-                .appendText("]");
+    public String toString() {
+        return new StringBuilder()
+                .append("[")
+                .append(name)
+                .append(":")
+                .append(descriptionOf(value))
+                .append("]")
+                .toString();
     }
 }

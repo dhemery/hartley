@@ -1,13 +1,12 @@
 package com.dhemery.configuring;
 
-import org.hamcrest.Description;
-import org.hamcrest.SelfDescribing;
+import com.dhemery.core.Descriptions;
 import org.hamcrest.StringDescription;
 
 import java.util.ArrayList;
 import java.util.List;
 
-class OptionJournal<T> implements SelfDescribing {
+class OptionJournal<T> {
     private final List<OptionTransaction<T>> entries = new ArrayList<OptionTransaction<T>>();
 
     public OptionJournal(String name, T initialValue) {
@@ -24,13 +23,10 @@ class OptionJournal<T> implements SelfDescribing {
     }
 
     @Override
-    public void describeTo(Description description) {
-        description.appendList("", " -> ", "", entries);
-    }
-
-    @Override
     public String toString() {
-        return StringDescription.asString(this);
+        new StringDescription();
+        return new StringBuilder()
+                .append(Descriptions.descriptionOf(entries, "<", " -> ", ">"))
+                .toString();
     }
-
 }
