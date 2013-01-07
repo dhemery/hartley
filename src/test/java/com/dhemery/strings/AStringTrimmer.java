@@ -8,7 +8,7 @@ import static org.hamcrest.Matchers.nullValue;
 
 public class AStringTrimmer {
     @Test
-    public void yieldsNullForANullOperand() {
+    public void returnssNullIfOperandIsNull() {
         assertThat(new StringTrimmer().operate(null), is(nullValue()));
     }
 
