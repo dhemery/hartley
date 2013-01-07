@@ -8,7 +8,7 @@ import org.hamcrest.*;
 
 import java.util.Arrays;
 
-import static com.dhemery.core.SamplerCondition.sampleOf;
+import static com.dhemery.expressing.SamplerCondition.sampleOf;
 import static com.dhemery.expressing.QuietlyTrue.isQuietlyTrue;
 
 /**

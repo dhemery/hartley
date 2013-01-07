@@ -1,6 +1,6 @@
 package com.dhemery.configuring;
 
-import static com.dhemery.core.Descriptions.descriptionOf;
+import com.dhemery.expressing.Diagnostic;
 
 class OptionTransaction<T> {
     public final String name;
@@ -17,7 +17,7 @@ class OptionTransaction<T> {
                 .append("[")
                 .append(name)
                 .append(":")
-                .append(descriptionOf(value))
+                .append(Diagnostic.descriptionOf(value))
                 .append("]")
                 .toString();
     }

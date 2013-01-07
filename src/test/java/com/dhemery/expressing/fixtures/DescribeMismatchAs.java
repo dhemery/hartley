@@ -1,4 +1,4 @@
-package com.dhemery.core.fixtures;
+package com.dhemery.expressing.fixtures;
 
 import org.hamcrest.Description;
 import org.jmock.api.*;

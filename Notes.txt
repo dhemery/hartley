@@ -1,10 +1,12 @@
-EagerStream<T>
+===============================================================================
+
+LazyStream<T>
 
 DONE
     void forEach(Block<? super T> block);
     Stream<T> filter(Predicate<? super T> predicate);
-    <A extends Destination<? super T>> A into(A target);
     <R> Stream<R> map(Mapper<? extends R, ? super T> mapper);
+    <A extends Destination<? super T>> A into(A target);
 
 TODO
     Stream<T> sorted(Comparator<? super T> comparator);
@@ -35,4 +37,5 @@ TODO
     Stream<T> sequential();
     Stream<T> unordered();
     Object[] toArray();
-}
+
+===============================================================================

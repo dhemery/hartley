@@ -1,6 +1,8 @@
-package com.dhemery.core;
+package com.dhemery.expressing;
 
-import com.dhemery.core.fixtures.DescribeMismatchAs;
+import com.dhemery.core.Condition;
+import com.dhemery.core.Sampler;
+import com.dhemery.expressing.fixtures.DescribeMismatchAs;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.jmock.Expectations;
@@ -11,7 +13,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import static com.dhemery.core.SamplerCondition.sampleOf;
+import static com.dhemery.expressing.SamplerCondition.sampleOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 

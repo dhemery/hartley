@@ -1,6 +1,6 @@
 package com.dhemery.configuring;
 
-import com.dhemery.core.Descriptions;
+import com.dhemery.expressing.Diagnostic;
 import org.hamcrest.StringDescription;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ class OptionJournal<T> {
     public String toString() {
         new StringDescription();
         return new StringBuilder()
-                .append(Descriptions.descriptionOf(entries, "<", " -> ", ">"))
+                .append(Diagnostic.descriptionOf(entries, "<", " -> ", ">"))
                 .toString();
     }
 }

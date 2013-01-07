@@ -9,8 +9,8 @@ import com.dhemery.polling.Ticker;
 import com.dhemery.polling.TickingPoller;
 import org.hamcrest.Matcher;
 
-import static com.dhemery.core.FeatureSampler.sampled;
-import static com.dhemery.core.SamplerCondition.sampleOf;
+import static com.dhemery.expressing.FeatureSampler.sampled;
+import static com.dhemery.expressing.SamplerCondition.sampleOf;
 import static com.dhemery.expressing.QuietlyTrue.isQuietlyTrue;
 
 /**

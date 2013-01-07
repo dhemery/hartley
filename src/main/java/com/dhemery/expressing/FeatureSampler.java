@@ -1,4 +1,8 @@
-package com.dhemery.core;
+package com.dhemery.expressing;
+
+import com.dhemery.core.Feature;
+import com.dhemery.core.NamedSampler;
+import com.dhemery.core.Sampler;
 
 /**
  * A sampler that samples a feature of a subject.
@@ -26,7 +30,7 @@ public class FeatureSampler<S, F> extends NamedSampler<F> {
                 .append("sampled ")
                 .append(feature)
                 .append(" of ")
-                .append(subject)
+                .append(Diagnostic.descriptionOf(subject))
                 .toString();
     }
 
