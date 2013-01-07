@@ -2,6 +2,8 @@ package com.dhemery.expressing;
 
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -24,6 +26,30 @@ public class ADiagnosticDescription {
         assertThat(Diagnostic.descriptionOf((long) 4), is("<4L>"));
         assertThat(Diagnostic.descriptionOf((float) 5), is("<5.0f>"));
         assertThat(Diagnostic.descriptionOf((double) 6), is("<6.0d>"));
+    }
+
+    @Test
+    public void surroundsArraysWithBracketsAndSeparatesItemsWithCommas() {
+        String[] strings = {"a", "b", "c", "d"};
+        assertThat(Diagnostic.descriptionOf(strings), is("[\"a\",\"b\",\"c\",\"d\"]"));
+    }
+
+    @Test
+    public void describesArrayItemsDiagnostically() {
+        Object[] items = {"monkey", 'z', (byte)1, (short)2, (int)3, (long)5, (float)8, (double)13, null, false, true};
+        assertThat(Diagnostic.descriptionOf(items), is("[\"monkey\",'z',<1b>,<2s>,<3>,<5L>,<8.0f>,<13.0d>,null,false,true]"));
+    }
+
+    @Test
+    public void surroundsIterablesWithBracketsAndSeparatesItemsWithCommas() {
+        String[] strings = {"a", "b", "c", "d"};
+        assertThat(Diagnostic.descriptionOf(Arrays.asList(strings)), is("[\"a\",\"b\",\"c\",\"d\"]"));
+    }
+
+    @Test
+    public void describesIterableItemsDiagnostically() {
+        Object[] items = {"monkey", 'z', (byte)1, (short)2, (int)3, (long)5, (float)8, (double)13, null, false, true};
+        assertThat(Diagnostic.descriptionOf(Arrays.asList(items)), is("[\"monkey\",'z',<1b>,<2s>,<3>,<5L>,<8.0f>,<13.0d>,null,false,true]"));
     }
 
     @Test

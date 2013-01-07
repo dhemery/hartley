@@ -22,16 +22,16 @@ public class AFeatureSampler {
     }
 
     @Test
-    public void describesItsSubjectWithDiagnosticSyntax() {
-        assertThat(sampled(null,       feature()).toString(), endsWith("of null"));
-        assertThat(sampled('q',        feature()).toString(), endsWith("of 'q'"));
-        assertThat(sampled("foo",      feature()).toString(), endsWith("of \"foo\""));
-        assertThat(sampled((byte) 22,  feature()).toString(), endsWith("of <22b>"));
-        assertThat(sampled((short) 99, feature()).toString(), endsWith("of <99s>"));
-        assertThat(sampled(3,          feature()).toString(), endsWith("of <3>"));
-        assertThat(sampled(12L,        feature()).toString(), endsWith("of <12L>"));
-        assertThat(sampled(4.2f,       feature()).toString(), endsWith("of <4.2f>"));
-        assertThat(sampled(6.1d,       feature()).toString(), endsWith("of <6.1d>"));
+    public void describesItsSubjectWithDiagnosticDescription() {
+        assertThat(sampled(null,       feature()).toString(), endsWith(Diagnostic.descriptionOf(null)));
+        assertThat(sampled('q',        feature()).toString(), endsWith(Diagnostic.descriptionOf('q')));
+        assertThat(sampled("foo",      feature()).toString(), endsWith(Diagnostic.descriptionOf("foo")));
+        assertThat(sampled((byte) 22,  feature()).toString(), endsWith(Diagnostic.descriptionOf((byte)22)));
+        assertThat(sampled((short) 99, feature()).toString(), endsWith(Diagnostic.descriptionOf((short)99)));
+        assertThat(sampled(3,          feature()).toString(), endsWith(Diagnostic.descriptionOf(3)));
+        assertThat(sampled(12L,        feature()).toString(), endsWith(Diagnostic.descriptionOf(12L)));
+        assertThat(sampled(4.2f,       feature()).toString(), endsWith(Diagnostic.descriptionOf(4.2f)));
+        assertThat(sampled(6.1d,       feature()).toString(), endsWith(Diagnostic.descriptionOf(6.1d)));
     }
 
     private <T,Object> Feature<T, Object> feature() {
