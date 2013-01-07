@@ -5,8 +5,8 @@ import com.dhemery.core.NullSafeUnaryOperator;
 /**
  * An operator that trims its string operand.
  */
-public class Trimmed extends NullSafeUnaryOperator<String> {
-    public Trimmed() {
+public class StringTrimmer extends NullSafeUnaryOperator<String> {
+    public StringTrimmer() {
         super("trimmed");
     }
 

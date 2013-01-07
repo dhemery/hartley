@@ -5,7 +5,7 @@ import com.dhemery.core.Feature;
 import com.dhemery.core.Requiring;
 import com.dhemery.core.UnaryOperator;
 import com.dhemery.strings.ConvertedTo;
-import com.dhemery.strings.Trimmed;
+import com.dhemery.strings.StringTrimmer;
 import org.hamcrest.Matcher;
 
 import static org.hamcrest.Matchers.allOf;
@@ -47,6 +47,6 @@ public class OperatorExpressions {
      * An operator that trims its string operand.
      */
     public static UnaryOperator<String> trimmed() {
-        return new Trimmed();
+        return new StringTrimmer();
     }
 }

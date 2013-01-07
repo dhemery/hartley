@@ -6,14 +6,14 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
-public class ATrimmed {
+public class AStringTrimmer {
     @Test
     public void yieldsNullForANullOperand() {
-        assertThat(new Trimmed().operate(null), is(nullValue()));
+        assertThat(new StringTrimmer().operate(null), is(nullValue()));
     }
 
     @Test
     public void trimsANonNullStringOperand() {
-        assertThat(new Trimmed().operate("   foo   "), is("foo"));
+        assertThat(new StringTrimmer().operate("   foo   "), is("foo"));
     }
 }
