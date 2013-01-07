@@ -17,12 +17,7 @@ public class ADiagnosticDescription {
     }
 
     @Test
-    public void describesNullAsNull() {
-        assertThat(Diagnostic.descriptionOf(null), is("null"));
-    }
-
-    @Test
-    public void surroundsNumberWithAngleBrackets() {
+    public void describesPrimitiveNumbersWithAngleBracketsAndtypeMarker() {
         assertThat(Diagnostic.descriptionOf((byte) 1), is("<1b>"));
         assertThat(Diagnostic.descriptionOf((short) 2), is("<2s>"));
         assertThat(Diagnostic.descriptionOf((int) 3), is("<3>"));
@@ -32,11 +27,11 @@ public class ADiagnosticDescription {
     }
 
     @Test
-    public void describesOtherObjectsWithToString() {
-        Object o = new Object(){ @Override public String toString() { return "bloot"; }};
-        assertThat(Diagnostic.descriptionOf(o), is("bloot"));
-        assertThat(Diagnostic.descriptionOf(false), is("false"));
-        assertThat(Diagnostic.descriptionOf(true), is("true"));
+    public void describesOtherValuesWithStringValue() {
+        Object object = new Object();
+        assertThat(Diagnostic.descriptionOf(object), is(String.valueOf(object)));
+        assertThat(Diagnostic.descriptionOf(false), is(String.valueOf(false)));
+        assertThat(Diagnostic.descriptionOf(true), is(String.valueOf(true)));
+        assertThat(Diagnostic.descriptionOf(null), is(String.valueOf((Object)null)));
     }
-
 }
