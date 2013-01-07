@@ -1,7 +1,7 @@
 package com.dhemery.core;
 
 /**
- * A sampler that describes itself with a fixed name.
+ * A sampler described by a fixed name.
  * @param <V> the type of variable to sample
  */
 public abstract class NamedSampler<V> extends Named implements Sampler<V> {

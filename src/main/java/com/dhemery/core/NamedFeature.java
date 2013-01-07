@@ -1,7 +1,7 @@
 package com.dhemery.core;
 
 /**
- * A feature that describes itself with a fixed name.
+ * A feature described by a fixed name.
  * @param <S> the type of subject that has the feature
  * @param <F> the type of feature
  */

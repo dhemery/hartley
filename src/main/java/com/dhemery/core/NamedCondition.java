@@ -1,7 +1,7 @@
 package com.dhemery.core;
 
 /**
- * A condition that describes itself with a fixed name.
+ * A condition described by a fixed name.
  */
 public abstract class NamedCondition extends Named implements Condition {
     /**
