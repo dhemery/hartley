@@ -7,7 +7,7 @@ public class PrefixRemover extends NullSafeUnaryOperator<String> {
     private final String prefix;
 
     public PrefixRemover(String prefix) {
-        super("with prefix " + Diagnostic.descriptionOf(prefix));
+        super("without prefix " + Diagnostic.descriptionOf(prefix));
         this.prefix = prefix;
     }
 
