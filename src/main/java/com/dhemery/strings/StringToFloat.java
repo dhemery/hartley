@@ -4,7 +4,7 @@ import com.dhemery.core.Feature;
 import com.dhemery.core.NamedFeature;
 
 /**
- * A feature that translates its string subject to a float.
+ * Translates a string to a {@code Float}.
  */
 public class StringToFloat extends NamedFeature<String, Float> {
     private static final Feature<String, Float> STRING_TO_FLOAT = new StringToFloat();
@@ -19,7 +19,7 @@ public class StringToFloat extends NamedFeature<String, Float> {
     }
 
     /**
-     * Return a feature that translates its string subject to a float.
+     * Return a feature that translates a string to a {@code Float}.
      */
     public static Feature<String,Float> stringToFloat() { return STRING_TO_FLOAT; }
 }

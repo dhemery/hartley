@@ -4,8 +4,8 @@ import com.dhemery.core.DefaultingTo;
 import com.dhemery.core.Feature;
 import com.dhemery.core.Requiring;
 import com.dhemery.core.UnaryOperator;
-import com.dhemery.strings.ConvertedTo;
-import com.dhemery.strings.StringTrimmer;
+import com.dhemery.strings.TranslatedTo;
+import com.dhemery.strings.Trimmed;
 import org.hamcrest.Matcher;
 
 import static org.hamcrest.Matchers.allOf;
@@ -21,7 +21,7 @@ public class OperatorExpressions {
      * @return the subject converted to the specified type
      */
     public static <T> Feature<String, T> convertedTo(Class<T> type) {
-        return new ConvertedTo(type);
+        return new TranslatedTo(type);
     }
 
     /**
@@ -47,6 +47,6 @@ public class OperatorExpressions {
      * An operator that trims its string operand.
      */
     public static UnaryOperator<String> trimmed() {
-        return new StringTrimmer();
+        return new Trimmed();
     }
 }

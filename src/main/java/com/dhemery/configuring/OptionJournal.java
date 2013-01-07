@@ -1,6 +1,6 @@
 package com.dhemery.configuring;
 
-import com.dhemery.expressing.Diagnostic;
+import com.dhemery.core.Diagnostic;
 import org.hamcrest.StringDescription;
 
 import java.util.ArrayList;

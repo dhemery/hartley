@@ -3,10 +3,11 @@ package com.dhemery.strings;
 import com.dhemery.core.NullSafeUnaryOperator;
 
 /**
- * An operator that trims its string operand.
+ * Trims whitespace from the start and end of a string.
+ * Yields {@code null} if the operand is {@code null}.
  */
-public class StringTrimmer extends NullSafeUnaryOperator<String> {
-    public StringTrimmer() {
+public class Trimmed extends NullSafeUnaryOperator<String> {
+    public Trimmed() {
         super("trimmed");
     }
 

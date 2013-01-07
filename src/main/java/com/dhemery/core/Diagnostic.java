@@ -1,7 +1,4 @@
-package com.dhemery.expressing;
-
-import com.dhemery.core.Action;
-import com.dhemery.core.Feature;
+package com.dhemery.core;
 
 import java.util.Arrays;
 

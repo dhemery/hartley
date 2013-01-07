@@ -4,7 +4,7 @@ import com.dhemery.core.Feature;
 import com.dhemery.core.NamedFeature;
 
 /**
- * A feature that translates its string subject to a short.
+ * Translates a string to a {@code Short}.
  */
 public class StringToShort extends NamedFeature<String, Short> {
     private static final Feature<String, Short> STRING_TO_SHORT = new StringToShort();
@@ -19,7 +19,7 @@ public class StringToShort extends NamedFeature<String, Short> {
     }
 
     /**
-     * Return a feature that translates its string subject to a short.
+     * Return a feature that translates a string to a {@code Short}.
      */
     public static Feature<String,Short> stringToShort() { return STRING_TO_SHORT; }
 }

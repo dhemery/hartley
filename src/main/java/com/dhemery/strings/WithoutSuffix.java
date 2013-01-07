@@ -1,8 +1,12 @@
 package com.dhemery.strings;
 
 import com.dhemery.core.NullSafeUnaryOperator;
-import com.dhemery.expressing.Diagnostic;
+import com.dhemery.core.Diagnostic;
 
+/**
+ * Removes a suffix from a string.
+ * Yields {@code null} if the operand is {@code null}.
+ */
 public class WithoutSuffix extends NullSafeUnaryOperator<String> {
     private final String suffix;
 

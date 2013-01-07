@@ -1,5 +1,7 @@
 package com.dhemery.strings;
 
+import com.dhemery.core.Diagnostic;
+import com.dhemery.core.UnaryOperator;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -7,22 +9,25 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 
 public class TheWithoutSuffixOperator {
+    private final UnaryOperator<String> withoutSuffixBar  = new WithoutSuffix("bar");
+
+    @Test
+    public void describesItself() {
+        assertThat(withoutSuffixBar.toString(), is("without suffix " + Diagnostic.descriptionOf("bar")));
+    }
+
     @Test
     public void yieldsNullIfOperandIsNull() {
-        assertThat(new WithoutSuffix("ignored").operate(null), is(nullValue()));
+        assertThat(withoutSuffixBar.operate(null), is(nullValue()));
     }
 
     @Test
     public void yieldsOperandIfOperandDoesNotEndWithSuffix() {
-        String operand = "foo";
-        String suffix = "bar";
-        assertThat(new WithoutSuffix(suffix).operate(operand), is(operand));
+        assertThat(withoutSuffixBar.operate("foo"), is("foo"));
     }
 
     @Test
     public void removesSuffixOperandIfOperandEndsWithSuffix() {
-        String operand = "foo bar";
-        String suffix = " bar";
-        assertThat(new WithoutSuffix(suffix).operate(operand), is("foo"));
+        assertThat(withoutSuffixBar.operate("foo bar"), is("foo "));
     }
 }

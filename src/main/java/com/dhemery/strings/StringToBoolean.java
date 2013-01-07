@@ -4,7 +4,7 @@ import com.dhemery.core.Feature;
 import com.dhemery.core.NamedFeature;
 
 /**
- * A feature that translates its string subject to a boolean.
+ * Translates a string to a {@code Boolean}.
  */
 public class StringToBoolean extends NamedFeature<String,Boolean> {
     private static final Feature<String, Boolean> STRING_TO_BOOLEAN = new StringToBoolean();
@@ -19,7 +19,7 @@ public class StringToBoolean extends NamedFeature<String,Boolean> {
     }
 
     /**
-     * Return a feature that translates its string subject to a boolean.
+     * Return a feature that translates a string to a {@code Boolean}.
      */
     public static Feature<String,Boolean> stringToBoolean() { return STRING_TO_BOOLEAN; }
 }

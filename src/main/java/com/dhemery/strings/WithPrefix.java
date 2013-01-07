@@ -1,12 +1,16 @@
 package com.dhemery.strings;
 
 import com.dhemery.core.NullSafeUnaryOperator;
-import com.dhemery.expressing.Diagnostic;
+import com.dhemery.core.Diagnostic;
 
-public class PrefixPrepender extends NullSafeUnaryOperator<String> {
+/**
+ * Appends a prefix to a string that lacks the prefix.
+ * Yields {@code null} if the operand is {@code null}.
+ */
+public class WithPrefix extends NullSafeUnaryOperator<String> {
     private final String prefix;
 
-    public PrefixPrepender(String prefix) {
+    public WithPrefix(String prefix) {
         super("with prefix " + Diagnostic.descriptionOf(prefix));
         this.prefix = prefix;
     }

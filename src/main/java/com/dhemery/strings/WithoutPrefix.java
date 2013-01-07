@@ -1,12 +1,16 @@
 package com.dhemery.strings;
 
 import com.dhemery.core.NullSafeUnaryOperator;
-import com.dhemery.expressing.Diagnostic;
+import com.dhemery.core.Diagnostic;
 
-public class PrefixRemover extends NullSafeUnaryOperator<String> {
+/**
+ * Removes a prefix from a string.
+ * Yields {@code null} if the operand is {@code null}.
+ */
+public class WithoutPrefix extends NullSafeUnaryOperator<String> {
     private final String prefix;
 
-    public PrefixRemover(String prefix) {
+    public WithoutPrefix(String prefix) {
         super("without prefix " + Diagnostic.descriptionOf(prefix));
         this.prefix = prefix;
     }

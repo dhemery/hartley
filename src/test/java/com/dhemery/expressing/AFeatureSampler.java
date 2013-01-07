@@ -1,5 +1,6 @@
 package com.dhemery.expressing;
 
+import com.dhemery.core.Diagnostic;
 import com.dhemery.core.Feature;
 import com.dhemery.core.Sampler;
 import org.jmock.Expectations;

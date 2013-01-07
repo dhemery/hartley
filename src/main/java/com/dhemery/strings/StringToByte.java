@@ -4,7 +4,7 @@ import com.dhemery.core.Feature;
 import com.dhemery.core.NamedFeature;
 
 /**
- * A feature that translates its string subject to a byte.
+ * Translates a string to a {@code Byte}.
  */
 public class StringToByte extends NamedFeature<String, Byte> {
     private static final Feature<String, Byte> STRING_TO_BYTE = new StringToByte();
@@ -19,7 +19,7 @@ public class StringToByte extends NamedFeature<String, Byte> {
     }
 
     /**
-     * Return a feature that translates its string subject to a byte.
+     * Return a feature that translates a string to a {@code Byte}.
      */
     public static Feature<String,Byte> stringToByte() { return STRING_TO_BYTE; }
 }

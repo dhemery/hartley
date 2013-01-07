@@ -4,7 +4,7 @@ import com.dhemery.core.Feature;
 import com.dhemery.core.NamedFeature;
 
 /**
- * A feature that translates its string subject to a double.
+ * Translates a string to a {@code Double}.
  */
 public class StringToDouble extends NamedFeature<String, Double> {
     private static final Feature<String, Double> STRING_TO_DOUBLE = new StringToDouble();
@@ -19,7 +19,7 @@ public class StringToDouble extends NamedFeature<String, Double> {
     }
 
     /**
-     * Return a feature that translates its string subject to a double.
+     * Return a feature that translates a string to a {@code Double}.
      */
     public static Feature<String,Double> stringToDouble() { return STRING_TO_DOUBLE; }
 }

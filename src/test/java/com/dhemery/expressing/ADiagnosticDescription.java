@@ -1,5 +1,6 @@
 package com.dhemery.expressing;
 
+import com.dhemery.core.Diagnostic;
 import org.junit.Test;
 
 import java.util.Arrays;
