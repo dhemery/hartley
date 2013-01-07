@@ -8,12 +8,12 @@ import static org.hamcrest.Matchers.nullValue;
 
 public class AStringTrimmer {
     @Test
-    public void returnssNullIfOperandIsNull() {
+    public void yieldsNullIfOperandIsNull() {
         assertThat(new StringTrimmer().operate(null), is(nullValue()));
     }
 
     @Test
-    public void trimsANonNullStringOperand() {
+    public void trimsANonNullOperand() {
         assertThat(new StringTrimmer().operate("   foo   "), is("foo"));
     }
 }

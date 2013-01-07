@@ -8,7 +8,7 @@ import static org.hamcrest.Matchers.nullValue;
 
 public class APrefixPrepender {
     @Test
-    public void returnsNullIfOperandIsNull() {
+    public void yieldsNullIfOperandIsNull() {
         assertThat(new PrefixPrepender("ignored").operate(null), is(nullValue()));
     }
 
@@ -20,7 +20,7 @@ public class APrefixPrepender {
     }
 
     @Test
-    public void yieldsOperandIfOperandAlreadyHasPrefix() {
+    public void yieldsOperandIfOperandStartsWithPrefix() {
         String prefix = "foo";
         String operand = "foo bar";
         assertThat(new PrefixPrepender(prefix).operate(operand), is(operand));

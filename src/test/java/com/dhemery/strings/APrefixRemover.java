@@ -8,7 +8,7 @@ import static org.hamcrest.Matchers.nullValue;
 
 public class APrefixRemover {
     @Test
-    public void returnsNullIfOperandIsNull() {
+    public void yieldsNullIfOperandIsNull() {
         assertThat(new PrefixRemover("ignored").operate(null), is(nullValue()));
     }
 
