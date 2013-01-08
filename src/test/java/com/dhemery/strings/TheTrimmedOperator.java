@@ -11,7 +11,7 @@ public class TheTrimmedOperator {
     private final UnaryOperator<String> trimmed = new Trimmed();
 
     @Test
-    public void describesIteself() {
+    public void describesItself() {
         assertThat(trimmed.toString(), is("trimmed"));
 
     }
