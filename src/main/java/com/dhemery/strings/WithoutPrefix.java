@@ -2,6 +2,7 @@ package com.dhemery.strings;
 
 import com.dhemery.core.NullSafeUnaryOperator;
 import com.dhemery.core.Diagnostic;
+import com.dhemery.core.UnaryOperator;
 
 /**
  * Removes a prefix from a string.
@@ -19,5 +20,12 @@ public class WithoutPrefix extends NullSafeUnaryOperator<String> {
     protected String operateOnNonNull(String operand) {
         if(operand.startsWith(prefix)) return operand.substring(prefix.length());
         return operand;
+    }
+
+    /**
+     * Return an operator that removes a prefix from a string.
+     */
+    public static UnaryOperator<String> withoutPrefix(String prefix) {
+        return new WithoutPrefix(prefix);
     }
 }
