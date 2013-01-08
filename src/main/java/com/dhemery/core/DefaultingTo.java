@@ -29,4 +29,11 @@ public class DefaultingTo<T> extends NullSafeUnaryOperator<T> {
         description.appendValue(defaultValue);
         return description.toString();
     }
+
+    /**
+     * Return an operator that supplies a default value if its operand is {@code null}.
+     */
+    public static <T> UnaryOperator<T> defaultingTo(T defaultValue) {
+        return new DefaultingTo<T>(defaultValue);
+    }
 }

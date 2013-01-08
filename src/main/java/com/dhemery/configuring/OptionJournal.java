@@ -26,7 +26,7 @@ class OptionJournal<T> {
     public String toString() {
         new StringDescription();
         return new StringBuilder()
-                .append(Diagnostic.descriptionOf(entries, "<", " -> ", ">"))
+                .append(Diagnostic.descriptionOf(entries, "", " -> ", ""))
                 .toString();
     }
 }

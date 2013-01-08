@@ -6,7 +6,9 @@ import org.jmock.Mockery;
 import org.junit.Test;
 
 import static com.dhemery.configuring.ConfigurationBuilder.newConfiguration;
-import static com.dhemery.expressing.OperatorExpressions.*;
+import static com.dhemery.core.DefaultingTo.defaultingTo;
+import static com.dhemery.core.Requiring.requiring;
+import static com.dhemery.strings.Trimmed.trimmed;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.endsWith;
 import static org.hamcrest.Matchers.is;
@@ -24,7 +26,7 @@ public class ATransformingConfiguration {
         try {
             configuration.option("foo");
         } catch (ConfigurationException violation) {
-            assertThat(violation.getMessage(), endsWith("<[foo:null]>"));
+            assertThat(violation.getMessage(), endsWith("[foo:null]"));
         }
     }
 
@@ -34,7 +36,7 @@ public class ATransformingConfiguration {
         try {
             configuration.option("foo", trimmed(), defaultingTo("monkey"), requiring(is("monkoo")));
         } catch (ConfigurationException violation) {
-            assertThat(violation.getMessage(), endsWith("<[foo:\"   bar   \"] -> [trimmed:\"bar\"] -> [defaulting to \"monkey\":\"bar\"] -> [requiring (is \"monkoo\"):null]>"));
+            assertThat(violation.getMessage(), endsWith("[foo:\"   bar   \"] -> [trimmed:\"bar\"] -> [defaulting to \"monkey\":\"bar\"] -> [requiring is \"monkoo\":null]"));
         }
     }
 

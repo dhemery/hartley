@@ -80,16 +80,6 @@ public class TransformingConfiguration extends Named implements Configuration {
         return translator.of(option(name, queryOperators));
     }
 
-    private String violation(String name, OptionJournal<String> journal) {
-        return new StringBuilder()
-                .append(this)
-                .append(" has null value for required option ")
-                .append(name)
-                .append("\nJournal: ")
-                .append(journal)
-                .toString();
-    }
-
     private Action<UnaryOperator<String>> recordOperationIn(final OptionJournal<String> journal) {
         return new Action<UnaryOperator<String>>() {
             @Override
@@ -108,5 +98,15 @@ public class TransformingConfiguration extends Named implements Configuration {
         String value = journal.value();
         if(value != null) return value;
         throw new ConfigurationException(violation(name, journal));
+    }
+
+    private String violation(String name, OptionJournal<String> journal) {
+        return new StringBuilder()
+                .append(this)
+                .append(" has null value for option ")
+                .append(name)
+                .append("\nOption: ")
+                .append(journal)
+                .toString();
     }
 }
