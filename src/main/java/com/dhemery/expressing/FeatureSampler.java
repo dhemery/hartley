@@ -4,6 +4,7 @@ import com.dhemery.core.Diagnostic;
 import com.dhemery.core.Feature;
 import com.dhemery.core.NamedSampler;
 import com.dhemery.core.Sampler;
+import com.dhemery.factory.Factory;
 
 /**
  * A sampler that samples a feature of a subject.
@@ -48,6 +49,7 @@ public class FeatureSampler<S, F> extends NamedSampler<F> {
     /**
      * Create a sampler that samples the feature of the subject.
      */
+    @Factory
     public static <S,V> Sampler<V> sampled(S subject, Feature<? super S, V> feature) {
         return new FeatureSampler<S,V>(subject, feature);
     }

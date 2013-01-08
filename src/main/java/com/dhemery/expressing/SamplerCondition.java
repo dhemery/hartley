@@ -2,6 +2,7 @@ package com.dhemery.expressing;
 
 import com.dhemery.core.Condition;
 import com.dhemery.core.Sampler;
+import com.dhemery.factory.Factory;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
@@ -49,6 +50,7 @@ public class SamplerCondition<V> implements Condition {
     /**
      * A factory method for creating {@code SamplerCondition}s.
      */
+    @Factory
     public static <V> Condition sampleOf(Sampler<V> variable, Matcher<? super V> criteria) {
         return new SamplerCondition<V>(variable, criteria);
     }

@@ -2,6 +2,7 @@ package com.dhemery.strings;
 
 import com.dhemery.core.Feature;
 import com.dhemery.core.NamedFeature;
+import com.dhemery.factory.Factory;
 
 /**
  * Translates a string to a {@code Float}.
@@ -21,6 +22,7 @@ public class FloatValue extends NamedFeature<String, Float> {
     /**
      * Return a feature that translates a string to a {@code Float}.
      */
+    @Factory
     public static Feature<String, Float> floatValue() {
         return FLOAT_VALUE;
     }

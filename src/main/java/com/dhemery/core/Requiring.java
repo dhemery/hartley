@@ -1,5 +1,6 @@
 package com.dhemery.core;
 
+import com.dhemery.factory.Factory;
 import org.hamcrest.Matcher;
 import org.hamcrest.StringDescription;
 
@@ -31,6 +32,7 @@ public class Requiring<T> extends NullSafeUnaryOperator<T> {
     /**
      * Return an operator that yields its operand if it satisfies the criteria.
      */
+    @Factory
     public static <T> UnaryOperator<T> requiring(Matcher<T>... criteria) {
         Matcher<T> criterion = criteria.length == 1 ? criteria[0] : (Matcher) allOf(criteria);
         return new Requiring<T>(criterion);

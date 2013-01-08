@@ -3,6 +3,7 @@ package com.dhemery.strings;
 import com.dhemery.core.NullSafeUnaryOperator;
 import com.dhemery.core.Diagnostic;
 import com.dhemery.core.UnaryOperator;
+import com.dhemery.factory.Factory;
 
 /**
  * Removes a suffix from a string.
@@ -25,8 +26,8 @@ public class WithoutSuffix extends NullSafeUnaryOperator<String> {
     /**
      * Return an operator that removes a suffix from a string.
      */
+    @Factory
     public static UnaryOperator<String> withoutSuffix(String suffix) {
         return new WithoutSuffix(suffix);
     }
-
 }

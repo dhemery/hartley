@@ -2,7 +2,7 @@ package com.dhemery.expressing;
 
 import com.dhemery.core.Feature;
 import com.dhemery.core.NamedFeature;
-import org.hamcrest.Description;
+import com.dhemery.factory.Factory;
 
 /**
  * Syntactic sugar for boolean features.
@@ -23,6 +23,7 @@ public class FeatureExpressions {
     /**
      * Decorate a boolean feature to make it more expressive.
      */
+    @Factory
     public static <S> Feature<S,Boolean> is(final Feature<? super S, Boolean> feature) {
         return new NamedFeature<S, Boolean>("is " + feature) {
             @Override
@@ -37,6 +38,7 @@ public class FeatureExpressions {
      * @param feature the feature whose values to negate
      * @param <S> the type of subject
      */
+    @Factory
     public static <S> Feature<S,Boolean> not(final Feature<? super S, Boolean> feature) {
         return new NamedFeature<S, Boolean>("not " + feature) {
             @Override

@@ -1,5 +1,7 @@
 package com.dhemery.core;
 
+import com.dhemery.factory.Factory;
+
 /**
  * A feature that determines whether its {@link MaybeVisible} subject is visible.
  */
@@ -17,6 +19,7 @@ public class VisibleFeature extends NamedFeature<MaybeVisible, Boolean> {
     /**
      * Create a feature that determines whether its {@link MaybeVisible} subject is visible.
      */
+    @Factory
     public static Feature<MaybeVisible,Boolean> visible() {
         return VISIBLE;
     }

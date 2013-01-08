@@ -1,5 +1,6 @@
 package com.dhemery.core;
 
+import com.dhemery.factory.Factory;
 import org.hamcrest.Matcher;
 
 import java.util.Collection;
@@ -58,6 +59,11 @@ public class LazyStream<T> {
      */
     public <F> LazyStream<F> map(Feature<? super T, F> function) {
         return lazyStreamOf(mappingIterator(function));
+    }
+
+    @Factory
+    public static <S> LazyStream<S> streamOf(Iterable<S> source) {
+        return new LazyStream<S>(source);
     }
 
     private static <S> LazyStream<S> lazyStreamOf(Iterator<S> source) {

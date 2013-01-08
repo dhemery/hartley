@@ -1,5 +1,6 @@
 package com.dhemery.core;
 
+import com.dhemery.factory.Factory;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 
@@ -33,6 +34,7 @@ public class DefaultingTo<T> extends NullSafeUnaryOperator<T> {
     /**
      * Return an operator that supplies a default value if its operand is {@code null}.
      */
+    @Factory
     public static <T> UnaryOperator<T> defaultingTo(T defaultValue) {
         return new DefaultingTo<T>(defaultValue);
     }

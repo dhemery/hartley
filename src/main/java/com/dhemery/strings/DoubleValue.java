@@ -2,6 +2,7 @@ package com.dhemery.strings;
 
 import com.dhemery.core.Feature;
 import com.dhemery.core.NamedFeature;
+import com.dhemery.factory.Factory;
 
 /**
  * Translates a string to a {@code Double}.
@@ -21,6 +22,7 @@ public class DoubleValue extends NamedFeature<String, Double> {
     /**
      * Return a feature that translates a string to a {@code Double}.
      */
+    @Factory
     public static Feature<String, Double> doubleValue() {
         return DOUBLE_VALUE;
     }

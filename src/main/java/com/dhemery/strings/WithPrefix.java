@@ -1,8 +1,9 @@
 package com.dhemery.strings;
 
-import com.dhemery.core.NullSafeUnaryOperator;
 import com.dhemery.core.Diagnostic;
+import com.dhemery.core.NullSafeUnaryOperator;
 import com.dhemery.core.UnaryOperator;
+import com.dhemery.factory.Factory;
 
 /**
  * Prepends a prefix to a string that lacks the prefix.
@@ -25,6 +26,7 @@ public class WithPrefix extends NullSafeUnaryOperator<String> {
     /**
      * Return an operator that prepends a prefix to a string that lacks the prefix.
      */
+    @Factory
     public static UnaryOperator<String> withPrefix(String prefix) {
         return new WithPrefix(prefix);
     }

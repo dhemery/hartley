@@ -3,6 +3,7 @@ package com.dhemery.strings;
 import com.dhemery.core.Diagnostic;
 import com.dhemery.core.NullSafeUnaryOperator;
 import com.dhemery.core.UnaryOperator;
+import com.dhemery.factory.Factory;
 
 /**
  * Appends a suffix to a string that lacks the suffix.
@@ -25,6 +26,7 @@ public class WithSuffix extends NullSafeUnaryOperator<String> {
     /**
      * Return an operator that appends a suffix to a string that lacks the suffix.
      */
+    @Factory
     public static UnaryOperator<String> withSuffix(String suffix) {
         return new WithSuffix(suffix);
     }
