@@ -1,15 +1,11 @@
 package com.dhemery.configuring;
 
-import com.dhemery.core.Action;
-import com.dhemery.core.Named;
-import com.dhemery.core.StringDictionary;
-import com.dhemery.core.UnaryOperator;
+import com.dhemery.core.*;
 
 import java.util.List;
 import java.util.Set;
 
 import static com.dhemery.expressing.Evaluations.streamOf;
-import static com.dhemery.expressing.OperatorExpressions.convertedTo;
 
 /**
  * A configuration that applies a sequence of operators
@@ -71,17 +67,17 @@ public class TransformingConfiguration extends Named implements Configuration {
     /**
      * Return the value of the named option,
      * transformed by the configuration and query operators,
-     * and converted to the specified type.
+     * and translated by the translator
      * @param name the name of the option
-     * @param type the type to which to convert the option
      * @param queryOperators the operators to apply after applying the configuration operators
-     * @return the transformed value of the option, converted to the specified type
+     * @param <T> the type to which to translate the transformed option
+     * @param translator the translator to translate the option to the desired type
+     * @return the transformed value of the option, translated by the translator
      * @throws com.dhemery.configuring.ConfigurationException if the transformed value is {@code null}
-     * @throws IllegalArgumentException if the transformed value cannot be converted to the specified type
      */
     @Override
-    public <T> T option(String name, Class<T> type, UnaryOperator<String>... queryOperators) {
-        return convertedTo(type).of(option(name, queryOperators));
+    public <T> T option(Feature<String,T> translator, String name, UnaryOperator<String>... queryOperators) {
+        return translator.of(option(name, queryOperators));
     }
 
     private String violation(String name, OptionJournal<String> journal) {

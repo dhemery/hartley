@@ -6,11 +6,11 @@ import com.dhemery.core.NamedFeature;
 /**
  * Translates a string to a {@code Long}.
  */
-public class StringToLong extends NamedFeature<String, Long> {
-    private static final Feature<String, Long> STRING_TO_LONG = new StringToLong();
+public class LongValue extends NamedFeature<String, Long> {
+    private static final LongValue LONG_VALUE = new LongValue();
 
-    public StringToLong() {
-        super("to long");
+    public LongValue() {
+        super("Long value");
     }
 
     @Override
@@ -21,5 +21,7 @@ public class StringToLong extends NamedFeature<String, Long> {
     /**
      * Return a feature that translates a string to a {@code Long}.
      */
-    public static Feature<String,Long> stringToLong() { return STRING_TO_LONG; }
+    public static Feature<String, Long> longValue() {
+        return LONG_VALUE;
+    }
 }

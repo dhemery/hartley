@@ -6,11 +6,11 @@ import com.dhemery.core.NamedFeature;
 /**
  * Translates a string to a {@code Double}.
  */
-public class StringToDouble extends NamedFeature<String, Double> {
-    private static final Feature<String, Double> STRING_TO_DOUBLE = new StringToDouble();
+public class DoubleValue extends NamedFeature<String, Double> {
+    private static final DoubleValue DOUBLE_VALUE = new DoubleValue();
 
-    public StringToDouble() {
-        super("to double");
+    public DoubleValue() {
+        super("Double value");
     }
 
     @Override
@@ -21,5 +21,7 @@ public class StringToDouble extends NamedFeature<String, Double> {
     /**
      * Return a feature that translates a string to a {@code Double}.
      */
-    public static Feature<String,Double> stringToDouble() { return STRING_TO_DOUBLE; }
+    public static Feature<String, Double> doubleValue() {
+        return DOUBLE_VALUE;
+    }
 }

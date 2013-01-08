@@ -1,5 +1,6 @@
 package com.dhemery.configuring;
 
+import com.dhemery.core.Feature;
 import com.dhemery.core.UnaryOperator;
 
 import java.util.Set;
@@ -23,7 +24,7 @@ public interface Configuration {
 
     /**
      * Return the value of the named option,
-     * transformed by the given operators.
+     * transformed by the operators.
      * @param name the name of the option
      * @param operators the operators to apply to the configured value of the option
      * @return the transformed value of the option
@@ -32,13 +33,13 @@ public interface Configuration {
 
     /**
      * Return the value of the named option,
-     * transformed by the given operators
-     * and converted to the specified type.
+     * transformed by the operators
+     * and translated by the translator.
      * @param name the name of the option
-     * @param type the type to which to convert the option
      * @param operators the operators to apply to the configured value of the option
-     * @return the transformed value of the option, converted to the specified type
-     * @throws IllegalArgumentException if the transformed value cannot be converted to the specified type
+     * @param <T> the type to which to translate the transformed option
+     * @param translator the translator to translate the option to the desired type
+     * @return the transformed value of the option, translated by the specified translator
      */
-    <T> T option(String name, Class<T> type, UnaryOperator<String>... operators);
+    <T> T option(Feature<String,T> translator, String name, UnaryOperator<String>... operators);
 }

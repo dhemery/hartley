@@ -6,11 +6,11 @@ import com.dhemery.core.NamedFeature;
 /**
  * Translates a string to a {@code Float}.
  */
-public class StringToFloat extends NamedFeature<String, Float> {
-    private static final Feature<String, Float> STRING_TO_FLOAT = new StringToFloat();
+public class FloatValue extends NamedFeature<String, Float> {
+    private static final FloatValue FLOAT_VALUE = new FloatValue();
 
-    public StringToFloat() {
-        super("to float");
+    public FloatValue() {
+        super("Float value");
     }
 
     @Override
@@ -21,5 +21,7 @@ public class StringToFloat extends NamedFeature<String, Float> {
     /**
      * Return a feature that translates a string to a {@code Float}.
      */
-    public static Feature<String,Float> stringToFloat() { return STRING_TO_FLOAT; }
+    public static Feature<String, Float> floatValue() {
+        return FLOAT_VALUE;
+    }
 }

@@ -1,4 +1,4 @@
 /**
- * Transform strings and convert them to other types.
+ * Operate on strings and translate them to other types.
  */
 package com.dhemery.strings;

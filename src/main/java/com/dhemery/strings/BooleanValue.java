@@ -6,11 +6,11 @@ import com.dhemery.core.NamedFeature;
 /**
  * Translates a string to a {@code Boolean}.
  */
-public class StringToBoolean extends NamedFeature<String,Boolean> {
-    private static final Feature<String, Boolean> STRING_TO_BOOLEAN = new StringToBoolean();
+public class BooleanValue extends NamedFeature<String, Boolean> {
+    private static final BooleanValue BOOLEAN_VALUE = new BooleanValue();
 
-    public StringToBoolean() {
-        super("to boolean");
+    public BooleanValue() {
+        super("Boolean value");
     }
 
     @Override
@@ -21,5 +21,7 @@ public class StringToBoolean extends NamedFeature<String,Boolean> {
     /**
      * Return a feature that translates a string to a {@code Boolean}.
      */
-    public static Feature<String,Boolean> stringToBoolean() { return STRING_TO_BOOLEAN; }
+    public static Feature<String, Boolean> booleanValue() {
+        return BOOLEAN_VALUE;
+    }
 }

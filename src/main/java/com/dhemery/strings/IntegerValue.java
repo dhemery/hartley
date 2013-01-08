@@ -6,11 +6,11 @@ import com.dhemery.core.NamedFeature;
 /**
  * Translates a string to an {@code Integer}.
  */
-public class StringToInteger extends NamedFeature<String, Integer> {
-    private static final Feature<String, Integer> STRING_TO_INTEGER = new StringToInteger();
+public class IntegerValue extends NamedFeature<String, Integer> {
+    private static final IntegerValue INTEGER_VALUE = new IntegerValue();
 
-    public StringToInteger() {
-        super("to int");
+    public IntegerValue() {
+        super("Integer value");
     }
 
     @Override
@@ -21,6 +21,7 @@ public class StringToInteger extends NamedFeature<String, Integer> {
     /**
      * Return a feature that translates a string to an {@code Integer}.
      */
-    public static Feature<String,Integer> stringToInteger() { return STRING_TO_INTEGER; }
+    public static Feature<String, Integer> integerValue() {
+        return INTEGER_VALUE;
+    }
 }
-
