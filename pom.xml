@@ -79,9 +79,7 @@
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
-                    <annotationProcessors>
-                        <annotationProcessor>com.dhemery.factory.FactoryGenerator</annotationProcessor>
-                    </annotationProcessors>
+                    <compilerArgument>-Adhemery.factory.annotations=com.dhemery.core.Expression</compilerArgument>
 				</configuration>
 			</plugin>
 			<plugin>

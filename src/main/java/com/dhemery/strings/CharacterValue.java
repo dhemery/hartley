@@ -1,8 +1,8 @@
 package com.dhemery.strings;
 
+import com.dhemery.core.Expression;
 import com.dhemery.core.Feature;
 import com.dhemery.core.NamedFeature;
-import com.dhemery.factory.Factory;
 
 /**
  * Translates a string to a {@code Character}.
@@ -23,7 +23,7 @@ public class CharacterValue extends NamedFeature<String, Character> {
     /**
      * Return a feature that translates a string to a {@code Character}.
      */
-    @Factory
+    @Expression
     public static Feature<String, Character> characterValue() {
         return CHARACTER_VALUE;
     }

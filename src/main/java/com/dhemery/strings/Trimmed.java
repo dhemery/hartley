@@ -1,8 +1,8 @@
 package com.dhemery.strings;
 
+import com.dhemery.core.Expression;
 import com.dhemery.core.NullSafeUnaryOperator;
 import com.dhemery.core.UnaryOperator;
-import com.dhemery.factory.Factory;
 
 /**
  * Trims whitespace from the start and end of a string.
@@ -23,7 +23,7 @@ public class Trimmed extends NullSafeUnaryOperator<String> {
     /**
      * Return an operator that trims whitespace from the start and end of a string.
      */
-    @Factory
+    @Expression
     public static UnaryOperator<String> trimmed() {
         return TRIMMED;
     }

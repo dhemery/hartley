@@ -1,6 +1,5 @@
 package com.dhemery.expressing;
 
-import com.dhemery.factory.Factory;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;

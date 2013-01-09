@@ -1,8 +1,8 @@
 package com.dhemery.strings;
 
+import com.dhemery.core.Expression;
 import com.dhemery.core.Feature;
 import com.dhemery.core.NamedFeature;
-import com.dhemery.factory.Factory;
 
 /**
  * Translates a string to a {@code Short}.
@@ -22,7 +22,7 @@ public class ShortValue extends NamedFeature<String, Short> {
     /**
      * Return a feature that translates a string to a {@code Short}.
      */
-    @Factory
+    @Expression
     public static Feature<String, Short> shortValue() {
         return SHORT_VALUE;
     }
