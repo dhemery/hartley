@@ -2,15 +2,17 @@
 title: Hartley Library
 layout: default
 ---
-Hartley Library Version 2.0
-=========
+Hartley Library
+========= 
 
 A library of useful Java code.
 
-- [API Documentation](api/2.0) (latest release)
-- [Source Code](http://github.com/dhemery/{{ site.project }}) on GitHub
+**Version 2.0**
 
-**API Documentation for Other Versions**
-- [SNAPSHOT](api/SNAPSHOT) (unreleased work in progress)
-- [Version 1.0](api/1.0)
+- [API Documentation](api/2.0) (latest release)
+
+**See also**
+- [Source Code](http://github.com/dhemery/{{ site.project }}) on GitHub
+- [SNAPSHOT](api/SNAPSHOT) API Documentation (upcoming version)
+- [Version 1.0](api/1.0) API Documentation
 
