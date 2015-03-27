@@ -9,13 +9,4 @@ public class Supplied {
             }
         };
     }
-
-    public static <T> Supplier<T> by(final Builder<T> builder) {
-        return new Supplier<T>() {
-            @Override
-            public T get() {
-                return builder.build();
-            }
-        };
-    }
 }
