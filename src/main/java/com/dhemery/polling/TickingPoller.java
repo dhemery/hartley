@@ -6,7 +6,7 @@ import com.dhemery.core.*;
  * A poller that uses a ticker to delay between polls,
  * and throws a {@link PollTimeoutException} if the ticker expires before the condition is satisfied.
  */
-public class TickingPoller extends ParameterizedPoller {
+public class TickingPoller extends ComposedPoller {
     public TickingPoller(Ticker ticker) {
         super(startPolling(ticker), shouldContinuePolling(ticker), tick(ticker), throwPollTimeoutException());
     }
