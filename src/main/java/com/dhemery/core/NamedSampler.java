@@ -6,7 +6,7 @@ package com.dhemery.core;
  */
 public abstract class NamedSampler<V> extends Named implements Sampler<V> {
     /**
-     * Create a named builder.
+     * Create a named sampler.
      */
     public NamedSampler(String name) {
 		super(name);
