@@ -2,26 +2,26 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-    <groupId>com.dhemery.hartley</groupId>
-  	<artifactId>library</artifactId>
-  	<version>3.0</version>
-	</parent>
+    <parent>
+        <groupId>com.dhemery.hartley</groupId>
+        <artifactId>library</artifactId>
+        <version>3.0</version>
+    </parent>
 
-	<artifactId>configuring</artifactId>
-	<packaging>jar</packaging>
-	<name>Hartley Configuring</name>
-	<description>Read and manipulate configuration options from properties files and other sources</description>
+    <artifactId>configuring</artifactId>
+    <packaging>jar</packaging>
+    <name>Hartley Configuring</name>
+    <description>Read and manipulate configuration options from properties files and other sources</description>
 
-  <dependencies>
+    <dependencies>
 
-    <!-- TODO: Switch to java.util.function.Supplier and remove this dependency -->
-    <dependency>
-      <groupId>com.dhemery.hartley</groupId>
-      <artifactId>functions</artifactId>
-      <version>3.0</version>
-    </dependency>
-  </dependencies>
+        <!-- TODO: Switch to java.util.function.Supplier and remove this dependency -->
+        <dependency>
+            <groupId>com.dhemery.hartley</groupId>
+            <artifactId>functions</artifactId>
+            <version>3.0</version>
+        </dependency>
+    </dependencies>
 </project>

@@ -2,35 +2,35 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-    <groupId>com.dhemery.hartley</groupId>
-  	<artifactId>library</artifactId>
-  	<version>3.0</version>
-	</parent>
+    <parent>
+        <groupId>com.dhemery.hartley</groupId>
+        <artifactId>library</artifactId>
+        <version>3.0</version>
+    </parent>
 
-	<artifactId>expressions</artifactId>
-	<packaging>jar</packaging>
-	<name>Hartley Expressions</name>
-	<description>Expressions commonly useful in automated tests</description>
+    <artifactId>expressions</artifactId>
+    <packaging>jar</packaging>
+    <name>Hartley Expressions</name>
+    <description>Expressions commonly useful in automated tests</description>
 
-  <dependencies>
-    <!-- TODO: Switch to java.util.function.* and remove this dependency? -->
-    <dependency>
-      <groupId>com.dhemery.hartley</groupId>
-      <artifactId>functions</artifactId>
-      <version>3.0</version>
-    </dependency>
+    <dependencies>
+        <!-- TODO: Switch to java.util.function.* and remove this dependency? -->
+        <dependency>
+            <groupId>com.dhemery.hartley</groupId>
+            <artifactId>functions</artifactId>
+            <version>3.0</version>
+        </dependency>
 
-    <!-- TODO: Move Poller interface to here and remove this dependency? -->
-    <!-- TODO: Leave it to derived class to implement a poll(Condition) method? -->
-    <!-- TODO: Move polled expressions to polling module? -->
-    <dependency>
-      <groupId>com.dhemery.hartley</groupId>
-      <artifactId>polling</artifactId>
-      <version>3.0</version>
-    </dependency>
-  </dependencies>
+        <!-- TODO: Move Poller interface to here and remove this dependency? -->
+        <!-- TODO: Leave it to derived class to implement a poll(Condition) method? -->
+        <!-- TODO: Move polled expressions to polling module? -->
+        <dependency>
+            <groupId>com.dhemery.hartley</groupId>
+            <artifactId>polling</artifactId>
+            <version>3.0</version>
+        </dependency>
+    </dependencies>
 
 </project>
