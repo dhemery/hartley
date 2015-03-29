@@ -1,38 +1,19 @@
 package com.dhemery.polling;
 
-import com.dhemery.core.Condition;
-import org.jmock.Expectations;
-import org.jmock.Sequence;
-import org.jmock.auto.Mock;
-import org.jmock.integration.junit4.JUnitRuleMockery;
-import org.junit.Rule;
+import com.dhemery.polling.fixtures.Polling.Conditions.SatisfiedOnPollNumber;
 import org.junit.Test;
 
-public abstract class PollerContract {
-    @Rule public JUnitRuleMockery context = new JUnitRuleMockery();
-    @Mock public Condition condition;
+import static com.dhemery.polling.fixtures.Polling.Conditions.satisfiedOnPollNumber;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
+public abstract class PollerContract {
     protected abstract Poller pollerForContract();
 
     @Test
     public void pollsUntilTheConditionIsSatisfied() {
-        final Sequence polling = context.sequence("polling");
-        context.checking(new Expectations(){{
-            exactly(3).of(condition).isSatisfied(); inSequence(polling); will(returnValue(false));
-            oneOf(condition).isSatisfied();         inSequence(polling); will(returnValue(true));
-        }});
-
+        SatisfiedOnPollNumber condition = satisfiedOnPollNumber(3);
         pollerForContract().poll(condition);
-    }
-
-    @Test
-    public void stopsPollingWhenTheConditionIsSatisfied() {
-        final Sequence polling = context.sequence("polling");
-        context.checking(new Expectations(){{
-            oneOf(condition).isSatisfied(); inSequence(polling); will(returnValue(true));
-            never(condition).isSatisfied(); inSequence(polling);
-        }});
-
-        pollerForContract().poll(condition);
+        assertThat(condition.pollCount, is(3));
     }
 }
