@@ -1,5 +1,6 @@
-package com.dhemery.core;
+package com.dhemery.expressing;
 
+import com.dhemery.core.Condition;
 import org.hamcrest.Description;
 import org.hamcrest.StringDescription;
 

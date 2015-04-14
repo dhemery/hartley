@@ -5,8 +5,6 @@ import org.hamcrest.Matcher;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 
-import static com.dhemery.core.FeatureSampler.sampled;
-import static com.dhemery.core.SamplerCondition.sampleOf;
 import static com.dhemery.expressing.QuietlyTrue.isQuietlyTrue;
 
 /**
@@ -46,7 +44,7 @@ public class ImmediateExpressions {
      * }
      */
     public static <V> void assertThat(Sampler<V> sampler, Matcher<? super V> criteria) {
-        assertThat(sampleOf(sampler, criteria));
+        assertThat(new SamplingCondition<>(sampler, criteria));
     }
 
     /**
@@ -78,7 +76,7 @@ public class ImmediateExpressions {
      * }
      */
     public static <S,V> void assertThat(S subject, Feature<? super S,V> feature, Matcher<? super V> criteria) {
-        assertThat(sampled(subject, feature), criteria);
+        assertThat(new FeatureSampler<>(subject, feature), criteria);
     }
 
     /**

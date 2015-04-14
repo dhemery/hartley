@@ -6,8 +6,6 @@ import com.dhemery.polling.Ticker;
 import com.dhemery.polling.TickingPoller;
 import org.hamcrest.Matcher;
 
-import static com.dhemery.core.FeatureSampler.sampled;
-import static com.dhemery.core.SamplerCondition.sampleOf;
 import static com.dhemery.expressing.QuietlyTrue.isQuietlyTrue;
 
 /**
@@ -60,7 +58,7 @@ public abstract class Expressive extends ImmediateExpressions {
      * }
      */
     public <V> void assertThat(Sampler<V> sampler, Ticker timeframe, Matcher<? super V> criteria) {
-        assertThat(timeframe, new SamplerCondition<>(sampler, criteria));
+        assertThat(timeframe, new SamplingCondition<>(sampler, criteria));
     }
 
     /**
@@ -92,7 +90,7 @@ public abstract class Expressive extends ImmediateExpressions {
      * }
      */
     public <S,V> void assertThat(S subject, Feature<? super S, V> feature, Ticker timeframe, Matcher<? super V> criteria) {
-        assertThat(sampled(subject, feature), timeframe, criteria);
+        assertThat(new FeatureSampler<>(subject, feature), timeframe, criteria);
     }
 
     /**
@@ -145,7 +143,7 @@ public abstract class Expressive extends ImmediateExpressions {
      * Report whether the sampler's sampled value satisfies the criteria within the time frame.
      */
     public <V> boolean the(Sampler<V> sampler, Ticker timeframe, Matcher<? super V> criteria) {
-        return the(sampleOf(sampler, criteria), timeframe);
+        return the(new SamplingCondition<>(sampler, criteria), timeframe);
     }
 
     /**
@@ -159,7 +157,7 @@ public abstract class Expressive extends ImmediateExpressions {
      * Report whether the feature of the subject satisfies the criteria within the time frame.
      */
     public <S,V> boolean the(S subject, Feature<? super S, V> feature, Ticker timeframe, Matcher<? super V> criteria) {
-        return the(sampled(subject, feature), timeframe, criteria);
+        return the(new FeatureSampler<>(subject, feature), timeframe, criteria);
     }
 
     /**
@@ -201,7 +199,7 @@ public abstract class Expressive extends ImmediateExpressions {
      * Wait until the sampler's sampled value satisfies the criteria or the time frame expires.
      */
     public <V> void waitUntil(Sampler<V> sampler, Ticker timeframe, Matcher<? super V> criteria) {
-        waitUntil(timeframe, sampleOf(sampler, criteria));
+        waitUntil(timeframe, new SamplingCondition<>(sampler, criteria));
     }
 
     /**
@@ -229,7 +227,7 @@ public abstract class Expressive extends ImmediateExpressions {
      * Wait until the feature of the subject satisfies the criteria or the time frame expires.
      */
     public <S,V> void waitUntil(S subject, Feature<? super S, V> feature, Ticker timeframe, Matcher<? super V> criteria) {
-        waitUntil(sampled(subject, feature), timeframe, criteria);
+        waitUntil(new FeatureSampler<>(subject, feature), timeframe, criteria);
     }
 
     /**
@@ -269,32 +267,32 @@ public abstract class Expressive extends ImmediateExpressions {
     }
 
     /**
-     * Perform the operation on the subject if the feature of the subject satisfies the criteria within the default time frame.
+     * Perform the action on the subject if the feature of the subject satisfies the criteria within the default time frame.
      */
-    public <S,V> void when(S subject, Feature<? super S, V> feature, Matcher<? super V> criteria, Action<? super S> operation) {
-        when(subject, feature, eventually(), criteria, operation);
+    public <S,V> void when(S subject, Feature<? super S, V> feature, Matcher<? super V> criteria, Action<? super S> action) {
+        when(subject, feature, eventually(), criteria, action);
     }
 
     /**
-     * Perform the operation on the subject if the feature of the subject is {@code true} within the default time frame.
+     * Perform the action on the subject if the feature of the subject is {@code true} within the default time frame.
      */
-    public <S> void when(S subject, Feature<? super S, Boolean> feature, Action<? super S> operation) {
-        when(subject, feature, isQuietlyTrue(), operation);
+    public <S> void when(S subject, Feature<? super S, Boolean> feature, Action<? super S> action) {
+        when(subject, feature, isQuietlyTrue(), action);
     }
 
     /**
-     * Perform the operation on the subject if the feature of the subject satisfies the criteria within the time frame.
+     * Perform the action on the subject if the feature of the subject satisfies the criteria within the time frame.
      */
-    public <S,V> void when(S subject, Feature<? super S, V> feature, Ticker timeframe, Matcher<? super V> criteria, Action<? super S> operation) {
+    public <S,V> void when(S subject, Feature<? super S, V> feature, Ticker timeframe, Matcher<? super V> criteria, Action<? super S> action) {
         waitUntil(subject, feature, timeframe, criteria);
-        operation.actOn(subject);
+        action.actOn(subject);
     }
 
     /**
-     * Perform the operation on the subject if the feature of the subject is {@code true} within the time frame.
+     * Perform the action on the subject if the feature of the subject is {@code true} within the time frame.
      */
-    public <S> void when(S subject, Ticker timeframe, Feature<? super S, Boolean> feature, Action<? super S> operation) {
-        when(subject, feature, timeframe, isQuietlyTrue(), operation);
+    public <S> void when(S subject, Ticker timeframe, Feature<? super S, Boolean> feature, Action<? super S> action) {
+        when(subject, feature, timeframe, isQuietlyTrue(), action);
     }
 
     private void poll(Ticker timeframe, Condition condition) {

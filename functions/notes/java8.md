@@ -1,11 +1,5 @@
 # Functions for Java 8
 
-## Move
-
--   ConditionAssert to Expressions
--   FeatureSampler to Expressions
--   SamplerCondition to Expressions
-
 ## Adapt
 
 -   Action to Consumer
