@@ -35,7 +35,7 @@ public class ImmediateExpressions {
     }
 
     /**
-     * Assert that a sample of the variable satisfies the criteria.
+     * Assert that the sampler's sampled value satisfies the criteria.
      * <p>Example:</p>
      * <pre>
      * {@code
@@ -45,12 +45,12 @@ public class ImmediateExpressions {
      * assertThat(threadCount, is(9));
      * }
      */
-    public static <V> void assertThat(Sampler<V> variable, Matcher<? super V> criteria) {
-        assertThat(sampleOf(variable, criteria));
+    public static <V> void assertThat(Sampler<V> sampler, Matcher<? super V> criteria) {
+        assertThat(sampleOf(sampler, criteria));
     }
 
     /**
-     * Assert that a sample of the variable is true.
+     * Assert that the sampler's sampled value is {@code true}.
      * <p>Example:</p>
      * <pre>
      * {@code
@@ -60,12 +60,12 @@ public class ImmediateExpressions {
      * assertThat(theresAFlyInMySoup);
      * }
      */
-    public static void assertThat(Sampler<Boolean> variable) {
-        assertThat(variable, isQuietlyTrue());
+    public static void assertThat(Sampler<Boolean> sampler) {
+        assertThat(sampler, isQuietlyTrue());
     }
 
     /**
-     * Assert that a sample of the feature satisfies the criteria.
+     * Assert that the feature of the subject satisfies the criteria.
      * <p>Example:</p>
      * <pre>
      * {@code
@@ -82,7 +82,7 @@ public class ImmediateExpressions {
     }
 
     /**
-     * Assert that a sample of the feature is {@code true}.
+     * Assert that the feature of the subject is {@code true}.
      * <p>Example:</p>
      * <pre>
      * {@code
@@ -168,18 +168,18 @@ public class ImmediateExpressions {
     }
 
     /**
-     * Report whether a sample of the variable satisfies the criteria.
+     * Report whether the sampler's sampled value satisfies the criteria.
      */
-    public static <V> boolean the(Sampler<V> variable, Matcher<? super V> criteria) {
-        variable.takeSample();
-        return criteria.matches(variable.sampledValue());
+    public static <V> boolean the(Sampler<V> sampler, Matcher<? super V> criteria) {
+        sampler.takeSample();
+        return criteria.matches(sampler.sampledValue());
     }
 
     /**
-     * Report whether a sample of the variable is {@code true}.
+     * Report whether the sampler's sampled boolean value is {@code true}.
      */
-    public static boolean the(Sampler<Boolean> variable) {
-        return the(variable, isQuietlyTrue());
+    public static boolean the(Sampler<Boolean> sampler) {
+        return the(sampler, isQuietlyTrue());
     }
 
     /**
@@ -190,14 +190,14 @@ public class ImmediateExpressions {
     }
 
     /**
-     * Report whether a sample of the feature satisfies the criteria.
+     * Report whether the feature of the subject satisfies the criteria.
      */
     public static <S,V> boolean the(S subject, Feature<? super S,V> feature, Matcher<? super V> criteria) {
         return criteria.matches(feature.of(subject));
     }
 
     /**
-     * Report whether a sample of the feature is {@code true}.
+     * Report whether the feature of the subject is {@code true}.
      */
     public static <S> boolean the(S subject, Feature<? super S,Boolean> feature) {
         return the(subject, feature, isQuietlyTrue());

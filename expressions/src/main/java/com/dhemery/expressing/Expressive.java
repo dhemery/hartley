@@ -1,9 +1,6 @@
 package com.dhemery.expressing;
 
-import com.dhemery.core.Action;
-import com.dhemery.core.Condition;
-import com.dhemery.core.Feature;
-import com.dhemery.core.Sampler;
+import com.dhemery.core.*;
 import com.dhemery.polling.PollTimeoutException;
 import com.dhemery.polling.Ticker;
 import com.dhemery.polling.TickingPoller;
@@ -25,16 +22,18 @@ public abstract class Expressive extends ImmediateExpressions {
 
     /**
      * Prepare the condition for polling.
-     * This implementation simply returns the condition unenhanced.
+     * This implementation simply returns the condition unchanged.
      * Subclasses may wish to override this method to enhance the condition before polling.
-     * A typical use is to wrap the condition in a {@link PublishingCondition}.
+     * A typical use is to wrap the condition
+     * in a decorator
+     * that logs each result.
      */
     public Condition prepareToPoll(Condition condition) {
         return condition;
     }
 
     /**
-     * Assert that the condition is satisfied during a poll.
+     * Assert that the condition is satisfied within the time frame.
      * <p>Example:</p>
      * <pre>
      * {@code
@@ -45,12 +44,12 @@ public abstract class Expressive extends ImmediateExpressions {
      * assertThat(withinTenSeconds, launchIsInProgress);
      * }
      */
-    public void assertThat(Ticker ticker, Condition condition) {
-        poll(ticker, condition);
+    public void assertThat(Ticker timeframe, Condition condition) {
+        poll(timeframe, condition);
     }
 
     /**
-     * Assert that a polled sample of the variable satisfies the criteria.
+     * Assert that the sampler's sampled value satisfies the criteria within the time frame.
      * <p>Example:</p>
      * <pre>
      * {@code
@@ -60,12 +59,12 @@ public abstract class Expressive extends ImmediateExpressions {
      * assertThat(threadCount, eventually(), is(9));
      * }
      */
-    public <V> void assertThat(Sampler<V> variable, Ticker ticker, Matcher<? super V> criteria) {
-        assertThat(ticker, sampleOf(variable, criteria));
+    public <V> void assertThat(Sampler<V> sampler, Ticker timeframe, Matcher<? super V> criteria) {
+        assertThat(timeframe, new SamplerCondition<>(sampler, criteria));
     }
 
     /**
-     * Assert that a polled sample of the variable is {@code true}.
+     * Assert that the sampler's sampled value is {@code true} within the time frame.
      * <p>Example:</p>
      * <pre>
      * {@code
@@ -75,12 +74,12 @@ public abstract class Expressive extends ImmediateExpressions {
      * assertThat(eventually(), theresAFlyInMySoup);
      * }
      */
-    public void assertThat(Ticker ticker, Sampler<Boolean> variable) {
-        assertThat(variable, ticker, isQuietlyTrue());
+    public void assertThat(Ticker timeframe, Sampler<Boolean> sampler) {
+        assertThat(sampler, timeframe, isQuietlyTrue());
     }
 
     /**
-     * Assert that a polled sample of the feature satisfies the criteria.
+     * Assert that the feature of the subject satisfies the criteria within the time frame.
      * <p>Example:</p>
      * <pre>
      * {@code
@@ -92,12 +91,12 @@ public abstract class Expressive extends ImmediateExpressions {
      * assertThat(searchResultsPage, resultCount(), withinTenSeconds, is(greaterThan(9)));
      * }
      */
-    public <S,V> void assertThat(S subject, Feature<? super S, V> feature, Ticker ticker, Matcher<? super V> criteria) {
-        assertThat(sampled(subject, feature), ticker, criteria);
+    public <S,V> void assertThat(S subject, Feature<? super S, V> feature, Ticker timeframe, Matcher<? super V> criteria) {
+        assertThat(sampled(subject, feature), timeframe, criteria);
     }
 
     /**
-     * Assert that a polled sample of the feature is {@code true}.
+     * Assert that the feature of the subject is {@code true} within the time frame.
      * <p>Example:</p>
      * <pre>
      * {@code
@@ -108,12 +107,12 @@ public abstract class Expressive extends ImmediateExpressions {
      * assertThat(settingsPage, eventually(), is(displayed()));
      * }
      */
-    public <S> void assertThat(S subject, Ticker ticker, Feature<? super S, Boolean> feature) {
-        assertThat(subject, feature, ticker, isQuietlyTrue());
+    public <S> void assertThat(S subject, Ticker timeframe, Feature<? super S, Boolean> feature) {
+        assertThat(subject, feature, timeframe, isQuietlyTrue());
     }
 
     /**
-     * Return a new default ticker obtained from this {@code Expressive}'s helper.
+     * Return a new default time frame obtained from this {@code Expressive}'s helper.
      * This method is named to read nicely in expressions.
      * <p>Example:</p>
      * <pre>
@@ -131,11 +130,11 @@ public abstract class Expressive extends ImmediateExpressions {
     }
 
     /**
-     * Report whether the condition is satisfied during a poll.
+     * Report whether the condition is satisfied within the time frame.
      */
-    public boolean the(Condition condition, Ticker ticker) {
+    public boolean the(Condition condition, Ticker timeframe) {
         try {
-            poll(ticker, condition);
+            poll(timeframe, condition);
             return true;
         } catch (PollTimeoutException ignored) {
             return false;
@@ -143,171 +142,162 @@ public abstract class Expressive extends ImmediateExpressions {
     }
 
     /**
-     * Report whether a polled sample of the variable satisfies the criteria.
+     * Report whether the sampler's sampled value satisfies the criteria within the time frame.
      */
-    public <V> boolean the(Sampler<V> variable, Ticker ticker, Matcher<? super V> criteria) {
-        return the(sampleOf(variable, criteria), ticker);
+    public <V> boolean the(Sampler<V> sampler, Ticker timeframe, Matcher<? super V> criteria) {
+        return the(sampleOf(sampler, criteria), timeframe);
     }
 
     /**
-     * Report whether a polled sample of the variable is {@code true}.
+     * Report whether the sampler's sampled value is {@code true} within the time frame.
      */
-    public boolean the(Sampler<Boolean> variable, Ticker ticker) {
-        return the(variable, ticker, isQuietlyTrue());
+    public boolean the(Sampler<Boolean> sampler, Ticker timeframe) {
+        return the(sampler, timeframe, isQuietlyTrue());
     }
 
     /**
-     * Report whether a polled sample of the feature satisfies the criteria.
+     * Report whether the feature of the subject satisfies the criteria within the time frame.
      */
-    public <S,V> boolean the(S subject, Feature<? super S, V> feature, Ticker ticker, Matcher<? super V> criteria) {
-        return the(sampled(subject, feature), ticker, criteria);
+    public <S,V> boolean the(S subject, Feature<? super S, V> feature, Ticker timeframe, Matcher<? super V> criteria) {
+        return the(sampled(subject, feature), timeframe, criteria);
     }
 
     /**
-     * Report whether a polled sample of the feature is {@code true}.
+     * Report whether the boolean feature of the subject is {@code true} within the time frame.
      */
-    public <S> boolean the(S subject, Ticker ticker, Feature<? super S, Boolean> feature) {
-        return the(subject, feature, ticker, isQuietlyTrue());
+    public <S> boolean the(S subject, Ticker timeframe, Feature<? super S, Boolean> feature) {
+        return the(subject, feature, timeframe, isQuietlyTrue());
     }
 
     /**
-     * Wait until the polled condition is satisfied.
-     * Uses a default ticker.
+     * Wait until the polled condition is satisfied or the default time frame expires.
      */
     public void waitUntil(Condition condition) {
         waitUntil(eventually(), condition);
     }
 
     /**
-     * Wait until the polled condition is satisfied.
+     * Wait until the polled condition is satisfied or the time frame expires.
      */
-    public void waitUntil(Ticker ticker, Condition condition) {
-        poll(ticker, condition);
+    public void waitUntil(Ticker timeframe, Condition condition) {
+        poll(timeframe, condition);
     }
 
     /**
-     * Wait until a polled sample of the variable satisfies the criteria.
-     * Uses a default ticker.
+     * Wait until a sampler's sampled value satisfies the criteria or the default time frame expires.
      */
-    public <V> void waitUntil(Sampler<V> variable, Matcher<? super V> criteria) {
-        waitUntil(variable, eventually(), criteria);
+    public <V> void waitUntil(Sampler<V> sampler, Matcher<? super V> criteria) {
+        waitUntil(sampler, eventually(), criteria);
     }
 
     /**
-     * Wait until a polled sample of the variable is {@code true}.
-     * Uses a default ticker.
+     * Wait until the sampler's sampled value is {@code true} or the default time frame expires.
      */
-    public void waitUntil(Sampler<Boolean> variable) {
-        waitUntil(variable, eventually(), isQuietlyTrue());
+    public void waitUntil(Sampler<Boolean> sampler) {
+        waitUntil(sampler, eventually(), isQuietlyTrue());
     }
 
     /**
-     * Wait until a polled sample of the variable satisfies the criteria.
+     * Wait until the sampler's sampled value satisfies the criteria or the time frame expires.
      */
-    public <V> void waitUntil(Sampler<V> variable, Ticker ticker, Matcher<? super V> criteria) {
-        waitUntil(ticker, sampleOf(variable, criteria));
+    public <V> void waitUntil(Sampler<V> sampler, Ticker timeframe, Matcher<? super V> criteria) {
+        waitUntil(timeframe, sampleOf(sampler, criteria));
     }
 
     /**
-     * Wait until a polled sample of the variable is [@code true).
+     * Wait until the sampler's sampled value is [@code true) or the time frame expires.
      */
-    public void waitUntil(Sampler<Boolean> variable, Ticker ticker) {
-        waitUntil(variable, ticker, isQuietlyTrue());
+    public void waitUntil(Sampler<Boolean> sampler, Ticker timeframe) {
+        waitUntil(sampler, timeframe, isQuietlyTrue());
     }
 
     /**
-     * Wait until a polled sample of the feature satisfies the criteria.
-     * Uses a default ticker.
+     * Wait until the feature of the subject satisfies the criteria or the default time frame expires.
      */
     public <S,V> void waitUntil(S subject, Feature<? super S, V> feature, Matcher<? super V> criteria) {
         waitUntil(subject, feature, eventually(), criteria);
     }
 
     /**
-     * Wait until a polled sample of the feature is {@code true}.
-     * Uses a default ticker.
+     * Wait until the feature of the subject is {@code true} or the default time frame expires.
      */
     public <S> void waitUntil(S subject, Feature<? super S, Boolean> feature) {
         waitUntil(subject, feature, eventually(), isQuietlyTrue());
     }
 
     /**
-     * Wait until a polled sample of the feature satisfies the criteria.
+     * Wait until the feature of the subject satisfies the criteria or the time frame expires.
      */
-    public <S,V> void waitUntil(S subject, Feature<? super S, V> feature, Ticker ticker, Matcher<? super V> criteria) {
-        waitUntil(sampled(subject, feature), ticker, criteria);
+    public <S,V> void waitUntil(S subject, Feature<? super S, V> feature, Ticker timeframe, Matcher<? super V> criteria) {
+        waitUntil(sampled(subject, feature), timeframe, criteria);
     }
 
     /**
-     * Wait until a polled sample of the feature is {@code true}.
+     * Wait until the feature of the subject is {@code true} or the time frame expires.
      */
-    public <S> void waitUntil(S subject, Ticker ticker, Feature<? super S, Boolean> feature) {
-        waitUntil(subject, feature, ticker, isQuietlyTrue());
+    public <S> void waitUntil(S subject, Ticker timeframe, Feature<? super S, Boolean> feature) {
+        waitUntil(subject, feature, timeframe, isQuietlyTrue());
     }
 
     /**
-     * Return the subject when a polled sample of the feature satisfies the criteria.
-     * Uses a default ticker.
+     * Return the subject if the feature of the subject satisfies the criteria within the default time frame.
      */
     public <S,V> S when(S subject, Feature<? super S, V> feature, Matcher<? super V> criteria) {
         return when(subject, feature, eventually(), criteria);
     }
 
     /**
-     * Return the subject when a polled sample of the feature is {@code true}.
-     * Uses a default ticker.
+     * Return the subject if the feature of the subject is {@code true} within the default time frame.
      */
     public <S> S when(S subject, Feature<? super S, Boolean> feature) {
         return when(subject, feature, eventually(), isQuietlyTrue());
     }
 
     /**
-     * Return the subject when a polled sample of the feature satisfies the criteria.
+     * Return the subject if the feature of the subject satisfies the criteria within the time frame.
      */
-    public <S,V> S when(S subject, Feature<? super S, V> feature, Ticker ticker, Matcher<? super V> criteria) {
-        waitUntil(subject, feature, ticker, criteria);
+    public <S,V> S when(S subject, Feature<? super S, V> feature, Ticker timeframe, Matcher<? super V> criteria) {
+        waitUntil(subject, feature, timeframe, criteria);
         return subject;
     }
 
     /**
-     * Return the subject when a polled sample of the feature is {@code true}.
+     * Return the subject if the feature of the subject is {@code true} within the time frame.
      */
-    public <S> S when(S subject, Ticker ticker, Feature<? super S, Boolean> feature) {
-        return when(subject, feature, ticker, isQuietlyTrue());
+    public <S> S when(S subject, Ticker timeframe, Feature<? super S, Boolean> feature) {
+        return when(subject, feature, timeframe, isQuietlyTrue());
     }
 
     /**
-     * Act on the subject when a polled sample of the feature satisfies the criteria.
-     * Uses a default ticker.
+     * Perform the operation on the subject if the feature of the subject satisfies the criteria within the default time frame.
      */
-    public <S,V> void when(S subject, Feature<? super S, V> feature, Matcher<? super V> criteria, Action<? super S> action) {
-        when(subject, feature, eventually(), criteria, action);
+    public <S,V> void when(S subject, Feature<? super S, V> feature, Matcher<? super V> criteria, Action<? super S> operation) {
+        when(subject, feature, eventually(), criteria, operation);
     }
 
     /**
-     * Act on the subject when a polled sample of the feature is {@code true}.
-     * Uses a default ticker.
+     * Perform the operation on the subject if the feature of the subject is {@code true} within the default time frame.
      */
-    public <S> void when(S subject, Feature<? super S, Boolean> feature, Action<? super S> action) {
-        when(subject, feature, isQuietlyTrue(), action);
+    public <S> void when(S subject, Feature<? super S, Boolean> feature, Action<? super S> operation) {
+        when(subject, feature, isQuietlyTrue(), operation);
     }
 
     /**
-     * Act on the subject when a polled sample of the feature satisfies the criteria.
+     * Perform the operation on the subject if the feature of the subject satisfies the criteria within the time frame.
      */
-    public <S,V> void when(S subject, Feature<? super S, V> feature, Ticker ticker, Matcher<? super V> criteria, Action<? super S> action) {
-        waitUntil(subject, feature, ticker, criteria);
-        action.actOn(subject);
+    public <S,V> void when(S subject, Feature<? super S, V> feature, Ticker timeframe, Matcher<? super V> criteria, Action<? super S> operation) {
+        waitUntil(subject, feature, timeframe, criteria);
+        operation.actOn(subject);
     }
 
     /**
-     * Act on the subject when a polled sample of the feature is {@code true}.
+     * Perform the operation on the subject if the feature of the subject is {@code true} within the time frame.
      */
-    public <S> void when(S subject, Ticker ticker, Feature<? super S, Boolean> feature, Action<? super S> action) {
-        when(subject, feature, ticker, isQuietlyTrue(), action);
+    public <S> void when(S subject, Ticker timeframe, Feature<? super S, Boolean> feature, Action<? super S> operation) {
+        when(subject, feature, timeframe, isQuietlyTrue(), operation);
     }
 
-    private void poll(Ticker ticker, Condition condition) {
-        new TickingPoller(ticker).poll(prepareToPoll(condition));
+    private void poll(Ticker timeframe, Condition condition) {
+        new TickingPoller(timeframe).poll(prepareToPoll(condition));
     }
 }

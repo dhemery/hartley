@@ -1,7 +1,9 @@
 package com.dhemery.expressing;
 
 import com.dhemery.core.Feature;
+import com.dhemery.core.NamedFeature;
 import org.hamcrest.Description;
+import org.hamcrest.StringDescription;
 
 /**
  * Syntactic sugar for boolean features.
@@ -21,37 +23,37 @@ public class FeatureExpressions {
     private FeatureExpressions(){}
     /**
      * Decorate a boolean feature to make it more expressive.
+     * @param feature the feature to decorate
+     * @param <T> the type of the input to the feature
      */
-    public static <S> Feature<S,Boolean> is(final Feature<? super S, Boolean> feature) {
-        return new Feature<S, Boolean>() {
+    public static <T> Feature<T,Boolean> is(final Feature<? super T, Boolean> feature) {
+        return new NamedFeature<T, Boolean>(name("is", feature)) {
             @Override
-            public Boolean of(S object) {
+            public Boolean of(T object) {
                 return feature.of(object);
-            }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("is ").appendDescriptionOf(feature);
             }
         };
     }
 
     /**
      * Decorate a boolean feature to yield its logical negation.
-     * @param feature the feature whose values to negate
-     * @param <S> the type of subject
+     * @param feature the feature to negate
+     * @param <T> the type of the input to the feature
      */
-    public static <S> Feature<S,Boolean> not(final Feature<? super S, Boolean> feature) {
-        return new Feature<S, Boolean>() {
+    public static <T> Feature<T,Boolean> not(final Feature<? super T, Boolean> feature) {
+        return new NamedFeature<T, Boolean>(name("not", feature)) {
             @Override
-            public Boolean of(S object) {
+            public Boolean of(T object) {
                 return !feature.of(object);
             }
-
-            @Override
-            public void describeTo(Description description) {
-                description.appendText("not ").appendDescriptionOf(feature);
-            }
         };
+    }
+
+    private static <T> String name(String prefix, Feature<? super T, Boolean> feature) {
+        Description description = new StringDescription();
+        description.appendText(prefix)
+                .appendText(" ")
+                .appendDescriptionOf(feature);
+        return null;
     }
 }

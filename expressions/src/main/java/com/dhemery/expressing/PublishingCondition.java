@@ -9,6 +9,7 @@ import org.hamcrest.Description;
 /**
  * Wraps a condition to publish the result of its evaluations.
  */
+// TODO: Move this to polling. It unnecessarily binds expressions to publishing.
 public class PublishingCondition implements Condition {
     private final Condition condition;
     private final Publisher publisher;
