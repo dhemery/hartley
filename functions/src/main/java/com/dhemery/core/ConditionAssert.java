@@ -19,9 +19,10 @@ public class ConditionAssert {
 
     private static void fail(Condition condition) {
         Description description = new StringDescription();
-        description.appendText("Expected: ");
-        condition.describeTo(description);
-        description.appendText("\n  but: ");
+        description.appendText("Expected: ")
+                .appendDescriptionOf(condition)
+                .appendText(System.lineSeparator())
+                .appendText("  but: ");
         condition.describeDissatisfactionTo(description);
         throw new AssertionError(description.toString());
     }
