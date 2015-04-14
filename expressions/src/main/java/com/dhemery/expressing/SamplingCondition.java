@@ -7,7 +7,7 @@ import org.hamcrest.Matcher;
 
 /**
  * A condition that is satisfied when a sampler's sampled value satisfies some criteria.
- * @param <R> the type of the sample result
+ * @param <R> the type of the sampled value
  */
 public class SamplingCondition<R> implements Condition {
     private final Sampler<R> variable;
