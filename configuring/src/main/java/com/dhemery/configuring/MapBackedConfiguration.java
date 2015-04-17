@@ -1,7 +1,5 @@
 package com.dhemery.configuring;
 
-import com.dhemery.core.Supplier;
-
 import java.util.*;
 
 /**
@@ -77,28 +75,12 @@ public class MapBackedConfiguration implements Configuration {
 
     @Override
     public Set<String> names() {
-        return new HashSet<String>(options.keySet());
+        return new HashSet<>(options.keySet());
     }
 
     @Override
     public String option(String name) {
         return options.get(name);
-    }
-
-    @Override
-    public String option(String name, String defaultValue) {
-        return defines(name) ? option(name) : defaultValue;
-    }
-
-    @Override
-    public String option(String name, Supplier<String> supplier) {
-        return defines(name) ? option(name) : supplier.get();
-    }
-
-    @Override
-    public String requiredOption(String name) {
-        if(defines(name)) return option(name);
-        throw new ConfigurationException("The configuration does not define the required option " + name);
     }
 
     private static void merge(Map<String, String> map, Map<String, String> options) {

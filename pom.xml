@@ -35,8 +35,6 @@
     <modules>
         <module>configuring</module>
         <module>expressions</module>
-        <module>functions</module>
-        <module>polling</module>
         <module>publishing</module>
     </modules>
 

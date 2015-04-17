@@ -1,7 +1,5 @@
 package com.dhemery.configuring;
 
-import com.dhemery.core.Supplier;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -67,16 +65,6 @@ public class TrimmingConfiguration implements Configuration {
     @Override
     public String option(String name) {
         return safelyTrim(configuration.option(name));
-    }
-
-    @Override
-    public String option(String name, String defaultValue) {
-        return safelyTrim(configuration.option(name, defaultValue));
-    }
-
-    @Override
-    public String option(String name, Supplier<String> supplier) {
-        return safelyTrim(configuration.option(name, supplier));
     }
 
     @Override

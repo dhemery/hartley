@@ -14,14 +14,4 @@
     <packaging>jar</packaging>
     <name>Hartley Configuring</name>
     <description>Read and manipulate configuration options from properties files and other sources</description>
-
-    <dependencies>
-
-        <!-- TODO: Switch to java.util.function.Supplier and remove this dependency -->
-        <dependency>
-            <groupId>com.dhemery.hartley</groupId>
-            <artifactId>functions</artifactId>
-            <version>3.0</version>
-        </dependency>
-    </dependencies>
 </project>
